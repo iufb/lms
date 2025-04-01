@@ -3,6 +3,7 @@
 import { Button } from "@/shared/ui/button"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/shared/ui/drawer"
 import { Input } from "@/shared/ui/input"
+import { Textarea } from "@/shared/ui/textarea"
 import { useForm } from "react-hook-form"
 
 export function CreateCourse() {
@@ -11,7 +12,7 @@ export function CreateCourse() {
     return (
         <Drawer>
             <DrawerTrigger asChild>
-                <Button variant="default">Создать курс</Button>
+                <Button className="w-fit" variant="default">Создать курс</Button>
             </DrawerTrigger>
             <DrawerContent>
                 <DrawerHeader>
@@ -41,8 +42,8 @@ const Form = () => {
     return <form className="w-full max-w-3xl mx-auto gap-2 flex flex-col" >
         <Input label="Название на русском" />
         <Input label="Название на казахском" />
-        <Input label="Описание на русском" />
-        <Input label="Описание на казахском" />
+        <Textarea label="Описание на русском" />
+        <Textarea label="Описание на казахском" />
         <Input type="number" label="Цена" />
         <Button>Создать</Button>
         <DrawerClose asChild>
