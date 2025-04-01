@@ -1,11 +1,13 @@
 "use client"
 
 import {
-    Command
+    Book,
+    Command,
+    User
 } from "lucide-react"
 import * as React from "react"
 
-import { NavProjects } from "@/shared/ui/nav-projects"
+import { cn } from "@/shared/lib/utils"
 import { NavUser } from "@/shared/ui/nav-user"
 import {
     Sidebar,
@@ -16,6 +18,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/shared/ui/sidebar"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const data = {
     user: {
@@ -23,6 +27,7 @@ const data = {
         email: "m@example.com",
         avatar: "/avatars/shadcn.jpg",
     },
+    links: {},
 
 }
 
@@ -33,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="#">
+                            <a href="/">
                                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                                     <Command className="size-4" />
                                 </div>
@@ -47,11 +52,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavProjects projects={data.projects} />
+                <Links />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={data.user} />
             </SidebarFooter>
         </Sidebar>
     )
+}
+
+const Links = () => {
+    const pathname = usePathname()
+    return <ul className="flex flex-col gap-3 text-slate-800 text-lg ">
+        <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin' && 'bg-slate-200 rounded-lg')}>
+            <Book size={18} />
+            <Link href={'/admin'}>Курсы</Link>
+        </li>
+        <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin/users' && 'bg-slate-200 rounded-lg')}>
+            <User size={18} />
+            <Link href={'/admin/users'}>Пользователи</Link>
+        </li>
+    </ul>
+
 }
