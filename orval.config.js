@@ -3,7 +3,7 @@ module.exports = {
     api: {
         input: "./test.yaml",
         output: {
-            target: "./src/api/generated.ts",
+            target: "./src/shared/api/generated.ts",
             client: "fetch",
         },
     },

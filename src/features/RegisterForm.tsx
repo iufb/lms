@@ -1,10 +1,20 @@
 'use client'
-import { Link } from "@/i18n/navigation"
+import { Link, useRouter } from "@/i18n/navigation"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Input } from "@/shared/ui/input"
+import { setCookie } from 'cookies-next'
 import { useTranslations } from "next-intl"
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+type RegisterDTO = {
+    phone_number: string;
+    full_name: string;
+    password: string;
+    position: string;
+    workplace: string;
+    iin: string;
+};
 
 export const RegisterForm = () => {
     const t = useTranslations('registration')
@@ -14,8 +24,11 @@ export const RegisterForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm({ mode: 'onChange' });
-    const onRegisterFormSubmit = (data: any) => {
+    } = useForm<RegisterDTO>({ mode: 'onChange' });
+    const router = useRouter()
+    const onRegisterFormSubmit: SubmitHandler<RegisterDTO> = (data) => {
+        setCookie(data.phone_number, JSON.stringify(data))
+        router.push(`/verify?phone_number=${data.phone_number}`)
         console.log(data)
     };
     const password = watch('password', '')
@@ -36,8 +49,8 @@ export const RegisterForm = () => {
                 <Input
                     label={t('fields.name')}
                     id="name" placeholder={t('placeholders.name')}
-                    error={errors["name"]?.message?.toString()}
-                    {...register("name", {
+                    error={errors["full_name"]?.message?.toString()}
+                    {...register("full_name", {
                         required: t('errors.nameRequired')
                     })}
 

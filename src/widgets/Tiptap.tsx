@@ -1,6 +1,7 @@
 
 'use client'
 
+import { Button } from '@/shared/ui/button'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 
@@ -10,6 +11,10 @@ export const Tiptap = () => {
         content: '<p>Hello World! 🌎️</p>',
     })
 
-    return <EditorContent editor={editor} />
+    return <div><EditorContent editor={editor} />
+        <Button onClick={() => console.log(editor?.getHTML())}>save</Button>
+
+        <div dangerouslySetInnerHTML={{ __html: editor?.getHTML() as string }} />
+    </div>
 }
 

@@ -1,1474 +1,1495 @@
-openapi: 3.0.0
-paths:
-  /auth/account:
-    get:
-      description: Fetch account information from the current session.
-      operationId: AccountController_me
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AccountResponse'
-      summary: Fetch account
-      tags:
-        - Account
-  /auth/account/create:
-    post:
-      description: Create a new account
-      operationId: AccountController_create
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateUserRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateUserResponse'
-      summary: Create Account
-      tags:
-        - Account
-  /auth/account/reset_password:
-    post:
-      description: Send an email to reset account password.
-      operationId: AccountController_sendPasswordReset
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendPasswordResetRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Send Password Reset
-      tags:
-        - Account
-    patch:
-      description: Confirm password reset and change the password.
-      operationId: AccountController_passwordReset
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PasswordResetRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Password Reset
-      tags:
-        - Account
-  /auth/account/change/email:
-    patch:
-      description: Change the associated account email.
-      operationId: AccountController_changeEmail
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangeEmailRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Change Email
-      tags:
-        - Account
-  /auth/account/change/password:
-    patch:
-      description: Change the current account password.
-      operationId: AccountController_changePassword
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangePasswordRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Change Password
-      tags:
-        - Account
-  /auth/session/login:
-    post:
-      description: Login to an account.
-      operationId: SessionController_login
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                anyOf:
-                  - $ref: '#/components/schemas/LoginSessionResponse'
-                  - $ref: '#/components/schemas/LoginMfaResponse'
-      summary: Login
-      tags:
-        - Session
-  /auth/session/logout:
-    post:
-      description: Delete current session.
-      operationId: SessionController_logout
-      parameters:
-        - name: x-session-token
-          required: true
-          in: header
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Logout
-      tags:
-        - Session
-  /auth/session/all:
-    get:
-      description: Fetch all sessions associated with this account.
-      operationId: SessionController_getSessions
-      parameters:
-        - name: x-session-token
-          required: true
-          in: header
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SessionResponse'
-      summary: Fetch Sessions
-      tags:
-        - Session
-    delete:
-      description: Delete all active sessions, optionally including current one.
-      operationId: SessionController_removeAll
-      parameters:
-        - name: x-session-token
-          required: true
-          in: header
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Delete All Sessions​
-      tags:
-        - Session
-  /auth/session/{id}:
-    delete:
-      description: Delete a specific active session.
-      operationId: SessionController_revoke
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: x-session-token
-          required: true
-          in: header
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Revoke Session​
-      tags:
-        - Session
-  /auth/mfa:
-    get:
-      description: Fetch MFA status of an account.
-      operationId: MfaController_fetchStatus
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MfaStatusResponse'
-      summary: MFA Status​​
-      tags:
-        - MFA
-  /auth/mfa/recovery:
-    get:
-      description: Fetch recovery codes for an account.
-      operationId: MfaController_fetchRecovery
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-      summary: Fetch Recovery Codes​​​
-      tags:
-        - MFA
-    patch:
-      description: Re-generate recovery codes for an account.
-      operationId: MfaController_regenerateRecovery
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
-      summary: Regenerate Recovery Codes​​
-      tags:
-        - MFA
-  /auth/mfa/totp:
-    put:
-      description: Enable TOTP 2FA for an account.
-      operationId: MfaController_totpEnable
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TotpEnableRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Enable TOTP 2FA​​
-      tags:
-        - MFA
-    post:
-      description: Generate a new secret for TOTP.
-      operationId: MfaController_totpGenerateSecret
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TotpGenerateSecretResponse'
-      summary: Generate TOTP Secret​​​
-      tags:
-        - MFA
-    delete:
-      description: Disable TOTP 2FA for an account.
-      operationId: MfaController_totpDisable
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TotpDisableRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Disable TOTP 2FA​​
-      tags:
-        - MFA
-  /auth/mfa/verify:
-    post:
-      description: >-
-        Verify the MFA ticket for the authenticated user, either by TOTP code or
-        recovery code.
-      operationId: MfaController_verify
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              anyOf:
-                - $ref: '#/components/schemas/MfaTotpRequest'
-                - $ref: '#/components/schemas/MfaRecoveryRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginSessionResponse'
-      summary: Verify MFA Ticket
-      tags:
-        - MFA
-  /users:
-    get:
-      description: Fetch a list of all users from the system.
-      operationId: UsersController_getAll
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserResponse'
-      summary: Fetch All Users
-      tags:
-        - Users
-  /users/leaders:
-    get:
-      description: >-
-        Fetch a list of the top 15 users based on their points, sorted in
-        descending order.
-      operationId: UsersController_getLeaders
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LeaderResponse'
-      summary: Fetch Top 15 Leaders
-      tags:
-        - Users
-  /users/@me/statistics:
-    get:
-      description: Retrieve statistics for the currently authenticated user.
-      operationId: UsersController_getMeStatistics
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MeStatisticsResponse'
-      summary: Fetch User Statistics
-      tags:
-        - Users
-  /users/@me/progress:
-    get:
-      description: Retrieve progress data for the currently authenticated user.
-      operationId: UsersController_getMeProgress
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MeProgressResponse'
-      summary: Fetch User Progress
-      tags:
-        - Users
-  /users/@me:
-    patch:
-      description: Update the current user display name.
-      operationId: UsersController_patchUser
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchUserRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Update User Details
-      tags:
-        - Users
-  /users/@me/avatar:
-    patch:
-      description: Update the user avatar by uploading a new image.
-      operationId: UsersController_changeAvatar
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: boolean
-      summary: Change User Avatar
-      tags:
-        - Users
-  /courses:
-    get:
-      description: Retrieve a list of all available courses.
-      operationId: CourseController_getAll
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CourseResponse'
-      summary: Fetch All Courses
-      tags:
-        - Course
-    post:
-      description: Create a new course.
-      operationId: CourseController_create
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCourseRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateCourseResponse'
-      summary: Create New Course
-      tags:
-        - Course
-  /courses/popular:
-    get:
-      description: Retrieve a list of the most popular courses based on views.
-      operationId: CourseController_getPopular
-      parameters: []
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CourseResponse'
-      summary: Get Popular Courses
-      tags:
-        - Course
-  /courses/{slug}:
-    get:
-      description: Retrieve a course using its unique slug identifier.
-      operationId: CourseController_getBySlug
-      parameters:
-        - name: slug
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CourseResponse'
-      summary: Get Course By Slug
-      tags:
-        - Course
-  /courses/{id}/lessons:
-    get:
-      description: Retrieve all published lessons of a course.
-      operationId: CourseController_getCourseLessons
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LessonResponse'
-      summary: Get Lessons For Course
-      tags:
-        - Course
-  /courses/{id}/views:
-    patch:
-      description: Increase the view count of a course by 1.
-      operationId: CourseController_incrementViews
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '204':
-          description: ''
-      summary: Increment Course Views
-      tags:
-        - Course
-  /lessons/{slug}:
-    get:
-      description: 'Retrieve lesson information by slug. '
-      operationId: LessonController_getBySlug
-      parameters:
-        - name: slug
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LessonResponse'
-      summary: Get Lesson By Slug
-      tags:
-        - Lesson
-  /lessons/{id}/progress:
-    get:
-      description: 'Retrieve the IDs of the completed lessons for the given course. '
-      operationId: LessonController_getCompletedLessons
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProgressResponse'
-      summary: Fetch Completed Lessons Progress
-      tags:
-        - Lesson
-  /lessons:
-    post:
-      description: Create a new lesson.
-      operationId: LessonController_create
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateLessonRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateLessonResponse'
-      summary: Create New Lesson
-      tags:
-        - Lesson
-  /lessons/{id}/upload:
-    put:
-      description: Upload a video file associated with the lesson.
-      operationId: LessonController_upload
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-      summary: Upload Lesson Video
-      tags:
-        - Lesson
-  /progress/{courseId}:
-    get:
-      description: Retrieve the progress of the user for a specific course.
-      operationId: ProgressController_getCourseProgress
-      parameters:
-        - name: courseId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: number
-      summary: Get Course Progress
-      tags:
-        - Progress
-  /progress:
-    put:
-      description: Update or create progress for a user in a specific course.
-      operationId: ProgressController_create
-      parameters:
-        - name: X-Session-Token
-          in: header
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateProgressRequest'
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateProgressResponse'
-      summary: Update Progress
-      tags:
-        - Progress
-info:
-  title: TeaCoder API
-  description: API for Teacoder educational platform
-  version: 1.0.0
-  contact:
-    name: TeaCoder Support
-    url: https://teacoder.ru
-    email: support@teacoder.ru
-  termsOfService: https://teacoder.ru/docs/agreement
-  license:
-    name: AGPLv3
-    url: https://github.com/teacoder-team/backend/blob/main/LICENSE
-tags: []
-servers: []
-components:
-  schemas:
-    AccountResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        displayName:
-          type: string
-          description: Display name
-          example: John Doe
-        email:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-        avatar:
-          type: string
-          description: Identifier of the user avatar
-          example: UCSOW2TFUGL34ZWCOZSAHDFU4W
-      required:
-        - id
-        - displayName
-        - email
-        - avatar
-    CreateUserRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Display name
-          example: John Doe
-        email:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-        password:
-          type: string
-          description: Password
-          example: '123456'
-          minLength: 6
-          maxLength: 128
-        captcha:
-          type: string
-          description: Captcha verification code
-          example: 03AFcWeA...
-      required:
-        - name
-        - email
-        - password
-        - captcha
-    CreateUserResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique session identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        token:
-          type: string
-          description: Session token
-          example: >-
-            261527f4958ee90eb3ff34ba59154f468c241b0f026340d38c882d70b1b18eb3d7128c9e7d085e76
-        userId:
-          type: string
-          description: Unique user identifier
-          example: 08a96e4b-7b23-4e65-a23f-49a6f2e5d8f1
-      required:
-        - id
-        - token
-        - userId
-    SendPasswordResetRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          description: Email associated with the account
-          example: john.doe@example.com
-        captcha:
-          type: string
-          description: Captcha verification code
-          example: 03AFcWeA...
-      required:
-        - email
-        - captcha
-    PasswordResetRequest:
-      type: object
-      properties:
-        token:
-          type: string
-          description: Reset token
-          example: abc123xyz
-        password:
-          type: string
-          description: New password
-          example: '123456'
-          minLength: 6
-          maxLength: 128
-      required:
-        - token
-        - password
-    ChangeEmailRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-      required:
-        - email
-    ChangePasswordRequest:
-      type: object
-      properties:
-        currentPassword:
-          type: string
-          description: Current password
-          example: '123456'
-          minLength: 6
-          maxLength: 128
-        newPassword:
-          type: string
-          description: New password
-          example: '123456'
-          minLength: 6
-          maxLength: 128
-      required:
-        - currentPassword
-        - newPassword
-    LoginSessionResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique session identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        token:
-          type: string
-          description: Session token
-          example: >-
-            261527f4958ee90eb3ff34ba59154f468c241b0f026340d38c882d70b1b18eb3d7128c9e7d085e76
-        userId:
-          type: string
-          description: Unique user identifier
-          example: 08a96e4b-7b23-4e65-a23f-49a6f2e5d8f1
-      required:
-        - id
-        - token
-        - userId
-    LoginMfaResponse:
-      type: object
-      properties:
-        ticket:
-          type: string
-          description: MFA ticket for further verification
-          example: bff74763b7697eb38664d28a41937a2887648a2f
-        allowedMethods:
-          description: Allowed MFA methods
-          example:
-            - Totp
-            - Recovery
-          type: array
-          items:
-            type: string
-        userId:
-          type: string
-          description: Unique user identifier
-          example: 84ac0c40-dc6e-4df0-b7bf-9df220fd994a
-      required:
-        - ticket
-        - allowedMethods
-        - userId
-    LoginRequest:
-      type: object
-      properties:
-        captcha:
-          type: string
-          description: Captcha verification code
-          example: 03AFcWeA...
-      required:
-        - captcha
-    SessionResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        createdAt:
-          format: date-time
-          type: string
-          description: Date and time when the session was created
-          example: '2024-02-19T12:34:56.789Z'
-        country:
-          type: string
-          description: Country from which the login occurred
-          example: United States
-        city:
-          type: string
-          description: City from which the login occurred
-          example: New York
-        browser:
-          type: string
-          description: Name of the browser used
-          example: Chrome
-        os:
-          type: string
-          description: Operating system of the user
-          example: Windows 10
-      required:
-        - id
-        - createdAt
-        - country
-        - city
-        - browser
-        - os
-    MfaStatusResponse:
-      type: object
-      properties:
-        totpMfa:
-          type: boolean
-          description: Indicates if TOTP MFA is enabled for the account
-          example: true
-        passkeyMfa:
-          type: boolean
-          description: Indicates if Passkey MFA is enabled for the account
-          example: false
-        recoveryActive:
-          type: boolean
-          description: Indicates if recovery codes are active for the account
-          example: true
-      required:
-        - totpMfa
-        - passkeyMfa
-        - recoveryActive
-    TotpEnableRequest:
-      type: object
-      properties:
-        pin:
-          type: string
-          description: PIN code for enabling TOTP 2FA
-          example: '123456'
-          minLength: 6
-          maxLength: 6
-        secret:
-          type: string
-          description: TOTP secret key
-          example: JBSWY3DPEHPK3PXP
-      required:
-        - pin
-        - secret
-    TotpGenerateSecretResponse:
-      type: object
-      properties:
-        qrCodeUrl:
-          type: string
-          description: QR code URL for TOTP setup
-          example: data:image/png;base64,...
-        secret:
-          type: string
-          description: TOTP secret key for generating one-time passwords
-          example: JBSWY3DPEHPK3PXP
-      required:
-        - qrCodeUrl
-        - secret
-    TotpDisableRequest:
-      type: object
-      properties:
-        password:
-          type: string
-          description: Password
-          example: '123456'
-          minLength: 6
-          maxLength: 128
-      required:
-        - password
-    UserResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        displayName:
-          type: string
-          description: Display name
-          example: John Doe
-        email:
-          type: string
-          description: Email address
-          example: john.doe@example.com
-        avatar:
-          type: string
-          description: Identifier of the user avatar
-          example: 5KYADI4YLYW3HCYIUDGLXNOC42
-      required:
-        - id
-        - displayName
-        - email
-        - avatar
-    LeaderResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the user
-          example: 550e8400-e29b-41d4-a716-446655440000
-        displayName:
-          type: string
-          description: Display name of the user
-          example: John Doe
-        avatar:
-          type: string
-          description: User avatar URL or identifier
-          example: 5KYADI4YLYW3HCYIUDGLXNOC42
-        points:
-          type: number
-          description: Points accumulated by the user
-          example: 1500
-      required:
-        - id
-        - displayName
-        - avatar
-        - points
-    MeStatisticsResponse:
-      type: object
-      properties:
-        totalPoints:
-          type: number
-          description: Общее количество очков пользователя
-          example: 1200
-        ranking:
-          type: number
-          description: >-
-            Место пользователя в рейтинге (чем меньше число, тем выше
-            пользователь)
-          example: 5
-        lessonsCompleted:
-          type: string
-          description: >-
-            Количество завершенных уроков и общее количество уроков (в формате
-            X/Y)
-          example: 12/50
-        learningProgressPercentage:
-          type: number
-          description: Прогресс обучения в процентах
-          example: 24
-        completedCourses:
-          type: number
-          description: Количество завершенных курсов (в которых пройдены все уроки)
-          example: 3
-        coursesInProgress:
-          type: number
-          description: >-
-            Количество курсов, которые находятся в процессе изучения (но еще не
-            завершены)
-          example: 2
-      required:
-        - totalPoints
-        - ranking
-        - lessonsCompleted
-        - learningProgressPercentage
-        - completedCourses
-        - coursesInProgress
-    LastLessonResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        slug:
-          type: string
-          description: Unique lesson slug
-          example: getting-started
-        position:
-          type: number
-          description: Lesson position in course
-          example: 1
-      required:
-        - id
-        - slug
-        - position
-    MeProgressResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Уникальный идентификатор курса
-          example: course_123
-        title:
-          type: string
-          description: Название курса
-          example: Основы TypeScript
-        totalLessons:
-          type: number
-          description: Общее количество уроков в курсе
-          example: 20
-        completedLessons:
-          type: number
-          description: Количество завершенных пользователем уроков
-          example: 5
-        progress:
-          type: number
-          description: Прогресс прохождения курса в процентах
-          example: 25
-        lastAccessed:
-          type: string
-          description: Дата последнего прогресса в курсе (последний доступ)
-          example: '2023-05-15T12:00:00.000Z'
-        lastLesson:
-          description: Последний просмотренный урок
-          nullable: true
-          allOf:
-            - $ref: '#/components/schemas/LastLessonResponse'
-      required:
-        - id
-        - title
-        - totalLessons
-        - completedLessons
-        - progress
-        - lastAccessed
-        - lastLesson
-    PatchUserRequest:
-      type: object
-      properties:
-        displayName:
-          type: string
-          description: Display name
-          example: John Doe
-      required:
-        - displayName
-    CourseResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        title:
-          type: string
-          description: Title of the course
-          example: Introduction to NestJS
-        slug:
-          type: string
-          description: Slug of the course (unique URL identifier)
-          example: introduction-to-nestjs
-        description:
-          type: string
-          description: Description of the course
-          example: A complete guide to getting started with NestJS.
-          nullable: true
-        thumbnail:
-          type: string
-          description: Identifier of the course thumbnail
-          example: UCSOW2TFUGL34ZWCOZSAHDFU4W
-          nullable: true
-        youtubeUrl:
-          type: string
-          description: YouTube URL for course content or trailer
-          example: https://youtube.com/example
-          nullable: true
-        attachment:
-          type: string
-          description: Identifier for the course code repository
-          example: UCSOW2TFUGL34ZWCOZSAHDFU4W
-          nullable: true
-        isPublished:
-          type: boolean
-          description: Whether the course is published or not
-          example: true
-        views:
-          type: number
-          description: Number of views the course has
-          example: 12345
-        createdAt:
-          format: date-time
-          type: string
-          description: Date when the course was created
-          example: '2025-02-19T12:00:00Z'
-        updatedAt:
-          format: date-time
-          type: string
-          description: Date when the course was last updated
-          example: '2025-02-19T12:00:00Z'
-        lessons:
-          type: number
-          description: Number of lessons in the course
-          example: 10
-      required:
-        - id
-        - title
-        - slug
-        - description
-        - thumbnail
-        - youtubeUrl
-        - attachment
-        - isPublished
-        - views
-        - createdAt
-        - updatedAt
-        - lessons
-    LessonResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        title:
-          type: string
-          description: Lesson title
-          example: Getting Started
-        slug:
-          type: string
-          description: Unique lesson slug
-          example: getting-started
-        description:
-          type: string
-          description: Lesson description
-          example: Introduction to NestJS and setup.
-        position:
-          type: number
-          description: Lesson position in course
-          example: 1
-        kinescopeId:
-          type: string
-          description: Kinescope video ID
-          example: UCSOW2TFUGL34ZWCOZSAHDFU4W
-        isPublished:
-          type: boolean
-          description: Is lesson published?
-          example: true
-        course:
-          description: Course the lesson belongs to
-          allOf:
-            - $ref: '#/components/schemas/CourseResponse'
-        courseId:
-          type: string
-          description: Course ID the lesson belongs to
-          example: 550e8400-e29b-41d4-a716-446655440000
-        createdAt:
-          format: date-time
-          type: string
-          description: Lesson creation date
-          example: '2025-02-19T12:00:00Z'
-        updatedAt:
-          format: date-time
-          type: string
-          description: Lesson last update date
-          example: '2025-02-19T12:00:00Z'
-      required:
-        - id
-        - title
-        - slug
-        - description
-        - position
-        - kinescopeId
-        - isPublished
-        - course
-        - courseId
-        - createdAt
-        - updatedAt
-    CreateCourseRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Title of the course
-          example: Introduction to NestJS
-      required:
-        - title
-    CreateCourseResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: d364587c-b690-43c5-8a7f-3c391eee5b97
-      required:
-        - id
-    ProgressResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-          example: 550e8400-e29b-41d4-a716-446655440000
-        isCompleted:
-          type: boolean
-          description: Indicates whether the lesson is completed
-          example: true
-        userId:
-          type: string
-          description: User ID associated with the progress
-          example: 550e8400-e29b-41d4-a716-446655440001
-        lessonId:
-          type: string
-          description: Lesson ID associated with the progress
-          example: 550e8400-e29b-41d4-a716-446655440002
-        createdAt:
-          format: date-time
-          type: string
-          description: Date when the progress was created
-          example: '2025-02-19T12:00:00Z'
-        updatedAt:
-          format: date-time
-          type: string
-          description: Date when the progress was last updated
-          example: '2025-02-19T12:00:00Z'
-      required:
-        - id
-        - isCompleted
-        - userId
-        - lessonId
-        - createdAt
-        - updatedAt
-    CreateLessonRequest:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Lesson title
-          example: Introduction to TypeScript
-        courseId:
-          type: string
-          description: Course ID to which the lesson belongs
-          example: 550e8400-e29b-41d4-a716-446655440000
-      required:
-        - title
-        - courseId
-    CreateLessonResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique lesson identifier
-          example: 550e8400-e29b-41d4-a716-446655440001
-      required:
-        - id
-    CreateProgressRequest:
-      type: object
-      properties:
-        isCompleted:
-          type: boolean
-          description: Indicates whether the lesson is completed
-          example: true
-        lessonId:
-          type: string
-          description: Unique identifier of the lesson
-          example: 550e8400-e29b-41d4-a716-446655440000
-      required:
-        - isCompleted
-        - lessonId
-    CreateProgressResponse:
-      type: object
-      properties:
-        nextLesson:
-          type: string
-          description: Next lesson identifier or null if no next lesson exists
-          example: 550e8400-e29b-41d4-a716-446655440001
-        isCompleted:
-          type: boolean
-          description: Indicates whether the lesson is completed
-          example: true
-      required:
-        - nextLesson
-        - isCompleted         example: "john.doe@example.com"
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API документация",
+    "description": "Документация для API",
+    "version": "v1"
+  },
+  "host": "192.168.8.4:8000",
+  "schemes": [
+    "http"
+  ],
+  "basePath": "/api/v1",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "Basic": {
+      "type": "basic"
+    }
+  },
+  "security": [
+    {
+      "Basic": []
+    }
+  ],
+  "paths": {
+    "/available-courses/": {
+      "get": {
+        "operationId": "available-courses_list",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Course"
+              }
+            }
+          }
+        },
+        "tags": [
+          "available-courses"
+        ]
+      },
+      "parameters": []
+    },
+    "/course-lessons/": {
+      "get": {
+        "operationId": "course-lessons_list",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Lesson"
+              }
+            }
+          }
+        },
+        "tags": [
+          "course-lessons"
+        ]
+      },
+      "parameters": []
+    },
+    "/course/": {
+      "get": {
+        "operationId": "course_list",
+        "description": "Получение списка всех курсов",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Course"
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка запроса"
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "post": {
+        "operationId": "course_create",
+        "description": "Создание нового курса",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "parameters": []
+    },
+    "/course/{id}/": {
+      "get": {
+        "operationId": "course_read",
+        "description": "Получение информации о курсе по ID",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          },
+          "404": {
+            "description": "Курс не найден"
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "put": {
+        "operationId": "course_update",
+        "description": "Обновление информации о курсе",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Курс не найден"
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "patch": {
+        "operationId": "course_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "delete": {
+        "operationId": "course_delete",
+        "description": "Удаление курса по ID",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Курс удален"
+          },
+          "404": {
+            "description": "Курс не найден"
+          }
+        },
+        "tags": [
+          "course"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this course.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/final-test-submit/": {
+      "post": {
+        "operationId": "final-test-submit_create",
+        "description": "Отправка ответов на финальный тест курса и получение оценки с возможным выдачей сертификата",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "answers"
+              ],
+              "type": "object",
+              "properties": {
+                "course_id": {
+                  "description": "Course id",
+                  "type": "integer"
+                },
+                "answers": {
+                  "description": "Ответы на вопросы финального теста, где ключ - ID вопроса, а значение - выбранный ответ",
+                  "type": "object"
+                },
+                "language": {
+                  "description": "Язык, на котором представлены вопросы (по умолчанию 'ru')",
+                  "type": "string",
+                  "default": "ru"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Оценка за финальный тест и информация о сертификате",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "description": "Количество правильных ответов",
+                  "type": "integer"
+                },
+                "certificate_issued": {
+                  "description": "Флаг, указывающий, был ли выдан сертификат",
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные данные"
+          },
+          "404": {
+            "description": "Курс или финальный тест не найден"
+          }
+        },
+        "tags": [
+          "final-test-submit"
+        ]
+      },
+      "parameters": []
+    },
+    "/final-test/": {
+      "get": {
+        "operationId": "final-test_list",
+        "description": "Получение списка всех финальных тестов",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/FinalTest"
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка запроса"
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "post": {
+        "operationId": "final-test_create",
+        "description": "Создание нового финального теста",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "parameters": []
+    },
+    "/final-test/{id}/": {
+      "get": {
+        "operationId": "final-test_read",
+        "description": "Получение информации о финальном тесте по ID",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          },
+          "404": {
+            "description": "Финальный тест не найден"
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "put": {
+        "operationId": "final-test_update",
+        "description": "Обновление финального теста",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Финальный тест не найден"
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "patch": {
+        "operationId": "final-test_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FinalTest"
+            }
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "delete": {
+        "operationId": "final-test_delete",
+        "description": "Удаление финального теста по ID",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Финальный тест удален"
+          },
+          "404": {
+            "description": "Финальный тест не найден"
+          }
+        },
+        "tags": [
+          "final-test"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this final test.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/lesson-test-submit/": {
+      "post": {
+        "operationId": "lesson-test-submit_create",
+        "description": "Отправка ответов на тест урока и получение оценки",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "answers"
+              ],
+              "type": "object",
+              "properties": {
+                "lesson_test_id": {
+                  "description": "Lesson test id",
+                  "type": "integer"
+                },
+                "answers": {
+                  "description": "Ответы на вопросы, где ключ - ID вопроса, а значение - выбранный ответ",
+                  "type": "object"
+                },
+                "language": {
+                  "description": "Язык, на котором представлены вопросы (по умолчанию 'ru')",
+                  "type": "string",
+                  "default": "ru"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Оценка за тест",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "description": "Количество правильных ответов",
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректные данные"
+          },
+          "404": {
+            "description": "Тест не найден"
+          }
+        },
+        "tags": [
+          "lesson-test-submit"
+        ]
+      },
+      "parameters": []
+    },
+    "/lesson-test/": {
+      "get": {
+        "operationId": "lesson-test_list",
+        "description": "Получение списка всех тестов к урокам",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LessonTest"
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка запроса"
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "post": {
+        "operationId": "lesson-test_create",
+        "description": "Создание нового теста",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "parameters": []
+    },
+    "/lesson-test/{id}/": {
+      "get": {
+        "operationId": "lesson-test_read",
+        "description": "Получение информации о тесте по ID",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          },
+          "404": {
+            "description": "Тест не найден"
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "put": {
+        "operationId": "lesson-test_update",
+        "description": "Обновление теста",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Тест не найден"
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "patch": {
+        "operationId": "lesson-test_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/LessonTest"
+            }
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "delete": {
+        "operationId": "lesson-test_delete",
+        "description": "Удаление теста по ID",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Тест удален"
+          },
+          "404": {
+            "description": "Тест не найден"
+          }
+        },
+        "tags": [
+          "lesson-test"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this lesson test.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/lesson/": {
+      "get": {
+        "operationId": "lesson_list",
+        "description": "Получение списка всех уроков",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Lesson"
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка запроса"
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "post": {
+        "operationId": "lesson_create",
+        "description": "Создание нового урока",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "parameters": []
+    },
+    "/lesson/{id}/": {
+      "get": {
+        "operationId": "lesson_read",
+        "description": "Получение информации о уроке по ID",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "404": {
+            "description": "Урок не найден"
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "put": {
+        "operationId": "lesson_update",
+        "description": "Обновление информации о уроке",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Урок не найден"
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "patch": {
+        "operationId": "lesson_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Lesson"
+            }
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "delete": {
+        "operationId": "lesson_delete",
+        "description": "Удаление урока по ID",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Урок удален"
+          },
+          "404": {
+            "description": "Урок не найден"
+          }
+        },
+        "tags": [
+          "lesson"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this lesson.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/login/": {
+      "post": {
+        "operationId": "login_create",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CustomTokenObtainPair"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CustomTokenObtainPair"
+            }
+          }
+        },
+        "tags": [
+          "login"
+        ]
+      },
+      "parameters": []
+    },
+    "/payment/": {
+      "get": {
+        "operationId": "payment_list",
+        "description": "Получение списка всех платежей",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Payment"
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка запроса"
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "post": {
+        "operationId": "payment_create",
+        "description": "Создание нового платежа",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "parameters": []
+    },
+    "/payment/{id}/": {
+      "get": {
+        "operationId": "payment_read",
+        "description": "Получение информации о платеже по ID",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "404": {
+            "description": "Платеж не найден"
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "put": {
+        "operationId": "payment_update",
+        "description": "Обновление платежа",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "400": {
+            "description": "Неверный запрос"
+          },
+          "404": {
+            "description": "Платеж не найден"
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "patch": {
+        "operationId": "payment_partial_update",
+        "description": "",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "delete": {
+        "operationId": "payment_delete",
+        "description": "Удаление платежа по ID",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Платеж удален"
+          },
+          "404": {
+            "description": "Платеж не найден"
+          }
+        },
+        "tags": [
+          "payment"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this payment.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
+    "/purchase-course/": {
+      "post": {
+        "operationId": "purchase-course_create",
+        "description": "Создание оплаты за курс.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "course_id"
+              ],
+              "type": "object",
+              "properties": {
+                "course_id": {
+                  "description": "ID курса для покупки",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Оплата успешно создана",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "description": "Сообщение о статусе операции",
+                  "type": "string"
+                },
+                "payment_id": {
+                  "description": "ID созданной оплаты",
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Курс не найден"
+          }
+        },
+        "tags": [
+          "purchase-course"
+        ]
+      },
+      "parameters": []
+    },
+    "/send-code/": {
+      "post": {
+        "operationId": "send-code_create",
+        "description": "Отправка кода подтверждения на номер телефона",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "phone_number"
+              ],
+              "type": "object",
+              "properties": {
+                "phone_number": {
+                  "description": "Номер телефона",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Код отправлен успешно"
+          },
+          "400": {
+            "description": "Номер телефона обязателен"
+          },
+          "500": {
+            "description": "Ошибка при отправке кода"
+          }
+        },
+        "tags": [
+          "send-code"
+        ]
+      },
+      "parameters": []
+    },
+    "/user-certificates/": {
+      "get": {
+        "operationId": "user-certificates_list",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Certificate"
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-certificates"
+        ]
+      },
+      "parameters": []
+    },
+    "/user-courses/": {
+      "get": {
+        "operationId": "user-courses_list",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserCourse"
+              }
+            }
+          }
+        },
+        "tags": [
+          "user-courses"
+        ]
+      },
+      "parameters": []
+    },
+    "/verify-code/": {
+      "post": {
+        "operationId": "verify-code_create",
+        "description": "Проверка кода и регистрация нового пользователя",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "required": [
+                "phone_number",
+                "code",
+                "password"
+              ],
+              "type": "object",
+              "properties": {
+                "phone_number": {
+                  "description": "Номер телефона",
+                  "type": "string"
+                },
+                "code": {
+                  "description": "Код подтверждения из SMS",
+                  "type": "string"
+                },
+                "full_name": {
+                  "description": "ФИО или имя пользователя",
+                  "type": "string"
+                },
+                "password": {
+                  "description": "Пароль пользователя",
+                  "type": "string"
+                },
+                "position": {
+                  "description": "Должность",
+                  "type": "string"
+                },
+                "workplace": {
+                  "description": "Место работы",
+                  "type": "string"
+                },
+                "iin": {
+                  "description": "ИИН",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Пользователь успешно зарегистрирован"
+          },
+          "400": {
+            "description": "Неверный код или обязательные поля отсутствуют"
+          },
+          "409": {
+            "description": "Пользователь уже существует"
+          },
+          "500": {
+            "description": "Ошибка при создании пользователя"
+          }
+        },
+        "tags": [
+          "verify-code"
+        ]
+      },
+      "parameters": []
+    }
+  },
+  "definitions": {
+    "Course": {
+      "required": [
+        "title_ru",
+        "title_kz",
+        "description_ru",
+        "description_kz",
+        "price"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "title_ru": {
+          "title": "Title ru",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "title_kz": {
+          "title": "Title kz",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "description_ru": {
+          "title": "Description ru",
+          "type": "string",
+          "minLength": 1
+        },
+        "description_kz": {
+          "title": "Description kz",
+          "type": "string",
+          "minLength": 1
+        },
+        "price": {
+          "title": "Price",
+          "type": "string",
+          "format": "decimal"
+        },
+        "is_published": {
+          "title": "Is published",
+          "type": "boolean"
+        }
+      }
+    },
+    "Lesson": {
+      "required": [
+        "title_ru",
+        "title_kz",
+        "content_ru",
+        "content_kz",
+        "order_num"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "title_ru": {
+          "title": "Title ru",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "title_kz": {
+          "title": "Title kz",
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1
+        },
+        "content_ru": {
+          "title": "Content ru",
+          "type": "string",
+          "minLength": 1
+        },
+        "content_kz": {
+          "title": "Content kz",
+          "type": "string",
+          "minLength": 1
+        },
+        "media_ru": {
+          "title": "Media ru",
+          "type": "string",
+          "readOnly": true,
+          "x-nullable": true,
+          "format": "uri"
+        },
+        "media_kz": {
+          "title": "Media kz",
+          "type": "string",
+          "readOnly": true,
+          "x-nullable": true,
+          "format": "uri"
+        },
+        "order_num": {
+          "title": "Order num",
+          "type": "integer",
+          "maximum": 9.223372036854776e+18,
+          "minimum": 0
+        }
+      }
+    },
+    "FinalTest": {
+      "required": [
+        "questions_ru",
+        "questions_kz",
+        "course"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "questions_ru": {
+          "title": "Questions ru",
+          "type": "object"
+        },
+        "questions_kz": {
+          "title": "Questions kz",
+          "type": "object"
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "course": {
+          "title": "Course",
+          "type": "integer"
+        }
+      }
+    },
+    "LessonTest": {
+      "required": [
+        "questions_ru",
+        "questions_kz",
+        "lesson"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "questions_ru": {
+          "title": "Questions ru",
+          "type": "object"
+        },
+        "questions_kz": {
+          "title": "Questions kz",
+          "type": "object"
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "lesson": {
+          "title": "Lesson",
+          "type": "integer"
+        }
+      }
+    },
+    "CustomTokenObtainPair": {
+      "required": [
+        "phone_number",
+        "password"
+      ],
+      "type": "object",
+      "properties": {
+        "phone_number": {
+          "title": "Phone number",
+          "type": "string",
+          "minLength": 1
+        },
+        "password": {
+          "title": "Password",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "Payment": {
+      "required": [
+        "amount",
+        "user",
+        "course"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "amount": {
+          "title": "Amount",
+          "type": "string",
+          "format": "decimal"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string",
+          "maxLength": 10,
+          "minLength": 1
+        },
+        "created_at": {
+          "title": "Created at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "user": {
+          "title": "User",
+          "type": "integer"
+        },
+        "course": {
+          "title": "Course",
+          "type": "integer"
+        }
+      }
+    },
+    "Certificate": {
+      "required": [
+        "user",
+        "course"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "issued_at": {
+          "title": "Issued at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "user": {
+          "title": "User",
+          "type": "integer"
+        },
+        "course": {
+          "title": "Course",
+          "type": "integer"
+        }
+      }
+    },
+    "UserCourse": {
+      "required": [
+        "user",
+        "course"
+      ],
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "has_access": {
+          "title": "Has access",
+          "type": "boolean"
+        },
+        "enrolled_at": {
+          "title": "Enrolled at",
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true
+        },
+        "user": {
+          "title": "User",
+          "type": "integer"
+        },
+        "course": {
+          "title": "Course",
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
