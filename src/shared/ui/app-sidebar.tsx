@@ -18,20 +18,14 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/shared/ui/sidebar"
+import { getCookie } from "cookies-next"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
-    links: {},
 
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const role = getCookie('role')
     return (
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>
@@ -55,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Links />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser user={data.user} />
+                <NavUser user={{ name: role as string, avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }} />
             </SidebarFooter>
         </Sidebar>
     )

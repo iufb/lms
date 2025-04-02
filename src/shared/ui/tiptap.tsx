@@ -114,7 +114,11 @@ const MenuBar = ({ editor }: { editor: Editor }) => {
     )
 }
 
-export const Tiptap = () => {
+interface TiptapProps {
+    value: string
+    onChange: (value: string) => void
+}
+export const Tiptap = ({ value, onChange }: TiptapProps) => {
 
     const editor = useEditor({
         extensions: [StarterKit,
@@ -124,14 +128,17 @@ export const Tiptap = () => {
             Highlight,
             Image
         ],
-        content: '',
+        immediatelyRender: false,
+        onUpdate: ({ editor }) => {
+            onChange(editor.getHTML())
+        },
+        content: value,
     })
     if (!editor) return;
 
     return <div className='flex flex-col gap-3'>
         <MenuBar editor={editor} />
-        <EditorContent rows={10} editor={editor} className='rounded-lg min-h-12 lg bg-slate-100' />
-
+        <EditorContent editor={editor} className='rounded-lg min-h-12 lg bg-slate-100' />
     </div>
 }
 

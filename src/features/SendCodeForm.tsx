@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from "@/i18n/navigation";
-import { sendCodeCreate, verifyCodeCreate, VerifyCodeCreateBody } from "@/shared/api/generated";
+import { useSendCodeCreate, verifyCodeCreate, VerifyCodeCreateBody } from "@/shared/api/generated";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/shared/ui/input-otp";
@@ -99,16 +99,18 @@ const SendAgain = ({ phone_number }: { phone_number: string }) => {
     const [timer, setTimer] = useState(60)
     const t = useTranslations('verify')
 
-    const { mutate: sendCode, isPending: isLoading } = useMutation({
-        mutationKey: ["send-code"],
-        mutationFn: sendCodeCreate,
-        onSuccess: () => {
-            setTimer(60)
-        },
-        onError: (e) => {
-            console.error(e)
+    const { mutate: sendCode, isPending: isLoading } = useSendCodeCreate(
+        {
+            mutation: {
+                onSuccess: () => {
+                    setTimer(60)
+                },
+                onError: (e) => {
+                    console.error(e)
+                }
+            }
         }
-    });
+    );
     useEffect(() => {
         if (timer > 0) {
             const timer = setInterval(() => {
@@ -118,7 +120,7 @@ const SendAgain = ({ phone_number }: { phone_number: string }) => {
         }
     }, [timer]);
 
-    return <Button onClick={() => sendCode({ phone_number })} disabled={timer > 0} variant={'link'} className="mx-auto">
+    return <Button onClick={() => sendCode({ data: { phone_number } })} disabled={timer > 0} variant={'link'} className="mx-auto">
         {t('resendText')}
         {t('resendButton')}
         {timer > 0 && t('timer', { timer })}

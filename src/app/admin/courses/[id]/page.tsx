@@ -1,4 +1,4 @@
-import { Tiptap } from "@/widgets/Tiptap"
+import { CreateLesson } from "@/features/CreateLesson"
 import { Metadata, ResolvingMetadata } from "next"
 
 interface Props {
@@ -19,7 +19,7 @@ export async function generateMetadata(
 }
 export default async function CoursePage({ params }: Props) {
     const { id } = await params
-    return <div>{id}
-        <Tiptap />
+    return <div className="">
+        <CreateLesson />
     </div>
 }

@@ -123,9 +123,7 @@
         cursor: pointer
     }
 
-    form {
-        @apply max-w-lg w-full
-    }
+    form {}
 
     body {
         @apply bg-background text-foreground;

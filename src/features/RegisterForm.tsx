@@ -1,10 +1,9 @@
 'use client'
 import { Link, useRouter } from "@/i18n/navigation"
-import { sendCodeCreate } from "@/shared/api/generated"
+import { useSendCodeCreate } from "@/shared/api/generated"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Input } from "@/shared/ui/input"
-import { useMutation } from '@tanstack/react-query'
 import { setCookie } from 'cookies-next'
 import { useTranslations } from "next-intl"
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -31,28 +30,29 @@ export const RegisterForm = () => {
     } = useForm<RegisterDTO>({ mode: 'onChange' });
     const router = useRouter()
     const password = watch('password', '')
-    const { mutate: sendCode, isPending: isLoading } = useMutation({
-        mutationKey: ["send-code"],
-        mutationFn: sendCodeCreate,
-        onSuccess: () => {
-            const data = getValues()
-            setCookie(data.phone_number as string, JSON.stringify(data))
-            router.push(`/verify?phone_number=${data.phone_number}`)
-            console.log(data)
-        },
-        onError: (e) => {
-            if (e.message.includes('409')) {
-                toast.error(t('errors.alreadyExists'))
-                return;
-            }
-            toast.error(t('errors.response'))
-            console.log(e.message)
 
+    const { mutate: sendCode, isPending: isLoading } = useSendCodeCreate({
+        mutation: {
+            onSuccess: () => {
+                const data = getValues()
+                setCookie(data.phone_number as string, JSON.stringify(data))
+                router.push(`/verify?phone_number=${data.phone_number}`)
+                console.log(data)
+            },
+            onError: (e) => {
+                if (e.message.includes('409')) {
+                    toast.error(t('errors.alreadyExists'))
+                    return;
+                }
+                toast.error(t('errors.response'))
+                console.log(e.message)
+
+            }
         }
+
     });
     const onRegisterFormSubmit: SubmitHandler<RegisterDTO> = (data) => {
-        sendCode({ phone_number: data.phone_number })
-
+        sendCode({ data: { phone_number: data.phone_number } })
     };
 
     return <Card className="max-w-lg w-full">
@@ -66,7 +66,7 @@ export const RegisterForm = () => {
 
             <form
                 onSubmit={handleSubmit(onRegisterFormSubmit)}
-                className="flex w-full flex-col gap-2  ">
+                className="flex w-full flex-col gap-2  max-w-lg">
 
                 <Input
                     label={t('fields.name')}

@@ -23,13 +23,8 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import axios from 'axios';
-import type {
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios';
-
+import { customInstance } from './custom-instance';
+import type { ErrorType, BodyType } from './custom-instance';
 export interface Course {
   readonly id?: number;
   /**
@@ -231,32 +226,38 @@ export type VerifyCodeCreateBody = {
   iin?: string;
 };
 
-export const availableCoursesList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course[]>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/available-courses/`,options
-    );
-  }
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
+
+
+export const availableCoursesList = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Course[]>(
+      {url: `/available-courses/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getAvailableCoursesListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/available-courses/`] as const;
+    return [`/available-courses/`] as const;
     }
 
     
-export const getAvailableCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getAvailableCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getAvailableCoursesListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof availableCoursesList>>> = ({ signal }) => availableCoursesList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof availableCoursesList>>> = ({ signal }) => availableCoursesList(requestOptions, signal);
 
       
 
@@ -266,36 +267,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type AvailableCoursesListQueryResult = NonNullable<Awaited<ReturnType<typeof availableCoursesList>>>
-export type AvailableCoursesListQueryError = AxiosError<unknown>
+export type AvailableCoursesListQueryError = ErrorType<unknown>
 
 
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = AxiosError<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof availableCoursesList>>,
           TError,
           Awaited<ReturnType<typeof availableCoursesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = AxiosError<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof availableCoursesList>>,
           TError,
           Awaited<ReturnType<typeof availableCoursesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -312,31 +313,33 @@ export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availa
 
 
 export const courseLessonsList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/course-lessons/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Lesson[]>(
+      {url: `/course-lessons/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getCourseLessonsListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/course-lessons/`] as const;
+    return [`/course-lessons/`] as const;
     }
 
     
-export const getCourseLessonsListQueryOptions = <TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getCourseLessonsListQueryOptions = <TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCourseLessonsListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseLessonsList>>> = ({ signal }) => courseLessonsList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseLessonsList>>> = ({ signal }) => courseLessonsList(requestOptions, signal);
 
       
 
@@ -346,36 +349,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type CourseLessonsListQueryResult = NonNullable<Awaited<ReturnType<typeof courseLessonsList>>>
-export type CourseLessonsListQueryError = AxiosError<unknown>
+export type CourseLessonsListQueryError = ErrorType<unknown>
 
 
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = AxiosError<unknown>>(
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseLessonsList>>,
           TError,
           Awaited<ReturnType<typeof courseLessonsList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = AxiosError<unknown>>(
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseLessonsList>>,
           TError,
           Awaited<ReturnType<typeof courseLessonsList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -395,31 +398,33 @@ export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLes
  * Получение списка всех курсов
  */
 export const courseList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/course/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Course[]>(
+      {url: `/course/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getCourseListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/course/`] as const;
+    return [`/course/`] as const;
     }
 
     
-export const getCourseListQueryOptions = <TData = Awaited<ReturnType<typeof courseList>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getCourseListQueryOptions = <TData = Awaited<ReturnType<typeof courseList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCourseListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseList>>> = ({ signal }) => courseList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseList>>> = ({ signal }) => courseList(requestOptions, signal);
 
       
 
@@ -429,36 +434,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type CourseListQueryResult = NonNullable<Awaited<ReturnType<typeof courseList>>>
-export type CourseListQueryError = AxiosError<void>
+export type CourseListQueryError = ErrorType<void>
 
 
-export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = AxiosError<void>>(
+export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseList>>,
           TError,
           Awaited<ReturnType<typeof courseList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = AxiosError<void>>(
+export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseList>>,
           TError,
           Awaited<ReturnType<typeof courseList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -478,36 +483,39 @@ export function useCourseList<TData = Awaited<ReturnType<typeof courseList>>, TE
  * Создание нового курса
  */
 export const courseCreate = (
-    courseBody: CourseBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/course/`,
-      courseBody,options
-    );
-  }
+    courseBody: BodyType<CourseBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Course>(
+      {url: `/course/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: courseBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getCourseCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: CourseBody}, TContext> => {
+export const getCourseCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: BodyType<CourseBody>}, TContext> => {
     
 const mutationKey = ['courseCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof courseCreate>>, {data: CourseBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof courseCreate>>, {data: BodyType<CourseBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  courseCreate(data,axiosOptions)
+          return  courseCreate(data,requestOptions)
         }
 
         
@@ -516,15 +524,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CourseCreateMutationResult = NonNullable<Awaited<ReturnType<typeof courseCreate>>>
-    export type CourseCreateMutationBody = CourseBody
-    export type CourseCreateMutationError = AxiosError<void>
+    export type CourseCreateMutationBody = BodyType<CourseBody>
+    export type CourseCreateMutationError = ErrorType<void>
 
-    export const useCourseCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useCourseCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseCreate>>, TError,{data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof courseCreate>>,
         TError,
-        {data: CourseBody},
+        {data: BodyType<CourseBody>},
         TContext
       > => {
 
@@ -537,31 +545,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение информации о курсе по ID
  */
 export const courseRead = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/course/${id}/`,options
-    );
-  }
-
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Course>(
+      {url: `/course/${id}/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getCourseReadQueryKey = (id: number,) => {
-    return [`http://192.168.8.4:8000/api/v1/course/${id}/`] as const;
+    return [`/course/${id}/`] as const;
     }
 
     
-export const getCourseReadQueryOptions = <TData = Awaited<ReturnType<typeof courseRead>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getCourseReadQueryOptions = <TData = Awaited<ReturnType<typeof courseRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCourseReadQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseRead>>> = ({ signal }) => courseRead(id, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseRead>>> = ({ signal }) => courseRead(id, requestOptions, signal);
 
       
 
@@ -571,36 +581,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type CourseReadQueryResult = NonNullable<Awaited<ReturnType<typeof courseRead>>>
-export type CourseReadQueryError = AxiosError<void>
+export type CourseReadQueryError = ErrorType<void>
 
 
-export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = AxiosError<void>>(
+export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = ErrorType<void>>(
  id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseRead>>,
           TError,
           Awaited<ReturnType<typeof courseRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = AxiosError<void>>(
+export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = ErrorType<void>>(
  id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseRead>>,
           TError,
           Awaited<ReturnType<typeof courseRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -621,36 +631,38 @@ export function useCourseRead<TData = Awaited<ReturnType<typeof courseRead>>, TE
  */
 export const courseUpdate = (
     id: number,
-    courseBody: CourseBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course>> => {
-    
-    
-    return axios.put(
-      `http://192.168.8.4:8000/api/v1/course/${id}/`,
-      courseBody,options
-    );
-  }
+    courseBody: BodyType<CourseBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Course>(
+      {url: `/course/${id}/`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: courseBody
+    },
+      options);
+    }
+  
 
 
-
-export const getCourseUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: CourseBody}, TContext> => {
+export const getCourseUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext> => {
     
 const mutationKey = ['courseUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof courseUpdate>>, {id: number;data: CourseBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof courseUpdate>>, {id: number;data: BodyType<CourseBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  courseUpdate(id,data,axiosOptions)
+          return  courseUpdate(id,data,requestOptions)
         }
 
         
@@ -659,15 +671,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CourseUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof courseUpdate>>>
-    export type CourseUpdateMutationBody = CourseBody
-    export type CourseUpdateMutationError = AxiosError<void>
+    export type CourseUpdateMutationBody = BodyType<CourseBody>
+    export type CourseUpdateMutationError = ErrorType<void>
 
-    export const useCourseUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useCourseUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof courseUpdate>>,
         TError,
-        {id: number;data: CourseBody},
+        {id: number;data: BodyType<CourseBody>},
         TContext
       > => {
 
@@ -678,36 +690,38 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const coursePartialUpdate = (
     id: number,
-    courseBody: CourseBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Course>> => {
-    
-    
-    return axios.patch(
-      `http://192.168.8.4:8000/api/v1/course/${id}/`,
-      courseBody,options
-    );
-  }
+    courseBody: BodyType<CourseBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Course>(
+      {url: `/course/${id}/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: courseBody
+    },
+      options);
+    }
+  
 
 
-
-export const getCoursePartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: CourseBody}, TContext> => {
+export const getCoursePartialUpdateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext> => {
     
 const mutationKey = ['coursePartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof coursePartialUpdate>>, {id: number;data: CourseBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof coursePartialUpdate>>, {id: number;data: BodyType<CourseBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  coursePartialUpdate(id,data,axiosOptions)
+          return  coursePartialUpdate(id,data,requestOptions)
         }
 
         
@@ -716,15 +730,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type CoursePartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof coursePartialUpdate>>>
-    export type CoursePartialUpdateMutationBody = CourseBody
-    export type CoursePartialUpdateMutationError = AxiosError<unknown>
+    export type CoursePartialUpdateMutationBody = BodyType<CourseBody>
+    export type CoursePartialUpdateMutationError = ErrorType<unknown>
 
-    export const useCoursePartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: CourseBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useCoursePartialUpdate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof coursePartialUpdate>>, TError,{id: number;data: BodyType<CourseBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof coursePartialUpdate>>,
         TError,
-        {id: number;data: CourseBody},
+        {id: number;data: BodyType<CourseBody>},
         TContext
       > => {
 
@@ -737,27 +751,28 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Удаление курса по ID
  */
 export const courseDelete = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `http://192.168.8.4:8000/api/v1/course/${id}/`,options
-    );
-  }
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/course/${id}/`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
 
-
-export const getCourseDeleteMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+export const getCourseDeleteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof courseDelete>>, TError,{id: number}, TContext> => {
     
 const mutationKey = ['courseDelete'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -765,7 +780,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof courseDelete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  courseDelete(id,axiosOptions)
+          return  courseDelete(id,requestOptions)
         }
 
         
@@ -775,10 +790,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type CourseDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof courseDelete>>>
     
-    export type CourseDeleteMutationError = AxiosError<void>
+    export type CourseDeleteMutationError = ErrorType<void>
 
-    export const useCourseDelete = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    export const useCourseDelete = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof courseDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof courseDelete>>,
         TError,
@@ -795,36 +810,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Отправка ответов на финальный тест курса и получение оценки с возможным выдачей сертификата
  */
 export const finalTestSubmitCreate = (
-    finalTestSubmitCreateBody: FinalTestSubmitCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTestSubmitCreate200>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/final-test-submit/`,
-      finalTestSubmitCreateBody,options
-    );
-  }
+    finalTestSubmitCreateBody: BodyType<FinalTestSubmitCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTestSubmitCreate200>(
+      {url: `/final-test-submit/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: finalTestSubmitCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getFinalTestSubmitCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: FinalTestSubmitCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: FinalTestSubmitCreateBody}, TContext> => {
+export const getFinalTestSubmitCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: BodyType<FinalTestSubmitCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: BodyType<FinalTestSubmitCreateBody>}, TContext> => {
     
 const mutationKey = ['finalTestSubmitCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestSubmitCreate>>, {data: FinalTestSubmitCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestSubmitCreate>>, {data: BodyType<FinalTestSubmitCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  finalTestSubmitCreate(data,axiosOptions)
+          return  finalTestSubmitCreate(data,requestOptions)
         }
 
         
@@ -833,15 +851,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type FinalTestSubmitCreateMutationResult = NonNullable<Awaited<ReturnType<typeof finalTestSubmitCreate>>>
-    export type FinalTestSubmitCreateMutationBody = FinalTestSubmitCreateBody
-    export type FinalTestSubmitCreateMutationError = AxiosError<void>
+    export type FinalTestSubmitCreateMutationBody = BodyType<FinalTestSubmitCreateBody>
+    export type FinalTestSubmitCreateMutationError = ErrorType<void>
 
-    export const useFinalTestSubmitCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: FinalTestSubmitCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinalTestSubmitCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestSubmitCreate>>, TError,{data: BodyType<FinalTestSubmitCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof finalTestSubmitCreate>>,
         TError,
-        {data: FinalTestSubmitCreateBody},
+        {data: BodyType<FinalTestSubmitCreateBody>},
         TContext
       > => {
 
@@ -854,31 +872,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение списка всех финальных тестов
  */
 export const finalTestList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTest[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/final-test/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTest[]>(
+      {url: `/final-test/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getFinalTestListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/final-test/`] as const;
+    return [`/final-test/`] as const;
     }
 
     
-export const getFinalTestListQueryOptions = <TData = Awaited<ReturnType<typeof finalTestList>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getFinalTestListQueryOptions = <TData = Awaited<ReturnType<typeof finalTestList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getFinalTestListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof finalTestList>>> = ({ signal }) => finalTestList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof finalTestList>>> = ({ signal }) => finalTestList(requestOptions, signal);
 
       
 
@@ -888,36 +908,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type FinalTestListQueryResult = NonNullable<Awaited<ReturnType<typeof finalTestList>>>
-export type FinalTestListQueryError = AxiosError<void>
+export type FinalTestListQueryError = ErrorType<void>
 
 
-export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = AxiosError<void>>(
+export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof finalTestList>>,
           TError,
           Awaited<ReturnType<typeof finalTestList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = AxiosError<void>>(
+export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof finalTestList>>,
           TError,
           Awaited<ReturnType<typeof finalTestList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -937,36 +957,39 @@ export function useFinalTestList<TData = Awaited<ReturnType<typeof finalTestList
  * Создание нового финального теста
  */
 export const finalTestCreate = (
-    finalTestBody: FinalTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTest>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/final-test/`,
-      finalTestBody,options
-    );
-  }
+    finalTestBody: BodyType<FinalTestBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTest>(
+      {url: `/final-test/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: finalTestBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getFinalTestCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: FinalTestBody}, TContext> => {
+export const getFinalTestCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: BodyType<FinalTestBody>}, TContext> => {
     
 const mutationKey = ['finalTestCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestCreate>>, {data: FinalTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestCreate>>, {data: BodyType<FinalTestBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  finalTestCreate(data,axiosOptions)
+          return  finalTestCreate(data,requestOptions)
         }
 
         
@@ -975,15 +998,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type FinalTestCreateMutationResult = NonNullable<Awaited<ReturnType<typeof finalTestCreate>>>
-    export type FinalTestCreateMutationBody = FinalTestBody
-    export type FinalTestCreateMutationError = AxiosError<void>
+    export type FinalTestCreateMutationBody = BodyType<FinalTestBody>
+    export type FinalTestCreateMutationError = ErrorType<void>
 
-    export const useFinalTestCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinalTestCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestCreate>>, TError,{data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof finalTestCreate>>,
         TError,
-        {data: FinalTestBody},
+        {data: BodyType<FinalTestBody>},
         TContext
       > => {
 
@@ -996,31 +1019,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение информации о финальном тесте по ID
  */
 export const finalTestRead = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTest>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/final-test/${id}/`,options
-    );
-  }
-
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTest>(
+      {url: `/final-test/${id}/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getFinalTestReadQueryKey = (id: number,) => {
-    return [`http://192.168.8.4:8000/api/v1/final-test/${id}/`] as const;
+    return [`/final-test/${id}/`] as const;
     }
 
     
-export const getFinalTestReadQueryOptions = <TData = Awaited<ReturnType<typeof finalTestRead>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getFinalTestReadQueryOptions = <TData = Awaited<ReturnType<typeof finalTestRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getFinalTestReadQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof finalTestRead>>> = ({ signal }) => finalTestRead(id, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof finalTestRead>>> = ({ signal }) => finalTestRead(id, requestOptions, signal);
 
       
 
@@ -1030,36 +1055,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type FinalTestReadQueryResult = NonNullable<Awaited<ReturnType<typeof finalTestRead>>>
-export type FinalTestReadQueryError = AxiosError<void>
+export type FinalTestReadQueryError = ErrorType<void>
 
 
-export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = AxiosError<void>>(
+export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = ErrorType<void>>(
  id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof finalTestRead>>,
           TError,
           Awaited<ReturnType<typeof finalTestRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = AxiosError<void>>(
+export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = ErrorType<void>>(
  id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof finalTestRead>>,
           TError,
           Awaited<ReturnType<typeof finalTestRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1080,36 +1105,38 @@ export function useFinalTestRead<TData = Awaited<ReturnType<typeof finalTestRead
  */
 export const finalTestUpdate = (
     id: number,
-    finalTestBody: FinalTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTest>> => {
-    
-    
-    return axios.put(
-      `http://192.168.8.4:8000/api/v1/final-test/${id}/`,
-      finalTestBody,options
-    );
-  }
+    finalTestBody: BodyType<FinalTestBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<FinalTest>(
+      {url: `/final-test/${id}/`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: finalTestBody
+    },
+      options);
+    }
+  
 
 
-
-export const getFinalTestUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: FinalTestBody}, TContext> => {
+export const getFinalTestUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext> => {
     
 const mutationKey = ['finalTestUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestUpdate>>, {id: number;data: FinalTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestUpdate>>, {id: number;data: BodyType<FinalTestBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  finalTestUpdate(id,data,axiosOptions)
+          return  finalTestUpdate(id,data,requestOptions)
         }
 
         
@@ -1118,15 +1145,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type FinalTestUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof finalTestUpdate>>>
-    export type FinalTestUpdateMutationBody = FinalTestBody
-    export type FinalTestUpdateMutationError = AxiosError<void>
+    export type FinalTestUpdateMutationBody = BodyType<FinalTestBody>
+    export type FinalTestUpdateMutationError = ErrorType<void>
 
-    export const useFinalTestUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinalTestUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof finalTestUpdate>>,
         TError,
-        {id: number;data: FinalTestBody},
+        {id: number;data: BodyType<FinalTestBody>},
         TContext
       > => {
 
@@ -1137,36 +1164,38 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const finalTestPartialUpdate = (
     id: number,
-    finalTestBody: FinalTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<FinalTest>> => {
-    
-    
-    return axios.patch(
-      `http://192.168.8.4:8000/api/v1/final-test/${id}/`,
-      finalTestBody,options
-    );
-  }
+    finalTestBody: BodyType<FinalTestBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<FinalTest>(
+      {url: `/final-test/${id}/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: finalTestBody
+    },
+      options);
+    }
+  
 
 
-
-export const getFinalTestPartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: FinalTestBody}, TContext> => {
+export const getFinalTestPartialUpdateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext> => {
     
 const mutationKey = ['finalTestPartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestPartialUpdate>>, {id: number;data: FinalTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestPartialUpdate>>, {id: number;data: BodyType<FinalTestBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  finalTestPartialUpdate(id,data,axiosOptions)
+          return  finalTestPartialUpdate(id,data,requestOptions)
         }
 
         
@@ -1175,15 +1204,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type FinalTestPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof finalTestPartialUpdate>>>
-    export type FinalTestPartialUpdateMutationBody = FinalTestBody
-    export type FinalTestPartialUpdateMutationError = AxiosError<unknown>
+    export type FinalTestPartialUpdateMutationBody = BodyType<FinalTestBody>
+    export type FinalTestPartialUpdateMutationError = ErrorType<unknown>
 
-    export const useFinalTestPartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: FinalTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinalTestPartialUpdate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestPartialUpdate>>, TError,{id: number;data: BodyType<FinalTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof finalTestPartialUpdate>>,
         TError,
-        {id: number;data: FinalTestBody},
+        {id: number;data: BodyType<FinalTestBody>},
         TContext
       > => {
 
@@ -1196,27 +1225,28 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Удаление финального теста по ID
  */
 export const finalTestDelete = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `http://192.168.8.4:8000/api/v1/final-test/${id}/`,options
-    );
-  }
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/final-test/${id}/`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
 
-
-export const getFinalTestDeleteMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+export const getFinalTestDeleteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof finalTestDelete>>, TError,{id: number}, TContext> => {
     
 const mutationKey = ['finalTestDelete'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -1224,7 +1254,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof finalTestDelete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  finalTestDelete(id,axiosOptions)
+          return  finalTestDelete(id,requestOptions)
         }
 
         
@@ -1234,10 +1264,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type FinalTestDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof finalTestDelete>>>
     
-    export type FinalTestDeleteMutationError = AxiosError<void>
+    export type FinalTestDeleteMutationError = ErrorType<void>
 
-    export const useFinalTestDelete = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    export const useFinalTestDelete = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof finalTestDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof finalTestDelete>>,
         TError,
@@ -1254,36 +1284,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Отправка ответов на тест урока и получение оценки
  */
 export const lessonTestSubmitCreate = (
-    lessonTestSubmitCreateBody: LessonTestSubmitCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTestSubmitCreate200>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/lesson-test-submit/`,
-      lessonTestSubmitCreateBody,options
-    );
-  }
+    lessonTestSubmitCreateBody: BodyType<LessonTestSubmitCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LessonTestSubmitCreate200>(
+      {url: `/lesson-test-submit/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonTestSubmitCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonTestSubmitCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: LessonTestSubmitCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: LessonTestSubmitCreateBody}, TContext> => {
+export const getLessonTestSubmitCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: BodyType<LessonTestSubmitCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: BodyType<LessonTestSubmitCreateBody>}, TContext> => {
     
 const mutationKey = ['lessonTestSubmitCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, {data: LessonTestSubmitCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, {data: BodyType<LessonTestSubmitCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  lessonTestSubmitCreate(data,axiosOptions)
+          return  lessonTestSubmitCreate(data,requestOptions)
         }
 
         
@@ -1292,15 +1325,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonTestSubmitCreateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonTestSubmitCreate>>>
-    export type LessonTestSubmitCreateMutationBody = LessonTestSubmitCreateBody
-    export type LessonTestSubmitCreateMutationError = AxiosError<void>
+    export type LessonTestSubmitCreateMutationBody = BodyType<LessonTestSubmitCreateBody>
+    export type LessonTestSubmitCreateMutationError = ErrorType<void>
 
-    export const useLessonTestSubmitCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: LessonTestSubmitCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonTestSubmitCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestSubmitCreate>>, TError,{data: BodyType<LessonTestSubmitCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonTestSubmitCreate>>,
         TError,
-        {data: LessonTestSubmitCreateBody},
+        {data: BodyType<LessonTestSubmitCreateBody>},
         TContext
       > => {
 
@@ -1313,31 +1346,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение списка всех тестов к урокам
  */
 export const lessonTestList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTest[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/lesson-test/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LessonTest[]>(
+      {url: `/lesson-test/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getLessonTestListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/lesson-test/`] as const;
+    return [`/lesson-test/`] as const;
     }
 
     
-export const getLessonTestListQueryOptions = <TData = Awaited<ReturnType<typeof lessonTestList>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getLessonTestListQueryOptions = <TData = Awaited<ReturnType<typeof lessonTestList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getLessonTestListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonTestList>>> = ({ signal }) => lessonTestList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonTestList>>> = ({ signal }) => lessonTestList(requestOptions, signal);
 
       
 
@@ -1347,36 +1382,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type LessonTestListQueryResult = NonNullable<Awaited<ReturnType<typeof lessonTestList>>>
-export type LessonTestListQueryError = AxiosError<void>
+export type LessonTestListQueryError = ErrorType<void>
 
 
-export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = AxiosError<void>>(
+export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonTestList>>,
           TError,
           Awaited<ReturnType<typeof lessonTestList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = AxiosError<void>>(
+export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonTestList>>,
           TError,
           Awaited<ReturnType<typeof lessonTestList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1396,36 +1431,39 @@ export function useLessonTestList<TData = Awaited<ReturnType<typeof lessonTestLi
  * Создание нового теста
  */
 export const lessonTestCreate = (
-    lessonTestBody: LessonTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTest>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/lesson-test/`,
-      lessonTestBody,options
-    );
-  }
+    lessonTestBody: BodyType<LessonTestBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LessonTest>(
+      {url: `/lesson-test/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonTestBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonTestCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: LessonTestBody}, TContext> => {
+export const getLessonTestCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: BodyType<LessonTestBody>}, TContext> => {
     
 const mutationKey = ['lessonTestCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestCreate>>, {data: LessonTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestCreate>>, {data: BodyType<LessonTestBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  lessonTestCreate(data,axiosOptions)
+          return  lessonTestCreate(data,requestOptions)
         }
 
         
@@ -1434,15 +1472,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonTestCreateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonTestCreate>>>
-    export type LessonTestCreateMutationBody = LessonTestBody
-    export type LessonTestCreateMutationError = AxiosError<void>
+    export type LessonTestCreateMutationBody = BodyType<LessonTestBody>
+    export type LessonTestCreateMutationError = ErrorType<void>
 
-    export const useLessonTestCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonTestCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestCreate>>, TError,{data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonTestCreate>>,
         TError,
-        {data: LessonTestBody},
+        {data: BodyType<LessonTestBody>},
         TContext
       > => {
 
@@ -1455,31 +1493,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение информации о тесте по ID
  */
 export const lessonTestRead = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTest>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/lesson-test/${id}/`,options
-    );
-  }
-
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LessonTest>(
+      {url: `/lesson-test/${id}/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getLessonTestReadQueryKey = (id: number,) => {
-    return [`http://192.168.8.4:8000/api/v1/lesson-test/${id}/`] as const;
+    return [`/lesson-test/${id}/`] as const;
     }
 
     
-export const getLessonTestReadQueryOptions = <TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getLessonTestReadQueryOptions = <TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getLessonTestReadQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonTestRead>>> = ({ signal }) => lessonTestRead(id, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonTestRead>>> = ({ signal }) => lessonTestRead(id, requestOptions, signal);
 
       
 
@@ -1489,36 +1529,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type LessonTestReadQueryResult = NonNullable<Awaited<ReturnType<typeof lessonTestRead>>>
-export type LessonTestReadQueryError = AxiosError<void>
+export type LessonTestReadQueryError = ErrorType<void>
 
 
-export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = AxiosError<void>>(
+export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = ErrorType<void>>(
  id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonTestRead>>,
           TError,
           Awaited<ReturnType<typeof lessonTestRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = AxiosError<void>>(
+export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = ErrorType<void>>(
  id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonTestRead>>,
           TError,
           Awaited<ReturnType<typeof lessonTestRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1539,36 +1579,38 @@ export function useLessonTestRead<TData = Awaited<ReturnType<typeof lessonTestRe
  */
 export const lessonTestUpdate = (
     id: number,
-    lessonTestBody: LessonTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTest>> => {
-    
-    
-    return axios.put(
-      `http://192.168.8.4:8000/api/v1/lesson-test/${id}/`,
-      lessonTestBody,options
-    );
-  }
+    lessonTestBody: BodyType<LessonTestBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<LessonTest>(
+      {url: `/lesson-test/${id}/`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonTestBody
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonTestUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: LessonTestBody}, TContext> => {
+export const getLessonTestUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext> => {
     
 const mutationKey = ['lessonTestUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestUpdate>>, {id: number;data: LessonTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestUpdate>>, {id: number;data: BodyType<LessonTestBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  lessonTestUpdate(id,data,axiosOptions)
+          return  lessonTestUpdate(id,data,requestOptions)
         }
 
         
@@ -1577,15 +1619,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonTestUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonTestUpdate>>>
-    export type LessonTestUpdateMutationBody = LessonTestBody
-    export type LessonTestUpdateMutationError = AxiosError<void>
+    export type LessonTestUpdateMutationBody = BodyType<LessonTestBody>
+    export type LessonTestUpdateMutationError = ErrorType<void>
 
-    export const useLessonTestUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonTestUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonTestUpdate>>,
         TError,
-        {id: number;data: LessonTestBody},
+        {id: number;data: BodyType<LessonTestBody>},
         TContext
       > => {
 
@@ -1596,36 +1638,38 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const lessonTestPartialUpdate = (
     id: number,
-    lessonTestBody: LessonTestBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LessonTest>> => {
-    
-    
-    return axios.patch(
-      `http://192.168.8.4:8000/api/v1/lesson-test/${id}/`,
-      lessonTestBody,options
-    );
-  }
+    lessonTestBody: BodyType<LessonTestBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<LessonTest>(
+      {url: `/lesson-test/${id}/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonTestBody
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonTestPartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: LessonTestBody}, TContext> => {
+export const getLessonTestPartialUpdateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext> => {
     
 const mutationKey = ['lessonTestPartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, {id: number;data: LessonTestBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, {id: number;data: BodyType<LessonTestBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  lessonTestPartialUpdate(id,data,axiosOptions)
+          return  lessonTestPartialUpdate(id,data,requestOptions)
         }
 
         
@@ -1634,15 +1678,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonTestPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonTestPartialUpdate>>>
-    export type LessonTestPartialUpdateMutationBody = LessonTestBody
-    export type LessonTestPartialUpdateMutationError = AxiosError<unknown>
+    export type LessonTestPartialUpdateMutationBody = BodyType<LessonTestBody>
+    export type LessonTestPartialUpdateMutationError = ErrorType<unknown>
 
-    export const useLessonTestPartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: LessonTestBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonTestPartialUpdate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestPartialUpdate>>, TError,{id: number;data: BodyType<LessonTestBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonTestPartialUpdate>>,
         TError,
-        {id: number;data: LessonTestBody},
+        {id: number;data: BodyType<LessonTestBody>},
         TContext
       > => {
 
@@ -1655,27 +1699,28 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Удаление теста по ID
  */
 export const lessonTestDelete = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `http://192.168.8.4:8000/api/v1/lesson-test/${id}/`,options
-    );
-  }
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/lesson-test/${id}/`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonTestDeleteMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+export const getLessonTestDeleteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof lessonTestDelete>>, TError,{id: number}, TContext> => {
     
 const mutationKey = ['lessonTestDelete'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -1683,7 +1728,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonTestDelete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  lessonTestDelete(id,axiosOptions)
+          return  lessonTestDelete(id,requestOptions)
         }
 
         
@@ -1693,10 +1738,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type LessonTestDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof lessonTestDelete>>>
     
-    export type LessonTestDeleteMutationError = AxiosError<void>
+    export type LessonTestDeleteMutationError = ErrorType<void>
 
-    export const useLessonTestDelete = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonTestDelete = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonTestDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonTestDelete>>,
         TError,
@@ -1713,31 +1758,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение списка всех уроков
  */
 export const lessonList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/lesson/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Lesson[]>(
+      {url: `/lesson/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getLessonListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/lesson/`] as const;
+    return [`/lesson/`] as const;
     }
 
     
-export const getLessonListQueryOptions = <TData = Awaited<ReturnType<typeof lessonList>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getLessonListQueryOptions = <TData = Awaited<ReturnType<typeof lessonList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getLessonListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonList>>> = ({ signal }) => lessonList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonList>>> = ({ signal }) => lessonList(requestOptions, signal);
 
       
 
@@ -1747,36 +1794,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type LessonListQueryResult = NonNullable<Awaited<ReturnType<typeof lessonList>>>
-export type LessonListQueryError = AxiosError<void>
+export type LessonListQueryError = ErrorType<void>
 
 
-export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = AxiosError<void>>(
+export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonList>>,
           TError,
           Awaited<ReturnType<typeof lessonList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = AxiosError<void>>(
+export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonList>>,
           TError,
           Awaited<ReturnType<typeof lessonList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1796,36 +1843,39 @@ export function useLessonList<TData = Awaited<ReturnType<typeof lessonList>>, TE
  * Создание нового урока
  */
 export const lessonCreate = (
-    lessonBody: LessonBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/lesson/`,
-      lessonBody,options
-    );
-  }
+    lessonBody: BodyType<LessonBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Lesson>(
+      {url: `/lesson/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: LessonBody}, TContext> => {
+export const getLessonCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: BodyType<LessonBody>}, TContext> => {
     
 const mutationKey = ['lessonCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonCreate>>, {data: LessonBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonCreate>>, {data: BodyType<LessonBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  lessonCreate(data,axiosOptions)
+          return  lessonCreate(data,requestOptions)
         }
 
         
@@ -1834,15 +1884,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonCreateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonCreate>>>
-    export type LessonCreateMutationBody = LessonBody
-    export type LessonCreateMutationError = AxiosError<void>
+    export type LessonCreateMutationBody = BodyType<LessonBody>
+    export type LessonCreateMutationError = ErrorType<void>
 
-    export const useLessonCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonCreate>>, TError,{data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonCreate>>,
         TError,
-        {data: LessonBody},
+        {data: BodyType<LessonBody>},
         TContext
       > => {
 
@@ -1855,31 +1905,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение информации о уроке по ID
  */
 export const lessonRead = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/lesson/${id}/`,options
-    );
-  }
-
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Lesson>(
+      {url: `/lesson/${id}/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getLessonReadQueryKey = (id: number,) => {
-    return [`http://192.168.8.4:8000/api/v1/lesson/${id}/`] as const;
+    return [`/lesson/${id}/`] as const;
     }
 
     
-export const getLessonReadQueryOptions = <TData = Awaited<ReturnType<typeof lessonRead>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getLessonReadQueryOptions = <TData = Awaited<ReturnType<typeof lessonRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getLessonReadQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonRead>>> = ({ signal }) => lessonRead(id, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof lessonRead>>> = ({ signal }) => lessonRead(id, requestOptions, signal);
 
       
 
@@ -1889,36 +1941,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type LessonReadQueryResult = NonNullable<Awaited<ReturnType<typeof lessonRead>>>
-export type LessonReadQueryError = AxiosError<void>
+export type LessonReadQueryError = ErrorType<void>
 
 
-export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = AxiosError<void>>(
+export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = ErrorType<void>>(
  id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonRead>>,
           TError,
           Awaited<ReturnType<typeof lessonRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = AxiosError<void>>(
+export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = ErrorType<void>>(
  id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof lessonRead>>,
           TError,
           Awaited<ReturnType<typeof lessonRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof lessonRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1939,36 +1991,38 @@ export function useLessonRead<TData = Awaited<ReturnType<typeof lessonRead>>, TE
  */
 export const lessonUpdate = (
     id: number,
-    lessonBody: LessonBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson>> => {
-    
-    
-    return axios.put(
-      `http://192.168.8.4:8000/api/v1/lesson/${id}/`,
-      lessonBody,options
-    );
-  }
+    lessonBody: BodyType<LessonBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Lesson>(
+      {url: `/lesson/${id}/`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonBody
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: LessonBody}, TContext> => {
+export const getLessonUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext> => {
     
 const mutationKey = ['lessonUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonUpdate>>, {id: number;data: LessonBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonUpdate>>, {id: number;data: BodyType<LessonBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  lessonUpdate(id,data,axiosOptions)
+          return  lessonUpdate(id,data,requestOptions)
         }
 
         
@@ -1977,15 +2031,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonUpdate>>>
-    export type LessonUpdateMutationBody = LessonBody
-    export type LessonUpdateMutationError = AxiosError<void>
+    export type LessonUpdateMutationBody = BodyType<LessonBody>
+    export type LessonUpdateMutationError = ErrorType<void>
 
-    export const useLessonUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonUpdate>>,
         TError,
-        {id: number;data: LessonBody},
+        {id: number;data: BodyType<LessonBody>},
         TContext
       > => {
 
@@ -1996,36 +2050,38 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const lessonPartialUpdate = (
     id: number,
-    lessonBody: LessonBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Lesson>> => {
-    
-    
-    return axios.patch(
-      `http://192.168.8.4:8000/api/v1/lesson/${id}/`,
-      lessonBody,options
-    );
-  }
+    lessonBody: BodyType<LessonBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Lesson>(
+      {url: `/lesson/${id}/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: lessonBody
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonPartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: LessonBody}, TContext> => {
+export const getLessonPartialUpdateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext> => {
     
 const mutationKey = ['lessonPartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonPartialUpdate>>, {id: number;data: LessonBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonPartialUpdate>>, {id: number;data: BodyType<LessonBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  lessonPartialUpdate(id,data,axiosOptions)
+          return  lessonPartialUpdate(id,data,requestOptions)
         }
 
         
@@ -2034,15 +2090,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LessonPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof lessonPartialUpdate>>>
-    export type LessonPartialUpdateMutationBody = LessonBody
-    export type LessonPartialUpdateMutationError = AxiosError<unknown>
+    export type LessonPartialUpdateMutationBody = BodyType<LessonBody>
+    export type LessonPartialUpdateMutationError = ErrorType<unknown>
 
-    export const useLessonPartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: LessonBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonPartialUpdate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonPartialUpdate>>, TError,{id: number;data: BodyType<LessonBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonPartialUpdate>>,
         TError,
-        {id: number;data: LessonBody},
+        {id: number;data: BodyType<LessonBody>},
         TContext
       > => {
 
@@ -2055,27 +2111,28 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Удаление урока по ID
  */
 export const lessonDelete = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `http://192.168.8.4:8000/api/v1/lesson/${id}/`,options
-    );
-  }
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/lesson/${id}/`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
 
-
-export const getLessonDeleteMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+export const getLessonDeleteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof lessonDelete>>, TError,{id: number}, TContext> => {
     
 const mutationKey = ['lessonDelete'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -2083,7 +2140,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof lessonDelete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  lessonDelete(id,axiosOptions)
+          return  lessonDelete(id,requestOptions)
         }
 
         
@@ -2093,10 +2150,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type LessonDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof lessonDelete>>>
     
-    export type LessonDeleteMutationError = AxiosError<void>
+    export type LessonDeleteMutationError = ErrorType<void>
 
-    export const useLessonDelete = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    export const useLessonDelete = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof lessonDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof lessonDelete>>,
         TError,
@@ -2113,36 +2170,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Авторизация по номеру телефона и паролю
  */
 export const loginCreate = (
-    loginCreateBody: LoginCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<LoginCreate200>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/login/`,
-      loginCreateBody,options
-    );
-  }
+    loginCreateBody: BodyType<LoginCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LoginCreate200>(
+      {url: `/login/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: loginCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getLoginCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: LoginCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: LoginCreateBody}, TContext> => {
+export const getLoginCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: BodyType<LoginCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: BodyType<LoginCreateBody>}, TContext> => {
     
 const mutationKey = ['loginCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof loginCreate>>, {data: LoginCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof loginCreate>>, {data: BodyType<LoginCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  loginCreate(data,axiosOptions)
+          return  loginCreate(data,requestOptions)
         }
 
         
@@ -2151,15 +2211,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type LoginCreateMutationResult = NonNullable<Awaited<ReturnType<typeof loginCreate>>>
-    export type LoginCreateMutationBody = LoginCreateBody
-    export type LoginCreateMutationError = AxiosError<void>
+    export type LoginCreateMutationBody = BodyType<LoginCreateBody>
+    export type LoginCreateMutationError = ErrorType<void>
 
-    export const useLoginCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: LoginCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useLoginCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof loginCreate>>, TError,{data: BodyType<LoginCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof loginCreate>>,
         TError,
-        {data: LoginCreateBody},
+        {data: BodyType<LoginCreateBody>},
         TContext
       > => {
 
@@ -2172,31 +2232,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение списка всех платежей
  */
 export const paymentList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Payment[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/payment/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Payment[]>(
+      {url: `/payment/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getPaymentListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/payment/`] as const;
+    return [`/payment/`] as const;
     }
 
     
-export const getPaymentListQueryOptions = <TData = Awaited<ReturnType<typeof paymentList>>, TError = AxiosError<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getPaymentListQueryOptions = <TData = Awaited<ReturnType<typeof paymentList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPaymentListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentList>>> = ({ signal }) => paymentList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentList>>> = ({ signal }) => paymentList(requestOptions, signal);
 
       
 
@@ -2206,36 +2268,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type PaymentListQueryResult = NonNullable<Awaited<ReturnType<typeof paymentList>>>
-export type PaymentListQueryError = AxiosError<void>
+export type PaymentListQueryError = ErrorType<void>
 
 
-export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = AxiosError<void>>(
+export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentList>>,
           TError,
           Awaited<ReturnType<typeof paymentList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = AxiosError<void>>(
+export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentList>>,
           TError,
           Awaited<ReturnType<typeof paymentList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = AxiosError<void>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2255,36 +2317,39 @@ export function usePaymentList<TData = Awaited<ReturnType<typeof paymentList>>, 
  * Создание нового платежа
  */
 export const paymentCreate = (
-    paymentBody: PaymentBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Payment>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/payment/`,
-      paymentBody,options
-    );
-  }
+    paymentBody: BodyType<PaymentBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Payment>(
+      {url: `/payment/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: paymentBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getPaymentCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: PaymentBody}, TContext> => {
+export const getPaymentCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: BodyType<PaymentBody>}, TContext> => {
     
 const mutationKey = ['paymentCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentCreate>>, {data: PaymentBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentCreate>>, {data: BodyType<PaymentBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  paymentCreate(data,axiosOptions)
+          return  paymentCreate(data,requestOptions)
         }
 
         
@@ -2293,15 +2358,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PaymentCreateMutationResult = NonNullable<Awaited<ReturnType<typeof paymentCreate>>>
-    export type PaymentCreateMutationBody = PaymentBody
-    export type PaymentCreateMutationError = AxiosError<void>
+    export type PaymentCreateMutationBody = BodyType<PaymentBody>
+    export type PaymentCreateMutationError = ErrorType<void>
 
-    export const usePaymentCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
+    export const usePaymentCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentCreate>>, TError,{data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof paymentCreate>>,
         TError,
-        {data: PaymentBody},
+        {data: BodyType<PaymentBody>},
         TContext
       > => {
 
@@ -2314,31 +2379,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Получение информации о платеже по ID
  */
 export const paymentRead = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Payment>> => {
-    
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/payment/${id}/`,options
-    );
-  }
-
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Payment>(
+      {url: `/payment/${id}/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getPaymentReadQueryKey = (id: number,) => {
-    return [`http://192.168.8.4:8000/api/v1/payment/${id}/`] as const;
+    return [`/payment/${id}/`] as const;
     }
 
     
-export const getPaymentReadQueryOptions = <TData = Awaited<ReturnType<typeof paymentRead>>, TError = AxiosError<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getPaymentReadQueryOptions = <TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getPaymentReadQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRead>>> = ({ signal }) => paymentRead(id, { signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRead>>> = ({ signal }) => paymentRead(id, requestOptions, signal);
 
       
 
@@ -2348,36 +2415,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type PaymentReadQueryResult = NonNullable<Awaited<ReturnType<typeof paymentRead>>>
-export type PaymentReadQueryError = AxiosError<void>
+export type PaymentReadQueryError = ErrorType<void>
 
 
-export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = AxiosError<void>>(
+export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
  id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRead>>,
           TError,
           Awaited<ReturnType<typeof paymentRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = AxiosError<void>>(
+export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
  id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRead>>,
           TError,
           Awaited<ReturnType<typeof paymentRead>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = AxiosError<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2398,36 +2465,38 @@ export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, 
  */
 export const paymentUpdate = (
     id: number,
-    paymentBody: PaymentBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Payment>> => {
-    
-    
-    return axios.put(
-      `http://192.168.8.4:8000/api/v1/payment/${id}/`,
-      paymentBody,options
-    );
-  }
+    paymentBody: BodyType<PaymentBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Payment>(
+      {url: `/payment/${id}/`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: paymentBody
+    },
+      options);
+    }
+  
 
 
-
-export const getPaymentUpdateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: PaymentBody}, TContext> => {
+export const getPaymentUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext> => {
     
 const mutationKey = ['paymentUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentUpdate>>, {id: number;data: PaymentBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentUpdate>>, {id: number;data: BodyType<PaymentBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  paymentUpdate(id,data,axiosOptions)
+          return  paymentUpdate(id,data,requestOptions)
         }
 
         
@@ -2436,15 +2505,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PaymentUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof paymentUpdate>>>
-    export type PaymentUpdateMutationBody = PaymentBody
-    export type PaymentUpdateMutationError = AxiosError<void>
+    export type PaymentUpdateMutationBody = BodyType<PaymentBody>
+    export type PaymentUpdateMutationError = ErrorType<void>
 
-    export const usePaymentUpdate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
+    export const usePaymentUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof paymentUpdate>>,
         TError,
-        {id: number;data: PaymentBody},
+        {id: number;data: BodyType<PaymentBody>},
         TContext
       > => {
 
@@ -2455,36 +2524,38 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     
 export const paymentPartialUpdate = (
     id: number,
-    paymentBody: PaymentBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Payment>> => {
-    
-    
-    return axios.patch(
-      `http://192.168.8.4:8000/api/v1/payment/${id}/`,
-      paymentBody,options
-    );
-  }
+    paymentBody: BodyType<PaymentBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Payment>(
+      {url: `/payment/${id}/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: paymentBody
+    },
+      options);
+    }
+  
 
 
-
-export const getPaymentPartialUpdateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: PaymentBody}, TContext> => {
+export const getPaymentPartialUpdateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext> => {
     
 const mutationKey = ['paymentPartialUpdate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentPartialUpdate>>, {id: number;data: PaymentBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentPartialUpdate>>, {id: number;data: BodyType<PaymentBody>}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  paymentPartialUpdate(id,data,axiosOptions)
+          return  paymentPartialUpdate(id,data,requestOptions)
         }
 
         
@@ -2493,15 +2564,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PaymentPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof paymentPartialUpdate>>>
-    export type PaymentPartialUpdateMutationBody = PaymentBody
-    export type PaymentPartialUpdateMutationError = AxiosError<unknown>
+    export type PaymentPartialUpdateMutationBody = BodyType<PaymentBody>
+    export type PaymentPartialUpdateMutationError = ErrorType<unknown>
 
-    export const usePaymentPartialUpdate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: PaymentBody}, TContext>, axios?: AxiosRequestConfig}
+    export const usePaymentPartialUpdate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof paymentPartialUpdate>>,
         TError,
-        {id: number;data: PaymentBody},
+        {id: number;data: BodyType<PaymentBody>},
         TContext
       > => {
 
@@ -2514,27 +2585,28 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Удаление платежа по ID
  */
 export const paymentDelete = (
-    id: number, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.delete(
-      `http://192.168.8.4:8000/api/v1/payment/${id}/`,options
-    );
-  }
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/payment/${id}/`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
 
-
-export const getPaymentDeleteMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+export const getPaymentDeleteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext> => {
     
 const mutationKey = ['paymentDelete'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -2542,7 +2614,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentDelete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  paymentDelete(id,axiosOptions)
+          return  paymentDelete(id,requestOptions)
         }
 
         
@@ -2552,10 +2624,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type PaymentDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof paymentDelete>>>
     
-    export type PaymentDeleteMutationError = AxiosError<void>
+    export type PaymentDeleteMutationError = ErrorType<void>
 
-    export const usePaymentDelete = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, axios?: AxiosRequestConfig}
+    export const usePaymentDelete = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof paymentDelete>>,
         TError,
@@ -2572,36 +2644,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Создание оплаты за курс.
  */
 export const purchaseCourseCreate = (
-    purchaseCourseCreateBody: PurchaseCourseCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<PurchaseCourseCreate201>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/purchase-course/`,
-      purchaseCourseCreateBody,options
-    );
-  }
+    purchaseCourseCreateBody: BodyType<PurchaseCourseCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<PurchaseCourseCreate201>(
+      {url: `/purchase-course/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: purchaseCourseCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getPurchaseCourseCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: PurchaseCourseCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: PurchaseCourseCreateBody}, TContext> => {
+export const getPurchaseCourseCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: BodyType<PurchaseCourseCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: BodyType<PurchaseCourseCreateBody>}, TContext> => {
     
 const mutationKey = ['purchaseCourseCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof purchaseCourseCreate>>, {data: PurchaseCourseCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof purchaseCourseCreate>>, {data: BodyType<PurchaseCourseCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  purchaseCourseCreate(data,axiosOptions)
+          return  purchaseCourseCreate(data,requestOptions)
         }
 
         
@@ -2610,15 +2685,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PurchaseCourseCreateMutationResult = NonNullable<Awaited<ReturnType<typeof purchaseCourseCreate>>>
-    export type PurchaseCourseCreateMutationBody = PurchaseCourseCreateBody
-    export type PurchaseCourseCreateMutationError = AxiosError<void>
+    export type PurchaseCourseCreateMutationBody = BodyType<PurchaseCourseCreateBody>
+    export type PurchaseCourseCreateMutationError = ErrorType<void>
 
-    export const usePurchaseCourseCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: PurchaseCourseCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const usePurchaseCourseCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof purchaseCourseCreate>>, TError,{data: BodyType<PurchaseCourseCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof purchaseCourseCreate>>,
         TError,
-        {data: PurchaseCourseCreateBody},
+        {data: BodyType<PurchaseCourseCreateBody>},
         TContext
       > => {
 
@@ -2631,36 +2706,39 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * Отправка кода подтверждения на номер телефона
  */
 export const sendCodeCreate = (
-    sendCodeCreateBody: SendCodeCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/send-code/`,
-      sendCodeCreateBody,options
-    );
-  }
+    sendCodeCreateBody: BodyType<SendCodeCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/send-code/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: sendCodeCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getSendCodeCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: SendCodeCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: SendCodeCreateBody}, TContext> => {
+export const getSendCodeCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: BodyType<SendCodeCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: BodyType<SendCodeCreateBody>}, TContext> => {
     
 const mutationKey = ['sendCodeCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendCodeCreate>>, {data: SendCodeCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendCodeCreate>>, {data: BodyType<SendCodeCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  sendCodeCreate(data,axiosOptions)
+          return  sendCodeCreate(data,requestOptions)
         }
 
         
@@ -2669,15 +2747,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type SendCodeCreateMutationResult = NonNullable<Awaited<ReturnType<typeof sendCodeCreate>>>
-    export type SendCodeCreateMutationBody = SendCodeCreateBody
-    export type SendCodeCreateMutationError = AxiosError<void>
+    export type SendCodeCreateMutationBody = BodyType<SendCodeCreateBody>
+    export type SendCodeCreateMutationError = ErrorType<void>
 
-    export const useSendCodeCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: SendCodeCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useSendCodeCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendCodeCreate>>, TError,{data: BodyType<SendCodeCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof sendCodeCreate>>,
         TError,
-        {data: SendCodeCreateBody},
+        {data: BodyType<SendCodeCreateBody>},
         TContext
       > => {
 
@@ -2687,31 +2765,33 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     }
     
 export const userCertificatesList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Certificate[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/user-certificates/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Certificate[]>(
+      {url: `/user-certificates/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getUserCertificatesListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/user-certificates/`] as const;
+    return [`/user-certificates/`] as const;
     }
 
     
-export const getUserCertificatesListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getUserCertificatesListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getUserCertificatesListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCertificatesList>>> = ({ signal }) => userCertificatesList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCertificatesList>>> = ({ signal }) => userCertificatesList(requestOptions, signal);
 
       
 
@@ -2721,36 +2801,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type UserCertificatesListQueryResult = NonNullable<Awaited<ReturnType<typeof userCertificatesList>>>
-export type UserCertificatesListQueryError = AxiosError<unknown>
+export type UserCertificatesListQueryError = ErrorType<unknown>
 
 
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = AxiosError<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCertificatesList>>,
           TError,
           Awaited<ReturnType<typeof userCertificatesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = AxiosError<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCertificatesList>>,
           TError,
           Awaited<ReturnType<typeof userCertificatesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2767,31 +2847,33 @@ export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCe
 
 
 export const userCoursesList = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<UserCourse[]>> => {
     
-    
-    return axios.get(
-      `http://192.168.8.4:8000/api/v1/user-courses/`,options
-    );
-  }
-
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserCourse[]>(
+      {url: `/user-courses/`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getUserCoursesListQueryKey = () => {
-    return [`http://192.168.8.4:8000/api/v1/user-courses/`] as const;
+    return [`/user-courses/`] as const;
     }
 
     
-export const getUserCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof userCoursesList>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getUserCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, axios: axiosOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getUserCoursesListQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCoursesList>>> = ({ signal }) => userCoursesList({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCoursesList>>> = ({ signal }) => userCoursesList(requestOptions, signal);
 
       
 
@@ -2801,36 +2883,36 @@ const {query: queryOptions, axios: axiosOptions} = options ?? {};
 }
 
 export type UserCoursesListQueryResult = NonNullable<Awaited<ReturnType<typeof userCoursesList>>>
-export type UserCoursesListQueryError = AxiosError<unknown>
+export type UserCoursesListQueryError = ErrorType<unknown>
 
 
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = AxiosError<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCoursesList>>,
           TError,
           Awaited<ReturnType<typeof userCoursesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = AxiosError<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCoursesList>>,
           TError,
           Awaited<ReturnType<typeof userCoursesList>>
         > , 'initialData'
-      >, axios?: AxiosRequestConfig}
+      >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, axios?: AxiosRequestConfig}
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2850,36 +2932,39 @@ export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCourses
  * Проверка кода и регистрация нового пользователя
  */
 export const verifyCodeCreate = (
-    verifyCodeCreateBody: VerifyCodeCreateBody, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.post(
-      `http://192.168.8.4:8000/api/v1/verify-code/`,
-      verifyCodeCreateBody,options
-    );
-  }
+    verifyCodeCreateBody: BodyType<VerifyCodeCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/verify-code/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: verifyCodeCreateBody, signal
+    },
+      options);
+    }
+  
 
 
-
-export const getVerifyCodeCreateMutationOptions = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: VerifyCodeCreateBody}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: VerifyCodeCreateBody}, TContext> => {
+export const getVerifyCodeCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: BodyType<VerifyCodeCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: BodyType<VerifyCodeCreateBody>}, TContext> => {
     
 const mutationKey = ['verifyCodeCreate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyCodeCreate>>, {data: VerifyCodeCreateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyCodeCreate>>, {data: BodyType<VerifyCodeCreateBody>}> = (props) => {
           const {data} = props ?? {};
 
-          return  verifyCodeCreate(data,axiosOptions)
+          return  verifyCodeCreate(data,requestOptions)
         }
 
         
@@ -2888,15 +2973,15 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type VerifyCodeCreateMutationResult = NonNullable<Awaited<ReturnType<typeof verifyCodeCreate>>>
-    export type VerifyCodeCreateMutationBody = VerifyCodeCreateBody
-    export type VerifyCodeCreateMutationError = AxiosError<void>
+    export type VerifyCodeCreateMutationBody = BodyType<VerifyCodeCreateBody>
+    export type VerifyCodeCreateMutationError = ErrorType<void>
 
-    export const useVerifyCodeCreate = <TError = AxiosError<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: VerifyCodeCreateBody}, TContext>, axios?: AxiosRequestConfig}
+    export const useVerifyCodeCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyCodeCreate>>, TError,{data: BodyType<VerifyCodeCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationResult<
         Awaited<ReturnType<typeof verifyCodeCreate>>,
         TError,
-        {data: VerifyCodeCreateBody},
+        {data: BodyType<VerifyCodeCreateBody>},
         TContext
       > => {
 

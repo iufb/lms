@@ -5,7 +5,12 @@ module.exports = {
         output: {
             target: "./src/shared/api/generated.ts",
             client: "react-query",
-            baseUrl: "http://192.168.8.4:8000/api/v1"
+            override: {
+                mutator: {
+                    path: './src/shared/api/custom-instance.ts',
+                    name: 'customInstance',
+                },
+            },
         },
-    },
+    }
 };
