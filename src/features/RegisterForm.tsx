@@ -1,16 +1,20 @@
 'use client'
 import { Link, useRouter } from "@/i18n/navigation"
+import { sendCodeCreate } from "@/shared/api/generated"
 import { Button } from "@/shared/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
 import { Input } from "@/shared/ui/input"
+import { useMutation } from '@tanstack/react-query'
 import { setCookie } from 'cookies-next'
 import { useTranslations } from "next-intl"
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from "sonner"
 
 type RegisterDTO = {
     phone_number: string;
     full_name: string;
     password: string;
+    confirmPassword: string;
     position: string;
     workplace: string;
     iin: string;
@@ -26,12 +30,30 @@ export const RegisterForm = () => {
         formState: { errors },
     } = useForm<RegisterDTO>({ mode: 'onChange' });
     const router = useRouter()
-    const onRegisterFormSubmit: SubmitHandler<RegisterDTO> = (data) => {
-        setCookie(data.phone_number, JSON.stringify(data))
-        router.push(`/verify?phone_number=${data.phone_number}`)
-        console.log(data)
-    };
     const password = watch('password', '')
+    const { mutate: sendCode, isPending: isLoading } = useMutation({
+        mutationKey: ["send-code"],
+        mutationFn: sendCodeCreate,
+        onSuccess: () => {
+            const data = getValues()
+            setCookie(data.phone_number as string, JSON.stringify(data))
+            router.push(`/verify?phone_number=${data.phone_number}`)
+            console.log(data)
+        },
+        onError: (e) => {
+            if (e.message.includes('409')) {
+                toast.error(t('errors.alreadyExists'))
+                return;
+            }
+            toast.error(t('errors.response'))
+            console.log(e.message)
+
+        }
+    });
+    const onRegisterFormSubmit: SubmitHandler<RegisterDTO> = (data) => {
+        sendCode({ phone_number: data.phone_number })
+
+    };
 
     return <Card className="max-w-lg w-full">
         <CardHeader>
@@ -139,7 +161,7 @@ export const RegisterForm = () => {
                 />
 
 
-                <Button className="w-full mt-6">{t('buttons.submit')}</Button>
+                <Button disabled={isLoading} loading={isLoading} className="w-full mt-6">{t('buttons.submit')}</Button>
 
                 <Link className="link" href={'/login'}>{t('buttons.login')}</Link>
             </form>

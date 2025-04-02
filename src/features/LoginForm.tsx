@@ -1,11 +1,15 @@
 'use client'
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { loginCreate, LoginCreateBody } from "@/shared/api/generated";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "cookies-next";
 
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const LoginForm = () => {
     const t = useTranslations('login')
@@ -15,10 +19,30 @@ export const LoginForm = () => {
         watch,
         getValues,
         formState: { errors },
-    } = useForm({ mode: 'onChange' });
-    const onRegisterFormSubmit = (data: any) => {
-        console.log(data)
+    } = useForm<LoginCreateBody>({ mode: 'onChange' });
+    const router = useRouter()
+    const { mutate, isPending, isError } = useMutation({
+
+        mutationFn: loginCreate,
+        onSuccess: ({ data }) => {
+            setCookie('access', data.access)
+            setCookie('refresh', data.refresh)
+
+            toast.success(t('success.loginSuccess'))
+            router.push('/')
+            // Handle success
+        },
+        onError: (error) => {
+            console.error(error)
+            toast.error(t('errors.invalidCredentials'))
+            // Handle error
+        },
+
+    });
+    const onRegisterFormSubmit: SubmitHandler<LoginCreateBody> = (data) => {
+        mutate(data)
     };
+
 
     return <Card className="max-w-lg w-full">
         <CardHeader>
@@ -52,7 +76,7 @@ export const LoginForm = () => {
                 />
 
 
-                <Button className="w-full mt-6">{t('buttons.submit')}</Button>
+                <Button loading={isPending} disabled={isPending} className="w-full mt-6">{t('buttons.submit')}</Button>
 
                 <Link className="link" href={'/register'}>{t('buttons.signup')}</Link>
 

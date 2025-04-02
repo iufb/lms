@@ -1,22 +1,45 @@
 'use client'
-import { VerifyCodeCreateBody } from "@/shared/api/generated";
+import { useRouter } from "@/i18n/navigation";
+import { sendCodeCreate, verifyCodeCreate, VerifyCodeCreateBody } from "@/shared/api/generated";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/shared/ui/input-otp";
+import { useMutation } from "@tanstack/react-query";
+import { deleteCookie } from "cookies-next";
 
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type SendCodeFormProps = Omit<VerifyCodeCreateBody, 'code'>
 
 export const SendCodeForm = ({ phone_number, ...data }: SendCodeFormProps) => {
+    const tG = useTranslations()
     const t = useTranslations('verify')
     const [code, setCode] = useState('')
 
+    const router = useRouter()
+
+    const { mutate, isPending, isError } = useMutation({
+        mutationFn: verifyCodeCreate,
+        onSuccess: (data) => {
+            // Handle success
+            toast.success(tG('registration.accountCreated'))
+            deleteCookie(phone_number)
+            router.push('/login')
+        },
+        onError: (error) => {
+            // Handle error
+            console.error(error)
+            toast.error(tG('registration.errors.response'))
+        },
+    });
     const onSendCodeFormSubmit = (e: FormEvent) => {
         e.preventDefault()
+        mutate({ ...data, phone_number, code })
         console.log(code)
     }
+
 
     return <Card className="max-w-lg w-full">
         <CardHeader>
@@ -61,7 +84,7 @@ export const SendCodeForm = ({ phone_number, ...data }: SendCodeFormProps) => {
                 </div>
 
 
-                <Button disabled={code.length < 6} className="w-full mt-6">{t('submitButton')}</Button>
+                <Button disabled={code.length < 6 || isPending} loading={isPending} className="w-full mt-6">{t('submitButton')}</Button>
 
 
             </form>
@@ -76,6 +99,16 @@ const SendAgain = ({ phone_number }: { phone_number: string }) => {
     const [timer, setTimer] = useState(60)
     const t = useTranslations('verify')
 
+    const { mutate: sendCode, isPending: isLoading } = useMutation({
+        mutationKey: ["send-code"],
+        mutationFn: sendCodeCreate,
+        onSuccess: () => {
+            setTimer(60)
+        },
+        onError: (e) => {
+            console.error(e)
+        }
+    });
     useEffect(() => {
         if (timer > 0) {
             const timer = setInterval(() => {
@@ -85,7 +118,7 @@ const SendAgain = ({ phone_number }: { phone_number: string }) => {
         }
     }, [timer]);
 
-    return <Button disabled={timer > 0} variant={'link'} className="mx-auto">
+    return <Button onClick={() => sendCode({ phone_number })} disabled={timer > 0} variant={'link'} className="mx-auto">
         {t('resendText')}
         {t('resendButton')}
         {timer > 0 && t('timer', { timer })}
