@@ -1,4 +1,5 @@
 import { CreateLesson } from "@/features/CreateLesson"
+import { LessonsList } from "@/widgets/LessonsList"
 import { Metadata, ResolvingMetadata } from "next"
 
 interface Props {
@@ -19,7 +20,8 @@ export async function generateMetadata(
 }
 export default async function CoursePage({ params }: Props) {
     const { id } = await params
-    return <div className="">
+    return <div className="flex gap-2 flex-col">
         <CreateLesson />
+        <LessonsList courseId={id} />
     </div>
 }

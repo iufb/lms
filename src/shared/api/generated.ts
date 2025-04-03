@@ -45,6 +45,30 @@ export interface Course {
   is_published?: boolean;
 }
 
+export type FinalTestQuestionsRu = { [key: string]: unknown };
+
+export type FinalTestQuestionsKz = { [key: string]: unknown };
+
+export interface FinalTest {
+  readonly id?: number;
+  questions_ru: FinalTestQuestionsRu;
+  questions_kz: FinalTestQuestionsKz;
+  readonly created_at?: string;
+  course: number;
+}
+
+export type LessonTestQuestionsRu = { [key: string]: unknown };
+
+export type LessonTestQuestionsKz = { [key: string]: unknown };
+
+export interface LessonTest {
+  readonly id?: number;
+  questions_ru: LessonTestQuestionsRu;
+  questions_kz: LessonTestQuestionsKz;
+  readonly created_at?: string;
+  lesson: number;
+}
+
 export interface Lesson {
   readonly id?: number;
   /**
@@ -72,30 +96,6 @@ export interface Lesson {
   order_num: number;
 }
 
-export type FinalTestQuestionsRu = { [key: string]: unknown };
-
-export type FinalTestQuestionsKz = { [key: string]: unknown };
-
-export interface FinalTest {
-  readonly id?: number;
-  questions_ru: FinalTestQuestionsRu;
-  questions_kz: FinalTestQuestionsKz;
-  readonly created_at?: string;
-  course: number;
-}
-
-export type LessonTestQuestionsRu = { [key: string]: unknown };
-
-export type LessonTestQuestionsKz = { [key: string]: unknown };
-
-export interface LessonTest {
-  readonly id?: number;
-  questions_ru: LessonTestQuestionsRu;
-  questions_kz: LessonTestQuestionsKz;
-  readonly created_at?: string;
-  lesson: number;
-}
-
 export interface Payment {
   readonly id?: number;
   amount: string;
@@ -109,21 +109,6 @@ export interface Payment {
   course: number;
 }
 
-export interface Certificate {
-  readonly id?: number;
-  readonly issued_at?: string;
-  user: number;
-  course: number;
-}
-
-export interface UserCourse {
-  readonly id?: number;
-  has_access?: boolean;
-  readonly enrolled_at?: string;
-  user: number;
-  course: number;
-}
-
 export type FinalTestBody = FinalTest;
 
 export type LessonBody = Lesson;
@@ -133,6 +118,49 @@ export type CourseBody = Course;
 export type LessonTestBody = LessonTest;
 
 export type PaymentBody = Payment;
+
+export type AvailableCoursesList200Item = {
+  /** ID курса */
+  id?: number;
+  /** Название курса на русском */
+  title_ru?: string;
+  /** Название курса на казахском */
+  title_kz?: string;
+  /** Описание курса на русском */
+  description_ru?: string;
+  /** Описание курса на казахском */
+  description_kz?: string;
+  /** Цена курса */
+  price?: number;
+  /** Опубликован ли курс */
+  is_published?: boolean;
+};
+
+export type CourseLessonsListParams = {
+/**
+ * ID курса, для которого нужно получить уроки
+ */
+course_id: number;
+};
+
+export type CourseLessonsList200Item = {
+  /** ID урока */
+  id?: number;
+  /** Название урока на русском */
+  title_ru?: string;
+  /** Название урока на казахском */
+  title_kz?: string;
+  /** Содержание урока на русском */
+  content_ru?: string;
+  /** Содержание урока на казахском */
+  content_kz?: string;
+  /** Ссылка на медиафайл на русском */
+  media_ru?: string;
+  /** Ссылка на медиафайл на казахском */
+  media_kz?: string;
+  /** Порядковый номер урока */
+  order_num?: number;
+};
 
 /**
  * Ответы на вопросы финального теста, где ключ - ID вопроса, а значение - выбранный ответ
@@ -209,13 +237,33 @@ export type SendCodeCreateBody = {
   phone_number: string;
 };
 
+export type UserCertificatesList200Item = {
+  /** ID пользователя */
+  user?: number;
+  /** ID курса */
+  course?: number;
+  /** Дата выдачи сертификата */
+  issued_at?: string;
+};
+
+export type UserCoursesList200Item = {
+  /** ID пользователя */
+  user?: number;
+  /** ID курса */
+  course?: number;
+  /** Есть ли доступ */
+  has_access?: boolean;
+  /** Дата зачисления */
+  enrolled_at?: string;
+};
+
 export type VerifyCodeCreateBody = {
   /** Номер телефона */
   phone_number: string;
   /** Код подтверждения из SMS */
   code: string;
-  /** ФИО или имя пользователя */
-  full_name?: string;
+  /** ФИО пользователя */
+  full_name: string;
   /** Пароль пользователя */
   password: string;
   /** Должность */
@@ -230,13 +278,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
+/**
+ * Получение списка доступных для публикации курсов.
+ */
 export const availableCoursesList = (
     
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<Course[]>(
+      return customInstance<AvailableCoursesList200Item[]>(
       {url: `/available-courses/`, method: 'GET', signal
     },
       options);
@@ -248,7 +299,7 @@ export const getAvailableCoursesListQueryKey = () => {
     }
 
     
-export const getAvailableCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAvailableCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -267,10 +318,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AvailableCoursesListQueryResult = NonNullable<Awaited<ReturnType<typeof availableCoursesList>>>
-export type AvailableCoursesListQueryError = ErrorType<unknown>
+export type AvailableCoursesListQueryError = ErrorType<void>
 
 
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof availableCoursesList>>,
@@ -280,7 +331,7 @@ export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availa
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof availableCoursesList>>,
@@ -290,12 +341,12 @@ export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availa
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<unknown>>(
+export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availableCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof availableCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -312,34 +363,38 @@ export function useAvailableCoursesList<TData = Awaited<ReturnType<typeof availa
 
 
 
+/**
+ * Получение списка уроков для конкретного курса.
+ */
 export const courseLessonsList = (
-    
+    params: CourseLessonsListParams,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<Lesson[]>(
-      {url: `/course-lessons/`, method: 'GET', signal
+      return customInstance<CourseLessonsList200Item[]>(
+      {url: `/course-lessons/`, method: 'GET',
+        params, signal
     },
       options);
     }
   
 
-export const getCourseLessonsListQueryKey = () => {
-    return [`/course-lessons/`] as const;
+export const getCourseLessonsListQueryKey = (params: CourseLessonsListParams,) => {
+    return [`/course-lessons/`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getCourseLessonsListQueryOptions = <TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCourseLessonsListQueryOptions = <TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<void>>(params: CourseLessonsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCourseLessonsListQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getCourseLessonsListQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseLessonsList>>> = ({ signal }) => courseLessonsList(requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof courseLessonsList>>> = ({ signal }) => courseLessonsList(params, requestOptions, signal);
 
       
 
@@ -349,11 +404,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CourseLessonsListQueryResult = NonNullable<Awaited<ReturnType<typeof courseLessonsList>>>
-export type CourseLessonsListQueryError = ErrorType<unknown>
+export type CourseLessonsListQueryError = ErrorType<void>
 
 
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<void>>(
+ params: CourseLessonsListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseLessonsList>>,
           TError,
@@ -362,8 +417,8 @@ export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLes
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<void>>(
+ params: CourseLessonsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof courseLessonsList>>,
           TError,
@@ -372,17 +427,17 @@ export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLes
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<void>>(
+ params: CourseLessonsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCourseLessonsList<TData = Awaited<ReturnType<typeof courseLessonsList>>, TError = ErrorType<void>>(
+ params: CourseLessonsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof courseLessonsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCourseLessonsListQueryOptions(options)
+  const queryOptions = getCourseLessonsListQueryOptions(params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -2764,13 +2819,16 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions);
     }
     
+/**
+ * Получение списка сертификатов пользователя.
+ */
 export const userCertificatesList = (
     
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<Certificate[]>(
+      return customInstance<UserCertificatesList200Item[]>(
       {url: `/user-certificates/`, method: 'GET', signal
     },
       options);
@@ -2782,7 +2840,7 @@ export const getUserCertificatesListQueryKey = () => {
     }
 
     
-export const getUserCertificatesListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getUserCertificatesListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -2801,10 +2859,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserCertificatesListQueryResult = NonNullable<Awaited<ReturnType<typeof userCertificatesList>>>
-export type UserCertificatesListQueryError = ErrorType<unknown>
+export type UserCertificatesListQueryError = ErrorType<void>
 
 
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCertificatesList>>,
@@ -2814,7 +2872,7 @@ export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCe
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCertificatesList>>,
@@ -2824,12 +2882,12 @@ export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCe
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<unknown>>(
+export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCertificatesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificatesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -2846,13 +2904,16 @@ export function useUserCertificatesList<TData = Awaited<ReturnType<typeof userCe
 
 
 
+/**
+ * Получение списка курсов пользователя, к которым у него есть доступ.
+ */
 export const userCoursesList = (
     
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
-      return customInstance<UserCourse[]>(
+      return customInstance<UserCoursesList200Item[]>(
       {url: `/user-courses/`, method: 'GET', signal
     },
       options);
@@ -2864,7 +2925,7 @@ export const getUserCoursesListQueryKey = () => {
     }
 
     
-export const getUserCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getUserCoursesListQueryOptions = <TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -2883,10 +2944,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type UserCoursesListQueryResult = NonNullable<Awaited<ReturnType<typeof userCoursesList>>>
-export type UserCoursesListQueryError = ErrorType<unknown>
+export type UserCoursesListQueryError = ErrorType<void>
 
 
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<void>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCoursesList>>,
@@ -2896,7 +2957,7 @@ export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCourses
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof userCoursesList>>,
@@ -2906,12 +2967,12 @@ export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCourses
       >, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<unknown>>(
+export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCoursesList>>, TError = ErrorType<void>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCoursesList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

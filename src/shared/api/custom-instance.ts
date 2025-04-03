@@ -1,17 +1,34 @@
 
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { getCookie } from 'cookies-next';
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: 'http://192.168.8.4:8000/api/v1' }); // use your own URL here or environment variable
 
 //TODO
 
-AXIOS_INSTANCE.interceptors.response.use(
+const publicRoutes = ['send-code', 'login', 'verify-code']
+AXIOS_INSTANCE.interceptors.request.use((config) => {
+    if (config.url) {
+        publicRoutes.forEach(route => {
+            if (config.url?.includes(route)) {
+                return config
+            }
+        })
+
+    }
+    config.headers = config.headers || {};
+    config.headers['Authorization'] = `Bearer ${getCookie('access')}`; // or call a function to get the token
+
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+}); AXIOS_INSTANCE.interceptors.response.use(
     (response) => response,
     (error) => {
-        // if (error.response?.status === 401) {
-        //     console.warn("Unauthorized! Redirecting to login...");
-        //     window.location.href = "/ru/login"; // Redirect to login page
-        // }
+        if (error.response?.status === 401) {
+            console.warn("Unauthorized! Redirecting to login...");
+            window.location.href = "/ru/login"; // Redirect to login page
+        }
         return Promise.reject(error);
     }
 )
