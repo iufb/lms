@@ -2,6 +2,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { JoditEditorComponent } from "@/shared/ui/jodit";
+import { Label } from "@/shared/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Controller, useForm } from "react-hook-form";
 
@@ -21,6 +22,7 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
 
+        <Label className="text-xl">Изменить данные урока</Label>
         <Button className="w-fit self-end">Изменить</Button>
         <Tabs defaultValue="RU">
             <TabsList className="w-1/2 mx-auto">

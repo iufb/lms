@@ -1,3 +1,4 @@
+import { CreateTest } from "@/features/CreateTest"
 import { EditLessonForm } from "@/features/EditLessonForm"
 import { Metadata, ResolvingMetadata } from "next"
 
@@ -19,8 +20,9 @@ export async function generateMetadata(
 }
 export default async function CoursePage({ params }: Props) {
     const { id, lesson } = await params
-    return <div className="">
+    return <div className="flex flex-col gap-3">
         <EditLessonForm lessonId={lesson} />
+        <CreateTest />
 
     </div>
 }
