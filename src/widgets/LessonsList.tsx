@@ -10,10 +10,10 @@ interface LessonsListProps {
     courseId: number
 }
 export const LessonsList = ({ courseId }: LessonsListProps) => {
-    const { data, isLoading, isError } = useCourseLessonsList({ course_id: courseId })
+    const { data, isLoading, error } = useCourseLessonsList({ course_id: courseId })
     return <ShowFetchContent<CourseLessonsList200Item>
         data={data}
-        isError={isError}
+        isError={error}
         isLoading={isLoading}
         loader={Array.from({ length: 5 }).map((_, id) => <Skeleton key={id} className="w-full rounded-lg h-10" />)}
         error={<div>error</div>}
