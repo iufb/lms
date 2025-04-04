@@ -2,7 +2,7 @@
 import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { getCookie } from 'cookies-next';
 
-export const AXIOS_INSTANCE = Axios.create({ baseURL: 'http://192.168.8.4:8000/api/v1' }); // use your own URL here or environment variable
+export const AXIOS_INSTANCE = Axios.create({ baseURL: 'https://1178.foxminded.space/api/v1' }); // use your own URL here or environment variable
 
 //TODO
 

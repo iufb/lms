@@ -1,19 +1,69 @@
 'use client'
+import { generatePresignedUrlCreate, Lesson, useLessonCreate } from "@/shared/api/generated";
+import { uploadToS3 } from "@/shared/lib/utils";
+import { queryClient } from "@/shared/providers/query.provider";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { JoditEditorComponent } from "@/shared/ui/jodit";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Controller, useForm } from "react-hook-form";
-
-export const CreateLesson = () => {
+import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+const required = 'Обязательное поле'
+type LessonDTO = Omit<Lesson, 'media_kz' | 'media_ru'> & { media_kz: FileList, media_ru: FileList }
+type presignedUrlResponse = {
+    "upload_url": string
+    "file_key": string
+}
+export const CreateLesson = ({ id }: { id: number }) => {
     const { control, handleSubmit,
         register,
         watch,
         getValues,
         formState: { errors },
-    } = useForm()
-    const onCreate = (data: any) => {
+    } = useForm<LessonDTO>()
+
+    const { mutate } = useLessonCreate({
+        mutation: {
+            onSuccess: () => {
+                toast.success('Урок создан')
+                queryClient.invalidateQueries({ queryKey: ['/course-lessons/', { course_id: id }] })
+            },
+            onError: () => {
+                toast.error(`Ошибка при создании урока`)
+            }
+        }
+    })
+    const [loading, setLoading] = useState(false)
+    const onCreate: SubmitHandler<LessonDTO> = async (data) => {
+        setLoading(true)
+        const media_ru = data.media_ru[0]
+        const media_kz = data.media_kz[0]
+        const uploadedUrls = { media_ru: '', media_kz: '' }
+        if (media_ru) {
+            const url = await generatePresignedUrlCreate({ file_name: media_ru.name, content_type: media_ru.type }) as presignedUrlResponse
+            const isOk = await uploadToS3(url.upload_url, media_ru)
+            if (isOk) {
+                toast.success(`Видео  ${media_ru.name} загружено`)
+                uploadedUrls.media_ru = url.file_key
+            } else {
+                toast.error(`Ошибка загрузки видео ${media_ru.name}`)
+            }
+        }
+        if (media_kz) {
+            const url = await generatePresignedUrlCreate({ file_name: media_kz.name, content_type: media_kz.type }) as presignedUrlResponse
+            const isOk = await uploadToS3(url.upload_url, media_kz)
+            if (isOk) {
+                toast.success(`Видео  ${media_kz.name} загружено`)
+                uploadedUrls.media_kz = url.file_key
+            } else {
+                toast.error(`Ошибка загрузки видео ${media_kz.name}`)
+            }
+        }
+
+        mutate({ data: { ...data, ...uploadedUrls } })
+
+
         console.log(data)
     };
 
@@ -25,30 +75,21 @@ export const CreateLesson = () => {
             <SheetHeader>
                 <SheetTitle>Создание урока</SheetTitle>
                 <SheetDescription>
-                    Здесь Вы можете создать урок для курса
+                    Здесь Вы можете создать урок для курса. Чтобы продолжить заполните поля для 2-ух языков.
                 </SheetDescription>
             </SheetHeader>
-            <form onSubmit={handleSubmit(onCreate)} className="flex flex-col gap-2 px-1 h-full overflow-auto">
+            <form onSubmit={handleSubmit(onCreate)} className="flex flex-col gap-2 px-1 lg:px-3 h-full overflow-auto">
 
                 <Button className="w-fit self-end">Создать</Button>
-                <Tabs defaultValue="RU" className="flex-1 ">
-                    <TabsList className="w-1/2 mx-auto">
-                        <TabsTrigger value="RU">RU</TabsTrigger>
-                        <TabsTrigger value="KZ">KZ</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="RU" className="flex flex-col gap-2">
+                <h3>Редактирование (Русский) </h3>
+                <Input {...register('title_ru', { required })} error={errors.title_ru?.message} label="Название на русском" />
+                <Input {...register('media_ru', { required })} error={errors.media_ru?.message} label="Видео" type='file' />
+                <Controller control={control} rules={{ required }} name={'content_ru'} render={({ field: { value, onChange } }) => <JoditEditorComponent error={errors.content_ru?.message} label="Содержание на русском" value={value} onChange={(value) => onChange(value)} />} />
+                <h3>Редактирование (Казахский)</h3>
+                <Input {...register('title_kz', { required })} error={errors.title_kz?.message} label="Название на казахском" />
+                <Input {...register('media_kz', { required })} error={errors.media_kz?.message} label="Видео" type='file' />
+                <Controller control={control} name={'content_kz'} rules={{ required }} render={({ field: { value, onChange } }) => <JoditEditorComponent error={errors.content_kz?.message} label="Содержание на казахском" value={value} onChange={(value) => onChange(value)} />} />
 
-                        <Input {...register('title_ru')} label="Название на русском" />
-                        <Input {...register('media_ru')} label="Видео" type='file' />
-                        <Controller control={control} name={'content_ru'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на русском" value={value} onChange={(value) => onChange(value)} />} />
-                    </TabsContent>
-                    <TabsContent value="KZ" className="flex flex-col gap-2">
-                        <Input {...register('title_kz')} label="Название на казахском" />
-                        <Input {...register('media_kz')} label="Видео" type='file' />
-                        <Controller control={control} name={'content_kz'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на казахском" value={value} onChange={(value) => onChange(value)} />} />
-
-                    </TabsContent>
-                </Tabs>
             </form>
 
         </SheetContent>

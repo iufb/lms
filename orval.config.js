@@ -1,7 +1,7 @@
 
 module.exports = {
     api: {
-        input: "http://192.168.8.4:8000/api/v1/swagger/?format=openapi",
+        input: "https://1178.foxminded.space/api/v1/swagger/?format=openapi",
         output: {
             target: "./src/shared/api/generated.ts",
             client: "react-query",

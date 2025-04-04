@@ -21,7 +21,7 @@ export async function generateMetadata(
 export default async function CoursePage({ params }: Props) {
     const { id } = await params
     return <div className="flex gap-2 flex-col">
-        <CreateLesson />
+        <CreateLesson id={id} />
         <LessonsList courseId={id} />
     </div>
 }

@@ -6,7 +6,7 @@ import { Label } from "@/shared/ui/label"
 function Input({ className, label, type, error, ...props }: React.ComponentProps<"input"> & { error?: string, label?: string }) {
     return (
         <div>
-            <Label className="ml-2 my-1.5" htmlFor={props.id}>{label}</Label>
+            <Label className={cn('ml-2 my-1.5', error && 'text-red-500')} htmlFor={props.id}>{label}</Label>
             <input
                 type={type}
                 data-slot="input"
