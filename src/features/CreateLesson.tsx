@@ -4,7 +4,7 @@ import { uploadToS3 } from "@/shared/lib/utils";
 import { queryClient } from "@/shared/providers/query.provider";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { JoditEditorComponent } from "@/shared/ui/jodit";
+import JoditEditorComponent from "@/shared/ui/jodit";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/sheet";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";

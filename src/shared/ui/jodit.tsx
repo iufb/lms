@@ -1,9 +1,13 @@
 "use client";
-import JoditEditor from "jodit-react";
+
 import { useMemo } from "react";
 
 import { cn } from "@/shared/lib/utils";
+import dynamic from "next/dynamic";
 import { Label } from "./label";
+const JoditEditor = dynamic(() => import("jodit-react"), {
+    ssr: false,
+});
 
 interface JoditEditorProps {
     value?: string;
@@ -12,7 +16,7 @@ interface JoditEditorProps {
     label?: string;
 }
 
-export const JoditEditorComponent = ({ value, error, onChange, label }: JoditEditorProps) => {
+const JoditEditorComponent = ({ value, error, onChange, label }: JoditEditorProps) => {
     const config = useMemo(
         () => ({
             readonly: false,
@@ -40,3 +44,4 @@ export const JoditEditorComponent = ({ value, error, onChange, label }: JoditEdi
     );
 };
 
+export default JoditEditorComponent

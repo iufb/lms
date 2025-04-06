@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { JoditEditorComponent } from "@/shared/ui/jodit";
+import JoditEditorComponent from "@/shared/ui/jodit";
 import { Label } from "@/shared/ui/label";
 import { Controller, useForm } from "react-hook-form";
 

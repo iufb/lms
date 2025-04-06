@@ -115,6 +115,11 @@
         @apply border-border outline-ring/50;
     }
 
+
+    h1 {
+        font-size: min(14vw, 36px)
+    }
+
     h3 {
         font-size: min(10vw, 24px)
     }
@@ -140,6 +145,10 @@
 
 @utility link {
     @apply text-sm text-center my-3 dark:text-slate-300 text-slate-900
+}
+
+@utility stack {
+    @apply flex flex-col
 }
 
 @utility trigger {

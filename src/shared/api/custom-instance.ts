@@ -27,7 +27,7 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
     (error) => {
         if (error.response?.status === 401) {
             console.warn("Unauthorized! Redirecting to login...");
-            window.location.href = "/ru/login"; // Redirect to login page
+            // window.location.href = "/ru/login"; // Redirect to login page
         }
         return Promise.reject(error);
     }

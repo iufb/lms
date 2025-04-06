@@ -1,9 +1,11 @@
 import { routing } from '@/i18n/routing';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { Geist } from 'next/font/google';
 import { notFound } from 'next/navigation';
 
 import { ThemeProvider } from '@/shared/providers/theme.provider';
 import "../globals.css";
+const geist = Geist({ subsets: ['latin'] })
 
 export default async function LocaleLayout({
     children,
@@ -20,7 +22,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body>
+            <body className={geist.className}>
                 <NextIntlClientProvider>
                     <ThemeProvider
                         attribute="class"

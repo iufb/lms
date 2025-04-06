@@ -1,18 +1,21 @@
 import { AppSidebar } from "@/shared/ui/app-sidebar";
+
 import { Separator } from "@/shared/ui/separator";
 import {
     SidebarInset,
     SidebarProvider,
     SidebarTrigger,
 } from "@/shared/ui/sidebar";
+import { Geist } from 'next/font/google';
 import { ReactNode } from "react";
-
-
 import '../globals.css';
+
+
+const geist = Geist({ subsets: ['latin'] })
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return <html lang="ru">
-        <body>
+        <body className={geist.className}>
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>

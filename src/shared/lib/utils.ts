@@ -23,4 +23,6 @@ export async function uploadToS3(url: string, file: File): Promise<boolean> {
     }
 }
 
-
+export function getLocalized<T extends Record<string, any>>(obj: T, key: string, locale: string) {
+    return obj[`${key}_${locale}`] ?? obj[`${key}_ru`]; // fallback to Russian
+}
