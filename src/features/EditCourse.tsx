@@ -3,10 +3,12 @@
 import { Course, useCourseUpdate } from "@/shared/api/generated"
 import { queryClient } from "@/shared/providers/query.provider"
 import { Button } from "@/shared/ui/button"
+import { Checkbox } from "@/shared/ui/checkbox"
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/shared/ui/drawer"
 import { Input } from "@/shared/ui/input"
+import { Label } from "@/shared/ui/label"
 import { Textarea } from "@/shared/ui/textarea"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 interface EditCourseProps {
@@ -37,6 +39,7 @@ const required = 'Обязательное поле'
 
 const Form = ({ data }: EditCourseProps) => {
     const {
+        control,
         handleSubmit,
         register,
         watch,
@@ -56,6 +59,7 @@ const Form = ({ data }: EditCourseProps) => {
         }
     })
     const onSubmit: SubmitHandler<Course> = (data) => {
+        console.log('submit')
         if (!data.id) {
             return;
         }
@@ -68,6 +72,11 @@ const Form = ({ data }: EditCourseProps) => {
         <Textarea {...register('description_ru', { required: 'Обязательное поле' })} label="Описание на русском" />
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
         <Input {...register('price', { required: 'Обязательное поле' })} type="number" label="Цена" />
+        <Controller name="is_published" rules={{ required }} control={control} render={({ field: { value, onChange } }) =>
+            <Label className="my-2">
+                <Checkbox checked={value} onCheckedChange={c => onChange(c)} />Опубликован</Label>
+        } />
+        {errors.is_published?.message && <span className="text-red-500">{errors.is_published.message}</span>}
         <Button disabled={isPending} loading={isPending}>Изменить</Button>
         <DrawerClose asChild>
             <Button variant="outline">Отмена</Button>

@@ -3,7 +3,7 @@ import { default as axios, default as Axios, AxiosError, AxiosRequestConfig } fr
 import { deleteCookie, getCookie } from 'cookies-next';
 import { setCookie } from 'cookies-next/client';
 
-const url = 'https://1178.foxminded.space/api/v1'
+export const url = 'https://1178.foxminded.space/api/v1'
 export const AXIOS_INSTANCE = Axios.create({ baseURL: url }); // use your own URL here or environment variable
 
 //TODO

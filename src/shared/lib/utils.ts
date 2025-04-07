@@ -13,7 +13,7 @@ export async function uploadToS3(url: string, file: File): Promise<boolean> {
             method: 'PUT',
             body: file,
             headers: {
-                // 'Content-Type': file.type,
+                'Content-Type': file.type,
             },
         });
 
