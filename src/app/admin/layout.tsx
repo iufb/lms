@@ -6,16 +6,16 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/shared/ui/sidebar";
-import { Geist } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import { ReactNode } from "react";
 import '../globals.css';
 
 
-const geist = Geist({ subsets: ['latin'] })
+const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return <html lang="ru">
-        <body className={geist.className}>
+        <body className={manrope.className}>
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>

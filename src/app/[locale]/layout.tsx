@@ -1,11 +1,11 @@
 import { routing } from '@/i18n/routing';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { Geist } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import { notFound } from 'next/navigation';
 
 import { ThemeProvider } from '@/shared/providers/theme.provider';
 import "../globals.css";
-const geist = Geist({ subsets: ['latin'] })
+const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export default async function LocaleLayout({
     children,
@@ -22,7 +22,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={geist.className}>
+            <body className={manrope.className}>
                 <NextIntlClientProvider>
                     <ThemeProvider
                         attribute="class"
