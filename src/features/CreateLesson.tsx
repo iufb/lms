@@ -31,7 +31,7 @@ export const CreateLesson = ({ id }: { id: number }) => {
             },
             onError: () => {
                 toast.error(`Ошибка при создании урока`)
-            }
+            },
         }
     })
     const [loading, setLoading] = useState(false)
@@ -40,7 +40,7 @@ export const CreateLesson = ({ id }: { id: number }) => {
         const media_ru = data.media_ru[0]
         const media_kz = data.media_kz[0]
         const uploadedUrls = { media_ru: '', media_kz: '' }
-        if (media_ru) {
+        if (media_ru && !uploadedUrls.media_ru) {
             const url = await generatePresignedUrlCreate({ file_name: media_ru.name, content_type: media_ru.type }) as presignedUrlResponse
             const isOk = await uploadToS3(url.upload_url, media_ru)
             if (isOk) {
@@ -50,7 +50,7 @@ export const CreateLesson = ({ id }: { id: number }) => {
                 toast.error(`Ошибка загрузки видео ${media_ru.name}`)
             }
         }
-        if (media_kz) {
+        if (media_kz && !uploadedUrls.media_kz) {
             const url = await generatePresignedUrlCreate({ file_name: media_kz.name, content_type: media_kz.type }) as presignedUrlResponse
             const isOk = await uploadToS3(url.upload_url, media_kz)
             if (isOk) {

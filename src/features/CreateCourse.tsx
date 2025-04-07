@@ -13,8 +13,10 @@ export function CreateCourse() {
 
     return (
         <Drawer>
-            <DrawerTrigger asChild>
-                <Button className="w-fit" variant="default">Создать курс</Button>
+            <DrawerTrigger asChild className="trigger self-end">
+                <span>
+                    Создать курс
+                </span>
             </DrawerTrigger>
             <DrawerContent>
                 <DrawerHeader>

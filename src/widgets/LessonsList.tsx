@@ -25,7 +25,8 @@ export const LessonsList = ({ courseId }: LessonsListProps) => {
             </CardHeader>
             <Separator />
             <CardContent>
-                {data?.map(l =>
+                {/* @ts-ignore */}
+                {data?.sort((a, b) => a?.order_num - b?.order_num).map(l =>
                     <React.Fragment key={l.id}>
                         <Link href={`${courseId}/lesson/${l.id}`} className="px-3 py-2 flex items-center gap-2 " >
                             <OrderNumber order={l.order_num} />

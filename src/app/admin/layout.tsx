@@ -28,7 +28,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                             />
                         </div>
                     </header>
-                    <div className="p-2">
+                    <div className="px-4 py-2">
                         {children}
                     </div>
                 </SidebarInset>
