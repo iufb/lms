@@ -7,9 +7,9 @@ const intlMiddleware = createMiddleware(routing);
 async function adminMiddleware(req: NextRequest) {
     const token = req.cookies.get("access");
     const { pathname } = req.nextUrl;
-    if (!token) {
-        return NextResponse.redirect(new URL(`/ru/login`, req.url))
-    }
+    // if (!token) {
+    //     return NextResponse.redirect(new URL(`/ru/login`, req.url))
+    // }
     // const isAdmin = await rIsAdmin(token.value)
     // if (!isAdmin && pathname == '/admin') {
     //     return NextResponse.redirect(new URL(`/ru/login`, req.url))

@@ -1,8 +1,10 @@
 
-import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { getCookie } from 'cookies-next';
+import { default as axios, default as Axios, AxiosError, AxiosRequestConfig } from 'axios';
+import { deleteCookie, getCookie } from 'cookies-next';
+import { setCookie } from 'cookies-next/client';
 
-export const AXIOS_INSTANCE = Axios.create({ baseURL: 'https://1178.foxminded.space/api/v1' }); // use your own URL here or environment variable
+const url = 'https://1178.foxminded.space/api/v1'
+export const AXIOS_INSTANCE = Axios.create({ baseURL: url }); // use your own URL here or environment variable
 
 //TODO
 
@@ -22,16 +24,38 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
     return config;
 }, (error) => {
     return Promise.reject(error);
-}); AXIOS_INSTANCE.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            console.warn("Unauthorized! Redirecting to login...");
-            // window.location.href = "/ru/login"; // Redirect to login page
+
+});
+
+AXIOS_INSTANCE.interceptors.response.use(
+    response => response, // Directly return successful responses.
+    async error => {
+        const originalRequest = error.config;
+        if (error.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
+            try {
+                const refreshToken = getCookie('refresh'); // Retrieve the stored refresh token.
+                // Make a request to your auth server to refresh the token.
+                const response = await axios.post(`${url}/token/refresh/`, {
+                    refresh: refreshToken,
+                });
+                const { access } = response.data;
+                // Store the new access and refresh tokens.
+                setCookie('access', access);
+                // Update the authorization header with the new access token.
+                AXIOS_INSTANCE.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+                return AXIOS_INSTANCE(originalRequest); // Retry the original request with the new access token.
+            } catch (refreshError) {
+                // Handle refresh token errors by clearing stored tokens and redirecting to the login page.
+                console.error('Token refresh failed:', refreshError);
+                deleteCookie('access');
+                deleteCookie('refresh');
+                // window.location.href = '/ru/login';
+                return Promise.reject(refreshError);
+            }
         }
-        return Promise.reject(error);
-    }
-)
+        return Promise.reject(error); // For all other errors, return the error as is.
+    })
 
 // add a second `options` argument here if you want to pass extra options to each generated query
 export const customInstance = <T>(
