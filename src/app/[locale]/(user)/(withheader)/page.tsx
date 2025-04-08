@@ -1,5 +1,4 @@
 import { AvaliableCoursesList } from '@/widgets/AvaliableCoursesList';
-import { TEst } from '@/widgets/Test';
 import { Metadata, ResolvingMetadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
@@ -18,7 +17,6 @@ export default function HomePage() {
         <section className='flex flex-col gap-5'>
             <h1 className='text-center text-4xl font-semibold tracking-tight sm:text-5xl'>{t('title')}</h1>
             <p className='mx-auto mt-6 max-w-3xl text-center leading-7 text-muted-foreground sm:text-lg'>{t('subtitle')}</p>
-            <TEst />
             <AvaliableCoursesList />
         </section>
     );

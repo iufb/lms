@@ -24,16 +24,23 @@ export const LoginForm = () => {
     const localeRouter = useLocaleRouter()
     const { mutate, isPending, isError } = useLoginCreate({
         mutation: {
-            onSuccess: (data) => {
+            onSuccess: async (data) => {
                 setCookie('access', data.access)
                 setCookie('refresh', data.refresh)
-                //TODO
+
+                await fetch('/api/auth/set-cookies', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        role: data.role,
+                    }),
+                });
 
                 toast.success(t('success.loginSuccess'))
+                console.log(data)
 
-                if (data.phone_number == '+77773223232') {
-
-                    setCookie('role', 'Админ')
+                if (data.role == 'admin') {
                     router.push('/admin')
                 } else {
                     localeRouter.push('/')

@@ -410,6 +410,8 @@ export type LoginCreate200 = {
   full_name?: string;
   /** Номер телефона */
   phone_number?: string;
+  /** role */
+  role?: string;
 };
 
 export type PurchaseCourseCreateBody = {
