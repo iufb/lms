@@ -1,3 +1,28 @@
+import { LessonTestAnswerKz, LessonTestQuestionsKz } from "@/shared/api/generated";
+import { LessonTestAnswerRu, LessonTestQuestionsRu } from "@/shared/api/generated1";
+
+export type deserializeQuestionsAndAnswersInput = {
+    questions_ru: LessonTestQuestionsRu,
+    questions_kz: LessonTestQuestionsKz
+    answer_ru: LessonTestAnswerRu,
+    answer_kz: LessonTestAnswerKz
+}
+export type Question = {
+    qRu: string,
+    qKz: string,
+    '1ru': string,
+    '2ru': string,
+    '3ru': string,
+    '4ru': string,
+    '1kz': string,
+    '2kz': string,
+    '3kz': string,
+    '4kz': string,
+
+}
+export type Answer = {
+    ru: number | null, kz: number | null
+}
 export type presignedUrlResponse = {
     "upload_url": string
     "file_key": string

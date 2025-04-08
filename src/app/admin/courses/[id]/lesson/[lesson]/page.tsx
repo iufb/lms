@@ -22,7 +22,7 @@ export default async function CoursePage({ params }: Props) {
     const { id, lesson } = await params
     return <div className="flex flex-col gap-3 overflow-auto">
         <EditLessonForm lessonId={lesson} />
-        <CreateTest />
+        <CreateTest lessonId={lesson} />
 
     </div>
 }

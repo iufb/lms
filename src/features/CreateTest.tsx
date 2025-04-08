@@ -1,6 +1,7 @@
 'use client'
-import { useLessonTestCreate } from "@/shared/api/generated";
-import { cn, required } from "@/shared/lib/utils";
+import { useGetLessonTestByLessonIdList, useLessonTestCreate, useLessonTestUpdate } from "@/shared/api/generated";
+import { cn, deserializeQuestionsAndAnswers, required, serializeQuestionsAndAnswers } from "@/shared/lib/utils";
+import { Answer, Question } from "@/shared/types";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
 import { Input } from "@/shared/ui/input";
@@ -10,47 +11,58 @@ import { Separator } from "@/shared/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/sheet";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { Plus, SettingsIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-export const CreateTest = () => {
+interface CreateTestProps {
+    lessonId: number
+}
+export const CreateTest = ({ lessonId }: CreateTestProps) => {
     const [questions, setQuestions] = useState<Map<number, Question>>(new Map())
     const [answers, setAnswers] = useState<Map<number, Answer>>(new Map())
-    const { mutate, isPending } = useLessonTestCreate({ mutation: { onSuccess: () => { }, onError: () => { } } })
+    const { mutate: create, isPending } = useLessonTestCreate({
+        mutation: {
+            onSuccess: () => {
+                toast.success('Тест создан')
+            }, onError: () => {
+                toast.error('Ошибка при создании теста')
+            }
+        }
+    })
+    const { mutate: update, isPending: isPendingEdit } = useLessonTestUpdate({
+        mutation: {
+            onSuccess: () => {
+                toast.success('Тест изменен')
+            }, onError: () => {
+                toast.error('Ошибка при  изменении теста')
+            }
+        }
+    })
+    const { data: testList } = useGetLessonTestByLessonIdList({ lesson_id: lessonId })
     const onSave = () => {
-        const questions_ru: Record<number, Pick<Question, 'qRu' | '1ru' | '2ru' | '3ru' | '4ru'>> = {};
-        const questions_kz: Record<number, Pick<Question, 'qKz' | '1kz' | '2kz' | '3kz' | '4kz'>> = {};
+        const serializedData = serializeQuestionsAndAnswers(questions, answers)
+        if (testList && testList[0].id) {
+            update({ id: testList[0].id, data: { ...serializedData, lesson: lessonId } })
+        } else {
 
-        for (const [key, q] of questions.entries()) {
-            questions_ru[key] = {
-                qRu: q.qRu,
-                '1ru': q['1ru'],
-                '2ru': q['2ru'],
-                '3ru': q['3ru'],
-                '4ru': q['4ru'],
-            };
-
-            questions_kz[key] = {
-                qKz: q.qKz,
-                '1kz': q['1kz'],
-                '2kz': q['2kz'],
-                '3kz': q['3kz'],
-                '4kz': q['4kz'],
-            };
+            create({ data: { ...serializedData, lesson: lessonId } })
         }
 
-        const answer_ru: Record<number, number | null> = {};
-        const answer_kz: Record<number, number | null> = {};
-
-        for (const [id, a] of answers) {
-            answer_ru[id] = a.ru;
-            answer_kz[id] = a.kz;
-        }
-        mutate({ data: { answer_ru, answer_kz, lesson: 1, questions_ru, questions_kz } })
     };
-    console.log(answers)
 
+    useEffect(() => {
+        if (testList && testList[0]) {
+
+            const t = testList[0]
+            const data = deserializeQuestionsAndAnswers({ answer_kz: t.answer_kz, answer_ru: t.answer_ru, questions_kz: t.questions_kz, questions_ru: t.questions_ru })
+
+            setQuestions(() => {
+                setAnswers(data.answers)
+                return data.questions
+            })
+
+        }
+    }, [testList])
     const onAddQuestion = (question: Question, answer: Answer) => {
         setQuestions(q => {
             const updated = new Map(q)
@@ -87,12 +99,12 @@ export const CreateTest = () => {
 
 
     return <section className="flex flex-col gap-2 px-1 h-full overflow-auto">
-        <div className="flex justify-between mb-4"><Label className="text-xl">Tест</Label><Button onClick={onSave}>Сохранить</Button></div>
+        <div className="flex justify-between mb-4"><Label className="text-xl">Tест</Label><Button className="w-fit" loading={isPending || isPendingEdit} disabled={isPending || isPendingEdit} onClick={onSave}>Сохранить</Button></div>
 
         <HandleQuestion mode="create" onAddQuestion={onAddQuestion} />
         {Array.from(questions).map(([id, q]) => <div key={id} className="px-4 py-3 border border-slate-300 text-slate-600 rounded-lg bg-slate-200 flex justify-between">
             <span>{id}. {q.qRu}</span>
-            <HandleQuestion id={id} mode="edit" onEditQuestion={onEditQuestion} defaultValues={q} />
+            <HandleQuestion id={id} mode="edit" answer={answers.get(id)} onEditQuestion={onEditQuestion} defaultValues={q} />
         </div>)}
 
 
@@ -101,32 +113,18 @@ export const CreateTest = () => {
 
 
 }
-type Question = {
-    qRu: string,
-    qKz: string,
-    '1ru': string,
-    '2ru': string,
-    '3ru': string,
-    '4ru': string,
-    '1kz': string,
-    '2kz': string,
-    '3kz': string,
-    '4kz': string,
 
-}
-type Answer = {
-    ru: number | null, kz: number | null
-}
 
 interface HandleQuestionProps {
     mode: 'create' | 'edit',
     defaultValues?: Question,
+    answer?: Answer,
     id?: number,
     onAddQuestion?: (q: Question, a: Answer) => void
     onEditQuestion?: (id: number, q: Question, a: Answer) => void
 }
 
-const HandleQuestion = ({ id, mode, defaultValues, onAddQuestion, onEditQuestion }: HandleQuestionProps) => {
+export const HandleQuestion = ({ id, mode, defaultValues, answer, onAddQuestion, onEditQuestion }: HandleQuestionProps) => {
     const [open, setOpen] = useState(false)
     const { control, handleSubmit,
         register,
@@ -149,7 +147,7 @@ const HandleQuestion = ({ id, mode, defaultValues, onAddQuestion, onEditQuestion
         }
     })
     // const [rightAnswer, setRightAnswer] = useState<Answer>({ ru: null, kz: null })
-    const [rightAnswer, setRightAnswer] = useState<Answer>({ ru: 1, kz: 1 })
+    const [rightAnswer, setRightAnswer] = useState<Answer>(answer ? answer : { ru: 0, kz: 0 })
     const toggle = (checked: CheckedState, id: number, lang: 'ru' | 'kz') => {
         if (checked) {
             chooseRightAnswer(id, lang)

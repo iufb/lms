@@ -344,6 +344,20 @@ export type GeneratePresignedUrlCreateBody = {
   content_type?: string;
 };
 
+export type GetFinalTestByCourseIdListParams = {
+/**
+ * ID курса
+ */
+course_id: number;
+};
+
+export type GetLessonTestByLessonIdListParams = {
+/**
+ * ID урока
+ */
+lesson_id: number;
+};
+
 /**
  * Ответы на вопросы, где ключ - ID вопроса, а значение - выбранный ответ
  */
@@ -1711,6 +1725,178 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     
+/**
+ * Получение финального теста по ID курса
+ */
+export const getFinalTestByCourseIdList = (
+    params: GetFinalTestByCourseIdListParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTest>(
+      {url: `/get-final-test-by-course-id/`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetFinalTestByCourseIdListQueryKey = (params: GetFinalTestByCourseIdListParams,) => {
+    return [`/get-final-test-by-course-id/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetFinalTestByCourseIdListQueryOptions = <TData = Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError = ErrorType<void>>(params: GetFinalTestByCourseIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetFinalTestByCourseIdListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>> = ({ signal }) => getFinalTestByCourseIdList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetFinalTestByCourseIdListQueryResult = NonNullable<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>>
+export type GetFinalTestByCourseIdListQueryError = ErrorType<void>
+
+
+export function useGetFinalTestByCourseIdList<TData = Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError = ErrorType<void>>(
+ params: GetFinalTestByCourseIdListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getFinalTestByCourseIdList>>,
+          TError,
+          Awaited<ReturnType<typeof getFinalTestByCourseIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetFinalTestByCourseIdList<TData = Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError = ErrorType<void>>(
+ params: GetFinalTestByCourseIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getFinalTestByCourseIdList>>,
+          TError,
+          Awaited<ReturnType<typeof getFinalTestByCourseIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetFinalTestByCourseIdList<TData = Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError = ErrorType<void>>(
+ params: GetFinalTestByCourseIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetFinalTestByCourseIdList<TData = Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError = ErrorType<void>>(
+ params: GetFinalTestByCourseIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFinalTestByCourseIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetFinalTestByCourseIdListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Получение списка тестов по ID урока
+ */
+export const getLessonTestByLessonIdList = (
+    params: GetLessonTestByLessonIdListParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<LessonTest[]>(
+      {url: `/get-lesson-test-by-lesson-id/`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetLessonTestByLessonIdListQueryKey = (params: GetLessonTestByLessonIdListParams,) => {
+    return [`/get-lesson-test-by-lesson-id/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetLessonTestByLessonIdListQueryOptions = <TData = Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError = ErrorType<void>>(params: GetLessonTestByLessonIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetLessonTestByLessonIdListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>> = ({ signal }) => getLessonTestByLessonIdList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetLessonTestByLessonIdListQueryResult = NonNullable<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>>
+export type GetLessonTestByLessonIdListQueryError = ErrorType<void>
+
+
+export function useGetLessonTestByLessonIdList<TData = Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError = ErrorType<void>>(
+ params: GetLessonTestByLessonIdListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLessonTestByLessonIdList>>,
+          TError,
+          Awaited<ReturnType<typeof getLessonTestByLessonIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLessonTestByLessonIdList<TData = Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError = ErrorType<void>>(
+ params: GetLessonTestByLessonIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getLessonTestByLessonIdList>>,
+          TError,
+          Awaited<ReturnType<typeof getLessonTestByLessonIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLessonTestByLessonIdList<TData = Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError = ErrorType<void>>(
+ params: GetLessonTestByLessonIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetLessonTestByLessonIdList<TData = Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError = ErrorType<void>>(
+ params: GetLessonTestByLessonIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLessonTestByLessonIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetLessonTestByLessonIdListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
 /**
  * Отправка ответов на тест урока и получение оценки
  */
