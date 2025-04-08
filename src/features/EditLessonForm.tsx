@@ -1,20 +1,39 @@
 'use client'
-import { Lesson, useLessonPartialUpdate, useLessonRead } from "@/shared/api/generated";
-import { required } from "@/shared/lib/utils";
+import { generatePresignedUrlCreate, Lesson, LessonPartialUpdateBody, useLessonPartialUpdate, useLessonRead } from "@/shared/api/generated";
+import { required, uploadToS3 } from "@/shared/lib/utils";
+import { queryClient } from "@/shared/providers/query.provider";
+import { presignedUrlResponse } from "@/shared/types";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import JoditEditorComponent from "@/shared/ui/jodit";
 import { Label } from "@/shared/ui/label";
-import { useEffect, useState } from "react";
+import isEqual from "lodash.isequal";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface EditLessonFormProps {
     lessonId: number
 }
+
 type EditLessonDTO = Omit<Lesson, 'media_kz' | 'media_ru'> & { media_kz: FileList | string, media_ru: FileList | string }
 export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
-    const { data: defaultValues } = useLessonRead(lessonId)
-    const { mutate: update } = useLessonPartialUpdate({ mutation: {} })
+    const { data: defaultValues, queryKey } = useLessonRead(lessonId)
+    const { mutate: update } = useLessonPartialUpdate({
+        mutation: {
+            onSuccess: () => {
+                setLoading(false)
+                toast.success('Урок изменен')
+                queryClient.invalidateQueries({ queryKey })
+            },
+            onError: () => {
+
+                setLoading(false)
+                toast.error(`Ошибка при изменении урока`)
+            },
+        }
+    })
+
     const [loading, setLoading] = useState(false)
     const { control, handleSubmit,
         register,
@@ -29,26 +48,56 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
         }
     }, [defaultValues, reset]);
 
-    const onSubmit: SubmitHandler<EditLessonDTO> = (data) => {
+    const onSubmit: SubmitHandler<EditLessonDTO> = async (data) => {
+        if (!defaultValues) return;
+
         setLoading(true)
+
+        let media_ru
+        let media_kz
         if (data.media_ru && typeof data.media_ru !== 'string') {
-            //upload to s3
+            const file_ru = data.media_ru[0]
+            const url = await generatePresignedUrlCreate({ file_name: file_ru.name, content_type: file_ru.type }) as presignedUrlResponse
+
+            const isOk = await uploadToS3(url.upload_url, file_ru)
+            if (isOk) {
+                toast.success(`Видео  ${file_ru.name} загружено`)
+                media_ru = url.file_key
+            } else {
+                toast.error(`Ошибка загрузки видео ${file_ru.name}`)
+            }
         }
         if (data.media_kz && typeof data.media_kz !== 'string') {
-            //upload to s3
+            const file_kz = data.media_kz[0]
+            const url = await generatePresignedUrlCreate({ file_name: file_kz.name, content_type: file_kz.type }) as presignedUrlResponse
+
+            const isOk = await uploadToS3(url.upload_url, file_kz)
+            if (isOk) {
+                toast.success(`Видео  ${file_kz.name} загружено`)
+                media_kz = url.file_key
+            } else {
+                toast.error(`Ошибка загрузки видео ${file_kz.name}`)
+            }
         }
-        const final: Lesson = { ...data, media_ru: defaultValues?.media_ru, media_kz: defaultValues?.media_kz }
+
+        const final: LessonPartialUpdateBody = {
+            ...data, media_ru, media_kz
+        }
 
         update({ id: lessonId, data: final })
 
-        setLoading(false)
     };
 
+    const watched = watch();
+
+    const isUnchanged = useMemo(() => {
+        return isEqual(defaultValues, watched);
+    }, [defaultValues, watched]);
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
 
         <Label className="text-2xl">Изменить данные урока</Label>
-        <Button className="w-fit self-end">Изменить</Button>
+        <Button disabled={loading || isUnchanged} loading={loading} className="w-fit self-end">Изменить</Button>
 
         <Input type="number" {...register('order_num', { required })} error={errors.order_num?.message} label="Номер урока" />
 
@@ -56,7 +105,7 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
         <Input {...register('title_ru',)} label="Название на русском" />
         <Controller control={control} name={'content_ru'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на русском" value={value} onChange={(value) => onChange(value)} />} />
         <Input {...register('media_ru',)} error={errors.media_ru?.message} label="Видео" type='file' />
-        {defaultValues?.media_ru && <video width="640" height="360" controls poster={defaultValues?.media_ru}>
+        {defaultValues?.media_ru && <video width="640" height="360" controls >
             <source src={defaultValues?.media_ru} type="video/mp4" />
             Your browser does not support the video tag.
         </video>}
@@ -65,7 +114,7 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
         <Input {...register('title_kz')} label="Название на казахском" />
         <Controller control={control} name={'content_kz'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на казахском" value={value} onChange={(value) => onChange(value)} />} />
         <Input {...register('media_kz',)} error={errors.media_kz?.message} label="Видео" type='file' />
-        {defaultValues?.media_kz && <video width="640" height="360" controls poster={defaultValues?.media_kz}>
+        {defaultValues?.media_kz && <video className="max-h-xl" width="640" height="360" controls >
             <source src={defaultValues?.media_kz} type="video/mp4" />
             Your browser does not support the video tag.
         </video>}

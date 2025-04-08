@@ -1,4 +1,7 @@
-
+export type presignedUrlResponse = {
+    "upload_url": string
+    "file_key": string
+}
 
 interface Course {
     id: number;

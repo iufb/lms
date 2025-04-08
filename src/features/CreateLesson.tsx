@@ -2,6 +2,7 @@
 import { generatePresignedUrlCreate, Lesson, useLessonCreate } from "@/shared/api/generated";
 import { uploadToS3 } from "@/shared/lib/utils";
 import { queryClient } from "@/shared/providers/query.provider";
+import { presignedUrlResponse } from "@/shared/types";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import JoditEditorComponent from "@/shared/ui/jodit";
@@ -11,10 +12,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 const required = 'Обязательное поле'
 type LessonDTO = Omit<Lesson, 'media_kz' | 'media_ru'> & { media_kz: FileList, media_ru: FileList }
-type presignedUrlResponse = {
-    "upload_url": string
-    "file_key": string
-}
+
 export const CreateLesson = ({ id }: { id: number }) => {
     const { control, handleSubmit,
         register,
