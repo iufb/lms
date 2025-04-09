@@ -7,7 +7,6 @@ const intlMiddleware = createMiddleware(routing);
 async function adminMiddleware(req: NextRequest) {
     const token = req.cookies.get("access");
     const role = req.cookies.get("role");
-    console.log(role)
 
     const { pathname } = req.nextUrl;
 
@@ -23,7 +22,7 @@ async function adminMiddleware(req: NextRequest) {
     return NextResponse.next()
 }
 
-const publicRoutes = ['register', 'login']
+const publicRoutes = ['register', 'login', 'verify']
 const privateRoutes = ['profile']
 
 function authMiddleware(req: NextRequest) {

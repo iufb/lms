@@ -1,12 +1,12 @@
 'use client'
 
+import { AccessCourse } from "@/features/AccessCourse";
 import { useCourseRead } from "@/shared/api/generated";
 import { getLocalized } from "@/shared/lib/utils";
-import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { LessonsList } from "@/widgets/LessonsList";
-import { BookOpen, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 export const CourseView = ({ id }: { id: number }) => {
@@ -28,10 +28,7 @@ export const CourseView = ({ id }: { id: number }) => {
                 <CardDescription className="mb-6 text-lg text-muted-foreground">{description}</CardDescription>
             </CardHeader>
             <CardContent>
-                <Button>
-                    <>
-                        <BookOpen /> {t('buttons.start')}</>
-                </Button>
+                <AccessCourse courseId={id} />
             </CardContent>
         </Card>
 

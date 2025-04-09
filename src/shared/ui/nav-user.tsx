@@ -23,7 +23,11 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/shared/ui/sidebar"
-
+import { deleteCookie } from "cookies-next"
+import { useRouter } from "next/navigation"
+const userLabel = {
+    admin: "Админ"
+}
 export function NavUser({
     user,
 }: {
@@ -33,6 +37,14 @@ export function NavUser({
     }
 }) {
     const { isMobile } = useSidebar()
+    const router = useRouter()
+    const logout = () => {
+        deleteCookie('access')
+        deleteCookie('refresh')
+        deleteCookie('role')
+        router.push('/ru/login')
+    }
+
 
     return (
         <SidebarMenu>
@@ -48,7 +60,7 @@ export function NavUser({
                                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">{user.name}</span>
+                                <span className="truncate font-medium">{userLabel[user.name as keyof typeof userLabel]}</span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
                         </SidebarMenuButton>
@@ -66,11 +78,11 @@ export function NavUser({
                                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-medium">{user.name}</span>
+                                    <span className="truncate font-medium">{userLabel[user.name as keyof typeof userLabel]}</span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={logout}>
                             <LogOut />
                             Выйти
                         </DropdownMenuItem>

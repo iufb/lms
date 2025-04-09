@@ -414,6 +414,21 @@ export type LoginCreate200 = {
   role?: string;
 };
 
+export type PurchaseCourseList200Item = {
+  /** ID оплаты */
+  id?: number;
+  /** ID курса */
+  course_id?: number;
+  /** Название курса */
+  course_title?: string;
+  /** Сумма оплаты */
+  amount?: number;
+  /** Статус оплаты */
+  status?: string;
+  /** Дата создания */
+  created_at?: string;
+};
+
 export type PurchaseCourseCreateBody = {
   /** ID курса для покупки */
   course_id: number;
@@ -3262,6 +3277,91 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     
+/**
+ * Получение списка оплат текущего пользователя
+ */
+export const purchaseCourseList = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<PurchaseCourseList200Item[]>(
+      {url: `/purchase-course/`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getPurchaseCourseListQueryKey = () => {
+    return [`/purchase-course/`] as const;
+    }
+
+    
+export const getPurchaseCourseListQueryOptions = <TData = Awaited<ReturnType<typeof purchaseCourseList>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getPurchaseCourseListQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof purchaseCourseList>>> = ({ signal }) => purchaseCourseList(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PurchaseCourseListQueryResult = NonNullable<Awaited<ReturnType<typeof purchaseCourseList>>>
+export type PurchaseCourseListQueryError = ErrorType<unknown>
+
+
+export function usePurchaseCourseList<TData = Awaited<ReturnType<typeof purchaseCourseList>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof purchaseCourseList>>,
+          TError,
+          Awaited<ReturnType<typeof purchaseCourseList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePurchaseCourseList<TData = Awaited<ReturnType<typeof purchaseCourseList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof purchaseCourseList>>,
+          TError,
+          Awaited<ReturnType<typeof purchaseCourseList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePurchaseCourseList<TData = Awaited<ReturnType<typeof purchaseCourseList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function usePurchaseCourseList<TData = Awaited<ReturnType<typeof purchaseCourseList>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof purchaseCourseList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getPurchaseCourseListQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
 /**
  * Создание оплаты за курс.
  */

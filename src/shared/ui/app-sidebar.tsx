@@ -2,7 +2,7 @@
 
 import {
     Book,
-    Command,
+    BookOpen,
     User
 } from "lucide-react"
 import * as React from "react"
@@ -18,14 +18,12 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/shared/ui/sidebar"
-import { getCookie } from "cookies-next"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const role = getCookie('role')
+export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sidebar> & { role: string }) {
     return (
         <Sidebar variant="inset" {...props}>
             <SidebarHeader>
@@ -34,7 +32,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <SidebarMenuButton size="lg" asChild>
                             <a href="/">
                                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                                    <Command className="size-4" />
+                                    <BookOpen className="size-4" />
                                 </div>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">LMS платформа</span>

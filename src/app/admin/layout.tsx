@@ -6,18 +6,22 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/shared/ui/sidebar";
+import { getCookie } from "cookies-next/server";
 import { Manrope } from 'next/font/google';
+import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import '../globals.css';
 
 
 const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+    const role = await getCookie('role', { cookies })
+    console.log(role, 'ROLE')
     return <html lang="ru">
         <body className={manrope.className}>
             <SidebarProvider>
-                <AppSidebar />
+                <AppSidebar role={`${role}`} />
                 <SidebarInset>
                     <header className="flex h-16 shrink-0 items-center gap-2">
                         <div className="flex items-center gap-2 px-4">

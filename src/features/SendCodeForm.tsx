@@ -24,7 +24,7 @@ export const SendCodeForm = ({ phone_number, ...data }: SendCodeFormProps) => {
         mutationFn: verifyCodeCreate,
         onSuccess: (data) => {
             // Handle success
-            toast.success(tG('registration.accountCreated'))
+            toast.success(tG('registration.success.accountCreated'))
             deleteCookie(phone_number)
             router.push('/login')
         },
