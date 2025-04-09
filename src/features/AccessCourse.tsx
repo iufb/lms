@@ -1,4 +1,5 @@
 'use client'
+import { Link } from "@/i18n/navigation";
 import { PurchaseCourseList200Item, usePurchaseCourseCreate, usePurchaseCourseList, UserCoursesList200Item, useUserCoursesList } from "@/shared/api/generated";
 import { Button } from "@/shared/ui/button";
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content";
@@ -7,9 +8,11 @@ import { QueryKey } from "@tanstack/react-query";
 import { BookOpen, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+
 interface AccessCourseProps {
     courseId: number
 }
+
 const handleHasAccess = (items: UserCoursesList200Item[] | undefined, courseId: number): boolean => {
     if (!items) return false
     const hasAccess = items.some(i => i.course == courseId)
@@ -26,7 +29,7 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
         loader={<Skeleton className="w-[170px] h-[36px]" />}
         error={<BuyCourseButton queryKey={queryKey} courseId={courseId} />}
         content={<>
-            {handleHasAccess(data, courseId) ? <NavigateToCourseButton /> : <BuyCourseButton courseId={courseId} queryKey={queryKey} />}
+            {handleHasAccess(data, courseId) ? <NavigateToCourseButton courseId={courseId} /> : <BuyCourseButton courseId={courseId} queryKey={queryKey} />}
         </>
         }
     />
@@ -34,12 +37,12 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
 };
 
 
-const NavigateToCourseButton = () => {
+const NavigateToCourseButton = ({ courseId }: { courseId: number }) => {
     const t = useTranslations('coursepage')
-    return <Button className="min-w-[170px]">
+    return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}?l=1`}>
         <>
             <BookOpen /> {t('buttons.start')}</>
-    </Button>
+    </Link>
 
 
 }

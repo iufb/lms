@@ -4,7 +4,7 @@ import { ReactNode } from "react"
 interface ShowFetchContentProps<T> {
     isLoading: boolean,
     isError: ErrorType<void | unknown> | null,
-    data?: T[]
+    data?: T[] | T
     loader: ReactNode,
     error: ReactNode,
     content: ReactNode
@@ -21,6 +21,6 @@ export function ShowFetchContent<T>({ customError, data, isError, isLoading, loa
         }
     }
     if (!data) return loader
-    if (data.length == 0) return <div className="w-full border border-yellow-500 bg-yellow-200 text-yellow-950 rounded-md text-center py-3">Нет записей</div>
+    if (Array.isArray(data) && data.length == 0) return <div className="w-full border border-yellow-500 bg-yellow-200 text-yellow-950 rounded-md text-center py-3">Нет записей</div>
     return content
 }
