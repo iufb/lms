@@ -471,6 +471,19 @@ export type UserCoursesList200Item = {
   enrolled_at?: string;
 };
 
+export type UserCoursesCreateBody = {
+  /** ID курса */
+  course_id: number;
+  /** ID пользователя */
+  user_id: number;
+};
+
+export type UserCoursesCreate201 = {
+  message?: string;
+  course_id?: number;
+  user_id?: number;
+};
+
 export type UserListParams = {
 /**
  * ID пользователя
@@ -3781,6 +3794,68 @@ export function useUserCoursesList<TData = Awaited<ReturnType<typeof userCourses
 
 
 
+/**
+ * Зачисление пользователя на курс вручную (указывается user_id).
+ */
+export const userCoursesCreate = (
+    userCoursesCreateBody: BodyType<UserCoursesCreateBody>,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserCoursesCreate201>(
+      {url: `/user-courses/`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: userCoursesCreateBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getUserCoursesCreateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userCoursesCreate>>, TError,{data: BodyType<UserCoursesCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof userCoursesCreate>>, TError,{data: BodyType<UserCoursesCreateBody>}, TContext> => {
+    
+const mutationKey = ['userCoursesCreate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userCoursesCreate>>, {data: BodyType<UserCoursesCreateBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  userCoursesCreate(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UserCoursesCreateMutationResult = NonNullable<Awaited<ReturnType<typeof userCoursesCreate>>>
+    export type UserCoursesCreateMutationBody = BodyType<UserCoursesCreateBody>
+    export type UserCoursesCreateMutationError = ErrorType<void>
+
+    export const useUserCoursesCreate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userCoursesCreate>>, TError,{data: BodyType<UserCoursesCreateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof userCoursesCreate>>,
+        TError,
+        {data: BodyType<UserCoursesCreateBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getUserCoursesCreateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 /**
  * Получить информацию о пользователе по его ID, переданному как query параметр.
  */
