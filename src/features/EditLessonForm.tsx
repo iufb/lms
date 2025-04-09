@@ -10,6 +10,7 @@ import { Label } from "@/shared/ui/label";
 import isEqual from "lodash.isequal";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import ReactPlayer from "react-player";
 import { toast } from "sonner";
 
 interface EditLessonFormProps {
@@ -105,19 +106,23 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
         <Input {...register('title_ru',)} label="Название на русском" />
         <Controller control={control} name={'content_ru'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на русском" value={value} onChange={(value) => onChange(value)} />} />
         <Input {...register('media_ru',)} error={errors.media_ru?.message} label="Видео" type='file' />
-        {defaultValues?.media_ru && <video width="640" height="360" controls >
-            <source src={defaultValues?.media_ru} type="video/mp4" />
-            Your browser does not support the video tag.
-        </video>}
+        {defaultValues?.media_ru && <ReactPlayer playing={false}
+            controls={true}
+            width="100%"
+            height="100%"
+            url={defaultValues.media_ru}
+        />}
 
         <h4>Редактирование (Казахский)</h4>
         <Input {...register('title_kz')} label="Название на казахском" />
         <Controller control={control} name={'content_kz'} render={({ field: { value, onChange } }) => <JoditEditorComponent label="Содержание на казахском" value={value} onChange={(value) => onChange(value)} />} />
         <Input {...register('media_kz',)} error={errors.media_kz?.message} label="Видео" type='file' />
-        {defaultValues?.media_kz && <video className="max-h-xl" width="640" height="360" controls >
-            <source src={defaultValues?.media_kz} type="video/mp4" />
-            Your browser does not support the video tag.
-        </video>}
+        {defaultValues?.media_kz && <ReactPlayer playing={false}
+            controls={true}
+            width="100%"
+            height="100%"
+            url={defaultValues.media_kz}
+        />}
 
 
     </form>

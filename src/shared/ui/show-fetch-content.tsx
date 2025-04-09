@@ -21,6 +21,5 @@ export function ShowFetchContent<T>({ customError, data, isError, isLoading, loa
         }
     }
     if (!data) return loader
-    if (Array.isArray(data) && data.length == 0) return <div className="w-full border border-yellow-500 bg-yellow-200 text-yellow-950 rounded-md text-center py-3">Нет записей</div>
     return content
 }

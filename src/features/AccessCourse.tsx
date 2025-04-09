@@ -39,7 +39,7 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
 
 const NavigateToCourseButton = ({ courseId }: { courseId: number }) => {
     const t = useTranslations('coursepage')
-    return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}?l=1`}>
+    return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}`}>
         <>
             <BookOpen /> {t('buttons.start')}</>
     </Link>

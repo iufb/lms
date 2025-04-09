@@ -50,7 +50,8 @@ const Main = ({ courseId }: LearnSidebarProps) => {
         </section>}
         error={<div>error</div>}
         content={<section className={cn(container, 'overflow-auto')}>
-            {data?.map((l) => <LessonLink key={l.id} lesson={l} />)}
+            {/* @ts-ignore */}
+            {data?.sort((a, b) => a.order_num - b.order_num).map((l) => <LessonLink key={l.id} lesson={l} />)}
 
         </section>}
 
@@ -65,10 +66,9 @@ const LessonLink = ({ lesson }: LessonLinkProps) => {
     const searchParams = useSearchParams()
     const selected = searchParams.get('l')
     const active = selected && +selected == lesson.id
-
     return <Link key={lesson.id} href={`?l=${lesson.id}`} className={cn("px-3 py-2 bg-slate-100 rounded-lg hover:bg-slate-300 flex gap-1 items-center ", active && "border border-slate-300")}>
-        {active ? <PauseCircle size={14} /> : <PlayCircle size={14} />}
-        <span className={cn("text-ellipsis line-clamp-1")}>{lesson.title_ru}</span>
+        <div className="w-[14px]">{active ? <PauseCircle size={14} /> : <PlayCircle size={14} />}</div>
+        <span className={cn("overflow-hidden truncate ")}>{lesson.title_ru}</span>
     </Link>
 
 }
