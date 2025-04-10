@@ -21,7 +21,7 @@ export type Question = {
 
 }
 export type Answer = {
-    ru: number | null, kz: number | null
+    ru: string | null, kz: string | null
 }
 export type presignedUrlResponse = {
     "upload_url": string

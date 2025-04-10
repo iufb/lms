@@ -21,14 +21,16 @@ export const CreateLesson = ({ id }: { id: number }) => {
         formState: { errors },
     } = useForm<LessonDTO>()
 
-    const { mutate } = useLessonCreate({
+    const { mutate, isPending } = useLessonCreate({
         mutation: {
             onSuccess: () => {
                 toast.success('Урок создан')
+                setLoading(false)
                 queryClient.invalidateQueries({ queryKey: ['/course-lessons/', { course_id: id }] })
             },
             onError: () => {
                 toast.error(`Ошибка при создании урока`)
+                setLoading(false)
             },
         }
     })
@@ -78,7 +80,7 @@ export const CreateLesson = ({ id }: { id: number }) => {
             </SheetHeader>
             <form onSubmit={handleSubmit(onCreate)} className="flex flex-col gap-2 px-1 lg:px-3 h-full overflow-auto">
 
-                <Button className="w-fit self-end">Создать</Button>
+                <Button disabled={loading} loading={loading} className="w-fit self-end">Создать</Button>
                 <h3>Редактирование (Русский) </h3>
                 <Input type="number" {...register('order_num', { required })} error={errors.order_num?.message} label="Номер урока" />
                 <Input {...register('title_ru', { required })} error={errors.title_ru?.message} label="Название на русском" />

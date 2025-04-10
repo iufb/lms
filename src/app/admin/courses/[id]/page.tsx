@@ -24,7 +24,7 @@ export default async function CoursePage({ params }: Props) {
     return <div className="flex gap-2 flex-col">
         <CreateLesson id={id} />
 
-        <LessonsList courseId={id} />
+        <LessonsList courseId={id} mode="admin" />
         <CreateFinalTest courseId={id} />
 
     </div>

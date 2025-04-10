@@ -24,7 +24,7 @@ export const CourseView = ({ id }: { id: number }) => {
     return <section className="stack gap-4">
         <Card>
             <CardHeader>
-                <CardTitle className="mb-4 text-3xl font-bold text-black sm:text-4xl md:text-5xl">{title}</CardTitle>
+                <CardTitle className="mb-4 text-3xl font-bold  sm:text-4xl md:text-5xl">{title}</CardTitle>
                 <CardDescription className="mb-6 text-lg text-muted-foreground">{description}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -48,7 +48,7 @@ export const CourseView = ({ id }: { id: number }) => {
 
                 </TabsContent>
                 <TabsContent value="lessons">
-                    <LessonsList courseId={id} />
+                    <LessonsList courseId={id} mode="user" />
                 </TabsContent>
             </Tabs>
             <Card className="md:flex-1/3 h-40">

@@ -44,7 +44,6 @@ export const CreateTest = ({ lessonId }: CreateTestProps) => {
         if (testList && testList[0].id) {
             update({ id: testList[0].id, data: { ...serializedData, lesson: lessonId } })
         } else {
-
             create({ data: { ...serializedData, lesson: lessonId } })
         }
 
@@ -63,6 +62,7 @@ export const CreateTest = ({ lessonId }: CreateTestProps) => {
 
         }
     }, [testList])
+    console.log(answers)
     const onAddQuestion = (question: Question, answer: Answer) => {
         setQuestions(q => {
             const updated = new Map(q)
@@ -133,29 +133,17 @@ export const HandleQuestion = ({ id, mode, defaultValues, answer, onAddQuestion,
         reset,
         formState: { errors },
     } = useForm<Question>({
-        defaultValues: defaultValues ? defaultValues : {
-            qRu: "Вопрос на русском",  // Example question in Russian
-            qKz: "Сұрақ қазақ тілінде",  // Example question in Kazakh
-            '1ru': "Ответ 1 на русском",  // Option 1 in Russian
-            '2ru': "Ответ 2 на русском",  // Option 2 in Russian
-            '3ru': "Ответ 3 на русском",  // Option 3 in Russian
-            '4ru': "Ответ 4 на русском",  // Option 4 in Russian
-            '1kz': "Жауап 1 қазақша",  // Option 1 in Kazakh
-            '2kz': "Жауап 2 қазақша",  // Option 2 in Kazakh
-            '3kz': "Жауап 3 қазақша",  // Option 3 in Kazakh
-            '4kz': "Жауап 4 қазақша",  // Option 4 in Kazakh
-        }
+        defaultValues: defaultValues ? defaultValues : undefined
     })
-    // const [rightAnswer, setRightAnswer] = useState<Answer>({ ru: null, kz: null })
-    const [rightAnswer, setRightAnswer] = useState<Answer>(answer ? answer : { ru: 0, kz: 0 })
-    const toggle = (checked: CheckedState, id: number, lang: 'ru' | 'kz') => {
+    const [rightAnswer, setRightAnswer] = useState<Answer>(answer ? answer : { ru: null, kz: null })
+    const toggle = (checked: CheckedState, id: string, lang: 'ru' | 'kz') => {
         if (checked) {
             chooseRightAnswer(id, lang)
         } else {
             chooseRightAnswer(null, lang)
         }
     }
-    const chooseRightAnswer = (id: number | null, lang: 'ru' | 'kz') => {
+    const chooseRightAnswer = (id: string | null, lang: 'ru' | 'kz') => {
         setRightAnswer({ ...rightAnswer, [lang]: id })
     }
 
@@ -198,7 +186,7 @@ export const HandleQuestion = ({ id, mode, defaultValues, answer, onAddQuestion,
                 <Separator className="my-2" />
                 {Array.from({ length: 4 }).map((_, id) => <div key={id} className="bg-slate-100 px-2 py-1 rounded-sm ml-2 border-slate-200 border" >
                     <Input {...register(`${id + 1}ru` as keyof Question, { required })} error={errors[`${id + 1}Ru` as keyof Question]?.message} label={`Ответ № ${id + 1} (Русский)`} />
-                    <div className="flex items-center gap-3 my-2"><Checkbox checked={rightAnswer.ru == id} onCheckedChange={checked => toggle(checked, id, 'ru')} id={`ru ${id}`} /><Label htmlFor={`ru ${id}`}>Правильный ответ </Label>
+                    <div className="flex items-center gap-3 my-2"><Checkbox checked={rightAnswer.ru === id.toString()} onCheckedChange={checked => toggle(checked, id.toString(), 'ru')} id={`ru ${id}`} /><Label htmlFor={`ru ${id}`}>Правильный ответ </Label>
                     </div>
 
                 </div>)}
@@ -208,7 +196,7 @@ export const HandleQuestion = ({ id, mode, defaultValues, answer, onAddQuestion,
                 <Separator className="my-2" />
                 {Array.from({ length: 4 }).map((_, id) => <div key={id} className="bg-slate-100 px-2 py-1 rounded-sm ml-2 border border-slate-200" >
                     <Input {...register(`${id + 1}kz` as keyof Question, { required })} error={errors[`${id + 1}Kz` as keyof Question]?.message} label={`Ответ № ${id + 1} (Казахский)`} />
-                    <div className="flex items-center gap-3 my-2"><Checkbox checked={rightAnswer.kz == id} onCheckedChange={checked => toggle(checked, id, 'kz')} id={`kz ${id}`} /><Label htmlFor={`kz ${id}`}>Правильный ответ </Label></div>
+                    <div className="flex items-center gap-3 my-2"><Checkbox checked={rightAnswer.kz === id.toString()} onCheckedChange={checked => toggle(checked, id.toString(), 'kz')} id={`kz ${id}`} /><Label htmlFor={`kz ${id}`}>Правильный ответ </Label></div>
                 </div>)}
 
             </form>

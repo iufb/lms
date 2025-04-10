@@ -31,8 +31,8 @@ export function serializeQuestionsAndAnswers(
         };
     }
 
-    const answer_ru: Record<number, number | null> = {};
-    const answer_kz: Record<number, number | null> = {};
+    const answer_ru: Record<number, string | null> = {};
+    const answer_kz: Record<number, string | null> = {};
 
     for (const [id, a] of answers.entries()) {
         answer_ru[id] = a.ru;
@@ -49,7 +49,7 @@ export function serializeQuestionsAndAnswers(
 
 export function deserializeQuestionsAndAnswers(input: deserializeQuestionsAndAnswersInput) {
     const questions = new Map<number, Question>();
-    const answers = new Map<number, { ru: number | null; kz: number | null }>();
+    const answers = new Map<number, { ru: string | null; kz: string | null }>();
 
     for (const key in input.questions_ru) {
         const id = Number(key);
@@ -73,8 +73,8 @@ export function deserializeQuestionsAndAnswers(input: deserializeQuestionsAndAns
     for (const key in input.answer_ru) {
         const id = Number(key);
         answers.set(id, {
-            ru: input.answer_ru[id] as number | null,
-            kz: input.answer_kz[id] as number | null,
+            ru: input.answer_ru[id] as string | null,
+            kz: input.answer_kz[id] as string | null,
         });
     }
 

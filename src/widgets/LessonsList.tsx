@@ -4,19 +4,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { Separator } from "@/shared/ui/separator"
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content"
 import { Skeleton } from "@/shared/ui/skeleton"
+import { useLocale } from "next-intl"
 import Link from "next/link"
 import React from 'react'
 interface LessonsListProps {
     courseId: number
+    mode: 'admin' | 'user'
 }
-export const LessonsList = ({ courseId }: LessonsListProps) => {
+export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
     const { data, isLoading, error, queryKey } = useCourseLessonsList({ course_id: courseId })
-    console.log(queryKey)
+    const locale = mode == 'user' && useLocale()
     return <ShowFetchContent<CourseLessonsList200Item>
         data={data}
         isError={error}
         isLoading={isLoading}
-        loader={Array.from({ length: 5 }).map((_, id) => <Skeleton key={id} className="w-full rounded-lg h-10" />)}
+        loader={Array.from({ length: 5 }).map((_, id) => <Skeleton key={id} className="w-full rounded-lg h-10 my-2" />)}
         error={<div>error</div>}
         content={<Card>
             <CardHeader>
@@ -28,7 +30,7 @@ export const LessonsList = ({ courseId }: LessonsListProps) => {
                 {/* @ts-ignore */}
                 {data?.sort((a, b) => a?.order_num - b?.order_num).map(l =>
                     <React.Fragment key={l.id}>
-                        <Link href={`${courseId}/lesson/${l.id}`} className="px-3 py-2 flex items-center gap-2 " >
+                        <Link href={mode == 'admin' ? `${courseId}/lesson/${l.id}` : `/${locale}/lessons/${courseId}?l=${l.id}`} className="px-3 py-2 flex items-center gap-2 truncate " >
                             <OrderNumber order={l.order_num} />
                             <span className="mt-1">
                                 {l.title_ru}

@@ -9,7 +9,6 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { PauseCircle, PlayCircle } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
-
 interface LearnSidebarProps {
     courseId: number
 }
@@ -66,7 +65,12 @@ const LessonLink = ({ lesson }: LessonLinkProps) => {
     const searchParams = useSearchParams()
     const selected = searchParams.get('l')
     const active = selected && +selected == lesson.id
-    return <Link key={lesson.id} href={`?l=${lesson.id}`} className={cn("px-3 py-2 bg-slate-100 rounded-lg hover:bg-slate-300 flex gap-1 items-center ", active && "border border-slate-300")}>
+    return <Link key={lesson.id} href={`?l=${lesson.id}`} className={
+        cn(
+            "px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 flex gap-1 items-center",
+            active && "border border-slate-300 dark:border-slate-600"
+        )
+    }>
         <div className="w-[14px]">{active ? <PauseCircle size={14} /> : <PlayCircle size={14} />}</div>
         <span className={cn("overflow-hidden truncate ")}>{lesson.title_ru}</span>
     </Link>

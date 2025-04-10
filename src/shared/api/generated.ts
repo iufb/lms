@@ -229,25 +229,13 @@ export type AvailableCoursesList200Item = {
  */
 export type CheckFinalTestCreateBodyAnswers = {[key: string]: string};
 
-/**
- * Язык теста
- */
-export type CheckFinalTestCreateBodyLanguage = typeof CheckFinalTestCreateBodyLanguage[keyof typeof CheckFinalTestCreateBodyLanguage];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CheckFinalTestCreateBodyLanguage = {
-  ru: 'ru',
-  kz: 'kz',
-} as const;
-
 export type CheckFinalTestCreateBody = {
   /** ID курса */
   course_id: number;
   /** Ответы пользователя, где ключ — номер вопроса, значение — выбранный вариант */
   answers: CheckFinalTestCreateBodyAnswers;
   /** Язык теста */
-  language: CheckFinalTestCreateBodyLanguage;
+  language: string;
 };
 
 export type CheckFinalTestCreate200 = {
@@ -262,25 +250,13 @@ export type CheckFinalTestCreate200 = {
  */
 export type CheckTestCreateBodyAnswers = {[key: string]: string};
 
-/**
- * Язык теста
- */
-export type CheckTestCreateBodyLanguage = typeof CheckTestCreateBodyLanguage[keyof typeof CheckTestCreateBodyLanguage];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const CheckTestCreateBodyLanguage = {
-  ru: 'ru',
-  kz: 'kz',
-} as const;
-
 export type CheckTestCreateBody = {
   /** ID теста урока */
   lesson_id: number;
   /** Ответы пользователя, где ключ — номер вопроса, значение — выбранный вариант */
   answers: CheckTestCreateBodyAnswers;
   /** Язык теста */
-  language: CheckTestCreateBodyLanguage;
+  language: string;
 };
 
 export type CheckTestCreate200 = {
@@ -3029,7 +3005,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * Получение информации о платеже по ID
  */
 export const paymentRead = (
-    id: number,
+    id: string,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -3041,12 +3017,12 @@ export const paymentRead = (
     }
   
 
-export const getPaymentReadQueryKey = (id: number,) => {
+export const getPaymentReadQueryKey = (id: string,) => {
     return [`/payment/${id}/`] as const;
     }
 
     
-export const getPaymentReadQueryOptions = <TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getPaymentReadQueryOptions = <TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -3069,7 +3045,7 @@ export type PaymentReadQueryError = ErrorType<void>
 
 
 export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
- id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRead>>,
           TError,
@@ -3079,7 +3055,7 @@ export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRead>>,
           TError,
@@ -3089,12 +3065,12 @@ export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, TError = ErrorType<void>>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -3114,7 +3090,7 @@ export function usePaymentRead<TData = Awaited<ReturnType<typeof paymentRead>>, 
  * Обновление платежа
  */
 export const paymentUpdate = (
-    id: number,
+    id: string,
     paymentBody: BodyType<PaymentBody>,
  options?: SecondParameter<typeof customInstance>,) => {
       
@@ -3130,8 +3106,8 @@ export const paymentUpdate = (
 
 
 export const getPaymentUpdateMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext> => {
     
 const mutationKey = ['paymentUpdate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -3143,7 +3119,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentUpdate>>, {id: number;data: BodyType<PaymentBody>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentUpdate>>, {id: string;data: BodyType<PaymentBody>}> = (props) => {
           const {id,data} = props ?? {};
 
           return  paymentUpdate(id,data,requestOptions)
@@ -3159,11 +3135,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type PaymentUpdateMutationError = ErrorType<void>
 
     export const usePaymentUpdate = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof paymentUpdate>>,
         TError,
-        {id: number;data: BodyType<PaymentBody>},
+        {id: string;data: BodyType<PaymentBody>},
         TContext
       > => {
 
@@ -3173,7 +3149,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     }
     
 export const paymentPartialUpdate = (
-    id: number,
+    id: string,
     paymentBody: BodyType<PaymentBody>,
  options?: SecondParameter<typeof customInstance>,) => {
       
@@ -3189,8 +3165,8 @@ export const paymentPartialUpdate = (
 
 
 export const getPaymentPartialUpdateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext> => {
     
 const mutationKey = ['paymentPartialUpdate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -3202,7 +3178,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentPartialUpdate>>, {id: number;data: BodyType<PaymentBody>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentPartialUpdate>>, {id: string;data: BodyType<PaymentBody>}> = (props) => {
           const {id,data} = props ?? {};
 
           return  paymentPartialUpdate(id,data,requestOptions)
@@ -3218,11 +3194,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type PaymentPartialUpdateMutationError = ErrorType<unknown>
 
     export const usePaymentPartialUpdate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: number;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentPartialUpdate>>, TError,{id: string;data: BodyType<PaymentBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof paymentPartialUpdate>>,
         TError,
-        {id: number;data: BodyType<PaymentBody>},
+        {id: string;data: BodyType<PaymentBody>},
         TContext
       > => {
 
@@ -3235,7 +3211,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * Удаление платежа по ID
  */
 export const paymentDelete = (
-    id: number,
+    id: string,
  options?: SecondParameter<typeof customInstance>,) => {
       
       
@@ -3248,8 +3224,8 @@ export const paymentDelete = (
 
 
 export const getPaymentDeleteMutationOptions = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: string}, TContext> => {
     
 const mutationKey = ['paymentDelete'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -3261,7 +3237,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentDelete>>, {id: number}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentDelete>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
           return  paymentDelete(id,requestOptions)
@@ -3277,11 +3253,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type PaymentDeleteMutationError = ErrorType<void>
 
     export const usePaymentDelete = <TError = ErrorType<void>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof paymentDelete>>,
         TError,
-        {id: number},
+        {id: string},
         TContext
       > => {
 
