@@ -71,6 +71,11 @@ export interface Course {
   description_kz: string;
   price: string;
   is_published?: boolean;
+  /**
+   * @minimum -9223372036854776000
+   * @maximum 9223372036854776000
+   */
+  hours?: number;
 }
 
 export type FinalTestQuestionsRu = { [key: string]: unknown };
@@ -220,6 +225,8 @@ export type AvailableCoursesList200Item = {
   description_kz?: string;
   /** Цена курса */
   price?: number;
+  /** hours */
+  hours?: number;
   /** Опубликован ли курс */
   is_published?: boolean;
 };
@@ -290,6 +297,24 @@ export type CourseLessonsList200Item = {
   media_kz?: string;
   /** Порядковый номер урока */
   order_num?: number;
+};
+
+export type FinalTestResultsListParams = {
+/**
+ * ID курса
+ */
+course_id: number;
+};
+
+export type FinalTestResultsList200ItemAnswer = { [key: string]: unknown };
+
+export type FinalTestResultsList200Item = {
+  user?: number;
+  course?: number;
+  answer?: FinalTestResultsList200ItemAnswer;
+  score?: number;
+  language?: string;
+  created_at?: string;
 };
 
 /**
@@ -437,6 +462,8 @@ export type UserCourseActivateCreateBody = {
 };
 
 export type UserCoursesList200Item = {
+  /** ID */
+  id?: number;
   /** ID пользователя */
   user?: number;
   /** ID курса */
@@ -445,6 +472,8 @@ export type UserCoursesList200Item = {
   has_access?: boolean;
   /** Дата зачисления */
   enrolled_at?: string;
+  /** ID last */
+  last_lesson?: number;
 };
 
 export type UserCoursesCreateBody = {
@@ -458,6 +487,13 @@ export type UserCoursesCreate201 = {
   message?: string;
   course_id?: number;
   user_id?: number;
+};
+
+export type UserCoursesPartialUpdateBody = {
+  /** ID записи в UserCourse */
+  id: number;
+  /** ID последнего просмотренного урока */
+  last_lesson: number;
 };
 
 export type UserListParams = {
@@ -1195,6 +1231,92 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     
+/**
+ * Получение списка результатов финального теста по ID курса и пользователя
+ */
+export const finalTestResultsList = (
+    params: FinalTestResultsListParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FinalTestResultsList200Item[]>(
+      {url: `/final-test-results/`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getFinalTestResultsListQueryKey = (params: FinalTestResultsListParams,) => {
+    return [`/final-test-results/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getFinalTestResultsListQueryOptions = <TData = Awaited<ReturnType<typeof finalTestResultsList>>, TError = ErrorType<void>>(params: FinalTestResultsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getFinalTestResultsListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof finalTestResultsList>>> = ({ signal }) => finalTestResultsList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FinalTestResultsListQueryResult = NonNullable<Awaited<ReturnType<typeof finalTestResultsList>>>
+export type FinalTestResultsListQueryError = ErrorType<void>
+
+
+export function useFinalTestResultsList<TData = Awaited<ReturnType<typeof finalTestResultsList>>, TError = ErrorType<void>>(
+ params: FinalTestResultsListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof finalTestResultsList>>,
+          TError,
+          Awaited<ReturnType<typeof finalTestResultsList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFinalTestResultsList<TData = Awaited<ReturnType<typeof finalTestResultsList>>, TError = ErrorType<void>>(
+ params: FinalTestResultsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof finalTestResultsList>>,
+          TError,
+          Awaited<ReturnType<typeof finalTestResultsList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFinalTestResultsList<TData = Awaited<ReturnType<typeof finalTestResultsList>>, TError = ErrorType<void>>(
+ params: FinalTestResultsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useFinalTestResultsList<TData = Awaited<ReturnType<typeof finalTestResultsList>>, TError = ErrorType<void>>(
+ params: FinalTestResultsListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof finalTestResultsList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getFinalTestResultsListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
 /**
  * Отправка ответов на финальный тест курса и получение оценки с возможным выдачей сертификата
  */
@@ -3828,6 +3950,67 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
 
       const mutationOptions = getUserCoursesCreateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Обновление последнего урока в курсе (last_lesson)
+ */
+export const userCoursesPartialUpdate = (
+    userCoursesPartialUpdateBody: BodyType<UserCoursesPartialUpdateBody>,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/user-courses/`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: userCoursesPartialUpdateBody
+    },
+      options);
+    }
+  
+
+
+export const getUserCoursesPartialUpdateMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userCoursesPartialUpdate>>, TError,{data: BodyType<UserCoursesPartialUpdateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof userCoursesPartialUpdate>>, TError,{data: BodyType<UserCoursesPartialUpdateBody>}, TContext> => {
+    
+const mutationKey = ['userCoursesPartialUpdate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof userCoursesPartialUpdate>>, {data: BodyType<UserCoursesPartialUpdateBody>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  userCoursesPartialUpdate(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UserCoursesPartialUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof userCoursesPartialUpdate>>>
+    export type UserCoursesPartialUpdateMutationBody = BodyType<UserCoursesPartialUpdateBody>
+    export type UserCoursesPartialUpdateMutationError = ErrorType<void>
+
+    export const useUserCoursesPartialUpdate = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof userCoursesPartialUpdate>>, TError,{data: BodyType<UserCoursesPartialUpdateBody>}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof userCoursesPartialUpdate>>,
+        TError,
+        {data: BodyType<UserCoursesPartialUpdateBody>},
+        TContext
+      > => {
+
+      const mutationOptions = getUserCoursesPartialUpdateMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }

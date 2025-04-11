@@ -13,14 +13,16 @@ interface AccessCourseProps {
     courseId: number
 }
 
-const handleHasAccess = (items: UserCoursesList200Item[] | undefined, courseId: number): boolean => {
-    if (!items) return false
-    const hasAccess = items.some(i => i.course == courseId)
-    return hasAccess
+const handleHasAccess = (items: UserCoursesList200Item[] | undefined, courseId: number): { hasAccess: boolean, lastLesson: number, userCourseId: number } => {
+    if (!items) return { hasAccess: false, lastLesson: 0, userCourseId: 0 }
+    const userCourses = items.filter(i => i.course == courseId)
+
+    return { hasAccess: userCourses.length == 1, lastLesson: userCourses[0].last_lesson ?? 0, userCourseId: userCourses[0].id ?? 0 }
 }
 
 export const AccessCourse = ({ courseId }: AccessCourseProps) => {
     const { data, isLoading, error, queryKey } = useUserCoursesList()
+    const { hasAccess, lastLesson, userCourseId } = handleHasAccess(data, courseId)
     return <ShowFetchContent
         data={data}
         isLoading={isLoading}
@@ -29,7 +31,7 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
         loader={<Skeleton className="w-[170px] h-[36px]" />}
         error={<BuyCourseButton queryKey={queryKey} courseId={courseId} />}
         content={<>
-            {handleHasAccess(data, courseId) ? <NavigateToCourseButton courseId={courseId} /> : <BuyCourseButton courseId={courseId} queryKey={queryKey} />}
+            {hasAccess ? <NavigateToCourseButton userCourseId={userCourseId} lastLesson={lastLesson} courseId={courseId} /> : <BuyCourseButton courseId={courseId} queryKey={queryKey} />}
         </>
         }
     />
@@ -37,14 +39,15 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
 };
 
 
-const NavigateToCourseButton = ({ courseId }: { courseId: number }) => {
+const NavigateToCourseButton = ({ userCourseId, courseId, lastLesson }: { userCourseId: number, courseId: number, lastLesson: number }) => {
+
     const t = useTranslations('coursepage')
-    return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}`}>
+    const query = lastLesson == 0 ? "" : `&l=${lastLesson}`
+
+    return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}?uc=${userCourseId}${query}`}>
         <>
             <BookOpen /> {t('buttons.start')}</>
     </Link>
-
-
 }
 
 interface BuyCourseButtonProps {

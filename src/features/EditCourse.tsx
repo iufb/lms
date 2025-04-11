@@ -71,6 +71,7 @@ const Form = ({ data }: EditCourseProps) => {
         <Input {...register('title_kz', { required: 'Обязательное поле' })} label="Название на казахском" />
         <Textarea {...register('description_ru', { required: 'Обязательное поле' })} label="Описание на русском" />
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
+        <Input {...register('hours', { required: 'Обязательное поле' })} type="number" label="Часы" />
         <Input {...register('price', { required: 'Обязательное поле' })} type="number" label="Цена" />
         <Controller name="is_published" rules={{ required }} control={control} render={({ field: { value, onChange } }) =>
             <Label className="my-2">

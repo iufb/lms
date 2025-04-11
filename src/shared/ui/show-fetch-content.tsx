@@ -16,8 +16,10 @@ export function ShowFetchContent<T>({ customError, data, isError, isLoading, loa
     if (isError) {
         if (isError.status == 404 && !customError) {
             return <div className="w-full border border-yellow-500 bg-yellow-200 text-yellow-950 rounded-md text-center py-3">Нет записей</div>
-        } else {
+        } else if (customError) {
             return error
+        } else {
+            <div className="w-full border border-red-500 bg-red-200 text-red-950 rounded-md text-center py-3">Ошибка загрузки</div>
         }
     }
     if (!data) return loader

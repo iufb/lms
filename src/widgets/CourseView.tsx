@@ -33,7 +33,7 @@ export const CourseView = ({ id }: { id: number }) => {
         </Card>
 
         <section className="flex flex-col md:flex-row gap-2">
-            <Tabs defaultValue="about" className="md:flex-2/3 ">
+            <Tabs defaultValue="about" className="md:max-w-2/3 md:w-full ">
                 <TabsList className="self-center w-1/2">
                     <TabsTrigger value="about">{t('tabs.about')}</TabsTrigger>
                     <TabsTrigger value="lessons">{t('tabs.lessons')}</TabsTrigger>
@@ -51,7 +51,7 @@ export const CourseView = ({ id }: { id: number }) => {
                     <LessonsList courseId={id} mode="user" />
                 </TabsContent>
             </Tabs>
-            <Card className="md:flex-1/3 h-40">
+            <Card className="md:w-1/3 h-40">
                 <CardHeader>
                     <CardTitle>{t('about.title')}</CardTitle>
                     <CardDescription className="opacity-0 h-0">Информация о курсе</CardDescription>
@@ -59,9 +59,9 @@ export const CourseView = ({ id }: { id: number }) => {
                 <CardContent>
                     <div>
                         <h4 className="text-sm font-medium text-muted-foreground">
-                            {t('about.added')}
+                            {t('about.hours')}
                         </h4>
-                        <p className="text-[15px]">{new Date().getDate()}</p>
+                        <p className="text-[15px]">{course.hours}</p>
                     </div>
                 </CardContent>
             </Card>

@@ -62,6 +62,7 @@ const Form = () => {
         <Input {...register('title_kz', { required: 'Обязательное поле' })} label="Название на казахском" />
         <Textarea {...register('description_ru', { required: 'Обязательное поле' })} label="Описание на русском" />
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
+        <Input {...register('hours', { required: 'Обязательное поле' })} type="number" label="Часы" />
         <Input {...register('price', { required: 'Обязательное поле' })} type="number" label="Цена" />
         <Button disabled={isPending} loading={isPending}>Создать</Button>
         <DrawerClose asChild>
