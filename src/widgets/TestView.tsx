@@ -125,8 +125,8 @@ export const TestView = ({ id, mode }: TestViewProps) => {
     }
     if (loading) return <div className="w-full flex-center h-52"><Loader2 size={48} className="animate-spin text-primary" /></div>
     if (finalTestResult && finalTestResult.length >= 2) {
-        return <section className="stack gap-4"><span className="px-4 py-2 bg-red-200 border border-red-300 rounded-lg ">{t('max')}</span>
-            <section className="px-4 py-2 border border-green-300 rounded-lg bg-green-200">
+        return <section className="stack gap-4"><span className="px-4 py-2 bg-red-200 dark:bg-red-600  border border-red-300 dark:border-red-700 rounded-lg ">{t('max')}</span>
+            <section className="px-4 py-2 border border-green-300 dark:border-green-700 rounded-lg bg-green-200 dark:bg-green-600">
                 <h3 className="text-md">{t('results.title')}</h3>
                 <p>1. {t('results.right')} {finalTestResult[0].score}</p>
                 <p>2. {t('results.right')} {finalTestResult[1].score}</p>
@@ -138,7 +138,7 @@ export const TestView = ({ id, mode }: TestViewProps) => {
             <Question qId={idx + 1} key={idx} q={q as QuestionData} answers={answers} select={selectAnswer} />
         ))}
         <section className="mt-auto flex flex-col gap-2 w-full">
-            {result != undefined && <span className="px-3 rounded-lg  py-2 text-center bg-green-300 border border-green-400">{t('result', { right: result })} / {questionsState.length}</span>}
+            {result != undefined && <span className="px-3 rounded-lg  py-2 text-center bg-green-300 dark:bg-green-600 border border-green-400  dark:border-green-700">{t('result', { right: result })} / {questionsState.length}</span>}
             {questionsState.length !== 0 && <Button loading={checkLessonTestPending || checkFinalTestPending} disabled={checkLessonTestPending || checkFinalTestPending || (answers.size < questionsState.length)} onClick={handleCheck} className="w-full justify-self-end">{t('btn')}</Button>}
         </section>
     </section>

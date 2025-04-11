@@ -1,3 +1,4 @@
+import { LocaleToggler } from "@/features/LocaleToggler"
 import { ThemeToggler } from "@/features/ThemeToggler"
 import { Link } from "@/i18n/navigation"
 import { Button } from "@/shared/ui/button"
@@ -13,6 +14,7 @@ export const Header = () => {
         </Link>
         <section className="flex gap-2">
             <ThemeToggler />
+            <LocaleToggler />
             <Button asChild>
                 <Link href={'/dashboard'}><User /> {t('header.dashboard')}</Link>
             </Button>
