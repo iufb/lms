@@ -1,5 +1,6 @@
 'use client'
-import { useCheckFinalTestCreate, useCheckTestCreate, useFinalTestResultsList, useGetFinalTestByCourseIdList, useGetLessonTestByLessonIdList } from "@/shared/api/generated";
+import { GetCertButton } from "@/features/GetCertButton";
+import { FinalTestResultsList200Item, useCheckFinalTestCreate, useCheckTestCreate, useFinalTestResultsList, useGetFinalTestByCourseIdList, useGetLessonTestByLessonIdList } from "@/shared/api/generated";
 import { getLocalized } from "@/shared/lib/utils";
 import { queryClient } from "@/shared/providers/query.provider";
 import { Button } from "@/shared/ui/button";
@@ -8,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/shared/ui/label";
 import { Loader2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface TestViewProps {
@@ -66,8 +67,8 @@ export const TestView = ({ id, mode }: TestViewProps) => {
     const { mutate: checkFinalTest, isPending: checkFinalTestPending } = useCheckFinalTestCreate({
         mutation: {
             onSuccess: (data) => {
-                setResult(data.correct)
                 queryClient.invalidateQueries({ queryKey })
+                setOpen(true)
             }
         }
     })
@@ -76,8 +77,9 @@ export const TestView = ({ id, mode }: TestViewProps) => {
     const [questionsState, setQuestions] = useState<QuestionData[]>([])
     const [answers, setAnswers] = useState<Answers>(new Map());
     const [result, setResult] = useState<number>()
-
+    const [open, setOpen] = useState(false)
     const locale = useLocale();
+
     const selectAnswer = (qId: number, answer: number) => {
         setAnswers(prev => {
             const updated = new Map(prev)
@@ -115,6 +117,7 @@ export const TestView = ({ id, mode }: TestViewProps) => {
             case 'lesson': if (lessonTest && lessonTest[0].id)
                 checkLessonTest({ data: { lesson_id: lessonTest[0].id, answers: Object.fromEntries(answers), language: locale } })
             case 'final': if (finalTest) {
+                //todoo
                 if (finalTestResult && finalTestResult.length >= 2) {
                     toast.error(t('max'))
                     return;
@@ -124,21 +127,15 @@ export const TestView = ({ id, mode }: TestViewProps) => {
         }
     }
     if (loading) return <div className="w-full flex-center h-52"><Loader2 size={48} className="animate-spin text-primary" /></div>
-    if (finalTestResult && finalTestResult.length >= 2) {
-        return <section className="stack gap-4"><span className="px-4 py-2 bg-red-200 dark:bg-red-600  border border-red-300 dark:border-red-700 rounded-lg ">{t('max')}</span>
-            <section className="px-4 py-2 border border-green-300 dark:border-green-700 rounded-lg bg-green-200 dark:bg-green-600">
-                <h3 className="text-md">{t('results.title')}</h3>
-                <p>1. {t('results.right')} {finalTestResult[0].score}</p>
-                <p>2. {t('results.right')} {finalTestResult[1].score}</p>
-            </section>
-        </section>
-    }
     return <section className="flex flex-col gap-4 min-h-[90%] ">
         {questionsState.map((q, idx) => (
             <Question qId={idx + 1} key={idx} q={q as QuestionData} answers={answers} select={selectAnswer} />
         ))}
         <section className="mt-auto flex flex-col gap-2 w-full">
-            {result != undefined && <span className="px-3 rounded-lg  py-2 text-center bg-green-300 dark:bg-green-600 border border-green-400  dark:border-green-700">{t('result', { right: result })} / {questionsState.length}</span>}
+            {mode == 'lesson' && result !== undefined && <span className="px-3 rounded-lg  py-2 text-center bg-green-300 dark:bg-green-600 border border-green-400  dark:border-green-700">{t('result', { right: result })} / {questionsState.length}</span>
+            }
+            {(finalTestResult && finalTestResult.length > 0) && mode == 'final' && <FinalResultDialog courseId={id} results={finalTestResult ?? []} qCount={questionsState.length} open={open} setOpen={setOpen} />
+            }
             {questionsState.length !== 0 && <Button loading={checkLessonTestPending || checkFinalTestPending} disabled={checkLessonTestPending || checkFinalTestPending || (answers.size < questionsState.length)} onClick={handleCheck} className="w-full justify-self-end">{t('btn')}</Button>}
         </section>
     </section>
@@ -162,3 +159,37 @@ const Question = ({ qId, q, answers, select }: { qId: number, q: QuestionData, a
         </section>
     );
 };
+
+interface FinalResultDialogProps {
+    open: boolean,
+    setOpen: Dispatch<SetStateAction<boolean>>
+    qCount: number,
+    courseId: number,
+    results: FinalTestResultsList200Item[]
+}
+const FinalResultDialog = ({ open, qCount, setOpen, results, courseId }: FinalResultDialogProps) => {
+    const bestResult = (results.sort((a, b) => {
+        if (!a.score || !b.score) return 1
+        return a.score - b.score
+    }))[0]
+
+    const t = useTranslations('finaltest.result')
+    const resultPersentage = ((bestResult.score ?? 0) * 100) / qCount
+    return <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
+        <DialogTrigger className="text-end my-2 text-gray-500">{t('btn')}</DialogTrigger>
+        <DialogContent
+            onInteractOutside={(e) => {
+                e.preventDefault();
+            }}
+        >
+            <DialogHeader>
+                <DialogTitle>{t('title')}</DialogTitle>
+                <DialogDescription>
+                    {t('description')}</DialogDescription>
+            </DialogHeader>
+            <p>{t('best', { resultPersentage })}</p>
+            <span>{t('tries', { tries: results.length })}</span>
+            {resultPersentage > 80 && <GetCertButton results={results} courseId={courseId} />}
+        </DialogContent>
+    </Dialog>
+}

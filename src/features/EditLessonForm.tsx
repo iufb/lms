@@ -1,5 +1,6 @@
 'use client'
 import { generatePresignedUrlCreate, Lesson, LessonPartialUpdateBody, useLessonPartialUpdate, useLessonRead } from "@/shared/api/generated";
+import { useChanged } from "@/shared/hooks/use-changed";
 import { required, uploadToS3 } from "@/shared/lib/utils";
 import { queryClient } from "@/shared/providers/query.provider";
 import { presignedUrlResponse } from "@/shared/types";
@@ -7,8 +8,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import JoditEditorComponent from "@/shared/ui/jodit";
 import { Label } from "@/shared/ui/label";
-import isEqual from "lodash.isequal";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ReactPlayer from "react-player";
 import { toast } from "sonner";
@@ -41,7 +41,7 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
         watch,
         getValues,
         reset,
-        formState: { errors },
+        formState: { errors, isDirty },
     } = useForm<EditLessonDTO>()
     useEffect(() => {
         if (defaultValues) {
@@ -91,14 +91,12 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
 
     const watched = watch();
 
-    const isUnchanged = useMemo(() => {
-        return isEqual(defaultValues, watched);
-    }, [defaultValues, watched]);
+    const { isChanged } = useChanged({ initial: defaultValues ? defaultValues : {}, watched })
 
     return <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
 
         <Label className="text-2xl">Изменить данные урока</Label>
-        <Button disabled={loading || isUnchanged} loading={loading} className="w-fit self-end">Изменить</Button>
+        <Button disabled={loading || !isChanged} loading={loading} className="w-fit self-end">Изменить</Button>
 
         <Input type="number" {...register('order_num', { required })} error={errors.order_num?.message} label="Номер урока" />
 

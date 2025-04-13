@@ -77,7 +77,7 @@ const LessonLink = ({ lesson }: LessonLinkProps) => {
     const isDisabled = current ? current < lesson.order_num : false
 
     //@ts-ignore
-    const isDone = current ? current >= lesson.order_num : false
+    const isDone = current ? current > lesson.order_num : false
 
 
     console.log(current, ' current')
