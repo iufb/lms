@@ -55,7 +55,7 @@ AXIOS_INSTANCE.interceptors.response.use(
                 console.error('Token refresh failed:', refreshError);
                 deleteCookie('access');
                 deleteCookie('refresh');
-                window.location.pathname = '/ru/login'
+                window.location.pathname = `${process.env.NEXT_PUBLIC_FRONTEND_URL}ru/login`
                 return Promise.reject(refreshError);
             }
         }

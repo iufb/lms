@@ -1,7 +1,6 @@
 'use client'
 
-import { useCourseRead, usePaymentList, usePaymentPartialUpdate, useUserCoursesCreate, useUserList } from "@/shared/api/generated";
-import { Payment } from "@/shared/api/generated1";
+import { Payment, useCourseRead, usePaymentList, usePaymentPartialUpdate, useUserCoursesCreate, useUserList } from "@/shared/api/generated";
 import { queryClient } from "@/shared/providers/query.provider";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/ui/alert-dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -134,7 +133,7 @@ const GiveAccessButton = ({ qKey, payment, userId, courseId, courseName, fullnam
             onSuccess: () => {
                 toast.success(`Доступ к курсу ${courseName} для  ${fullname} открыт`)
                 if (payment.id)
-                    updatePayment({ id: payment.id, data: { ...payment, status: 'paid' } })
+                    updatePayment({ id: payment.id.toString(), data: { ...payment, status: 'paid' } })
             }, onError: (e) => {
                 console.error(e)
                 toast.error('Произошла ошибка, попробуйте позже')

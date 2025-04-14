@@ -1,4 +1,4 @@
-import { FinalTestResultsList200Item, useCourseRead, useUserCertificateByIdList, useUserCertificatesList, useUserList } from "@/shared/api/generated";
+import { FinalTestResultsList200Item, useUserCertificateByIdList, useUserCertificatesList } from "@/shared/api/generated";
 import { useCert } from "@/shared/hooks/use-cert";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -14,18 +14,9 @@ interface GetCertButtonProps {
 export const GetCertButton = ({ courseId, results }: GetCertButtonProps) => {
     const t = useTranslations('cert')
     const { getCert } = useCert({ mode: 'save' })
+
     const { data: certs } = useUserCertificatesList()
-    const bestResult = (results.sort((a, b) => {
-        if (!a.score || !b.score) return 1
-        return a.score - b.score
-    }))[0]
 
-    const userId = bestResult?.user
-
-    if (!userId) return <div>no user id</div>;
-
-    const { data: course, } = useCourseRead(courseId)
-    const { data: user } = useUserList({ user_id: userId })
     const cert = certs?.find(c => c.course == courseId)
 
     const { data: certData } = useUserCertificateByIdList({ certificate_id: cert?.id ?? 0 })
