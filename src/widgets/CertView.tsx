@@ -2,6 +2,7 @@
 
 import { useUserCertificateByIdList } from "@/shared/api/generated"
 import { useCert } from "@/shared/hooks/use-cert"
+import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 
 interface CertViewProps {
@@ -28,5 +29,5 @@ export const CertView = ({ id }: CertViewProps) => {
         cert
     ])
 
-    return <section className="w-full bg-black min-h-screen ">{url && <iframe className="w-full h-screen" src={url} />}</section>
+    return <section className="w-full bg-black min-h-screen flex-center ">{url ? <iframe className="w-full h-screen" src={url} /> : <Loader2 size={42} className="animate-spin text-primary" />}</section>
 }

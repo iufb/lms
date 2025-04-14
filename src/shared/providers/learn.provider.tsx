@@ -52,7 +52,7 @@ export const LearnContextProvider = ({ children, courseId }: { children: ReactNo
                 return
             }
 
-            const current = selectedCourse.last_lesson ? selectedCourse.last_lesson : null
+            const current = getCurrent(selectedCourse.last_lesson)
             const next = getNextLesson(current)
             console.log(courseLessonsList, 'list')
             console.log(next, 'enxt')
@@ -61,6 +61,10 @@ export const LearnContextProvider = ({ children, courseId }: { children: ReactNo
 
     }, [userCourses, courseLessonsList])
 
+    const getCurrent = (last?: number) => {
+        if (!last || last == 0) return 1
+        return last
+    }
     const getNextLesson = (
         currentOrderNum: number | null
     ): number | null => {

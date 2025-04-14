@@ -1,4 +1,4 @@
-import { FinalTestResultsList200Item, useCourseRead, useUserCertificatesList, useUserList } from "@/shared/api/generated";
+import { FinalTestResultsList200Item, useCourseRead, useUserCertificateByIdList, useUserCertificatesList, useUserList } from "@/shared/api/generated";
 import { useCert } from "@/shared/hooks/use-cert";
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -28,11 +28,12 @@ export const GetCertButton = ({ courseId, results }: GetCertButtonProps) => {
     const { data: user } = useUserList({ user_id: userId })
     const cert = certs?.find(c => c.course == courseId)
 
-    if (!course || !user || !certs || !cert) return <Skeleton className="w-full h-10 rounded-lg" />
+    const { data: certData } = useUserCertificateByIdList({ certificate_id: cert?.id ?? 0 })
+
+    if (!certData) return <Skeleton className="w-full h-10 rounded-lg" />
 
     const data = {
-        // @ts-ignore
-        date: cert.issued_at, id: cert.id?.toString(), percentage: `${bestResult.score * 100 / Object.keys(bestResult.answer ?? {}).length}`, atempts: `${results.length}`, courseRu: course.title_ru, courseKz: course.title_kz, name: user.full_name, place: user.workplace, position: user.position, rightCount: `${bestResult.score}`, phone: `+77751231212`
+        ...certData, phone: `+7 771 532 21 50`
     }
 
     return <Button onClick={() => getCert(data)}>{t('getCert')}</Button>

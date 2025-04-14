@@ -1,16 +1,19 @@
 'use client'
 import { CourseLessonsList200Item, useCourseLessonsList } from "@/shared/api/generated"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
+import { OrderNumber } from "@/shared/ui/order"
 import { Separator } from "@/shared/ui/separator"
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content"
 import { Skeleton } from "@/shared/ui/skeleton"
 import { useLocale } from "next-intl"
 import Link from "next/link"
 import React from 'react'
+
 interface LessonsListProps {
     courseId: number
     mode: 'admin' | 'user'
 }
+
 export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
     const { data, isLoading, error, queryKey } = useCourseLessonsList({ course_id: courseId })
     const locale = mode == 'user' && useLocale()
@@ -45,9 +48,4 @@ export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
         }
     />
 }
-const OrderNumber = ({ order }: { order?: number }) => {
-    return <div className="mt-1 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border"><span className="text-xs">{order}</span></div>
-
-}
-
 
