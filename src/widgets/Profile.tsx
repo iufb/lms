@@ -3,6 +3,7 @@
 import { Link as IntlLink } from "@/i18n/navigation"
 import { useCourseRead, UserCertificatesList200Item, useUserCertificatesList, useUserCoursesList } from "@/shared/api/generated"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
+import { Error } from "@/shared/ui/error"
 import { OrderNumber } from "@/shared/ui/order"
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -26,7 +27,7 @@ export const Profile = () => {
                     isLoading={isLoading}
                     isError={error}
                     loader={Array.from({ length: 3 }).map((_, id) => <Skeleton key={id} className="w-full h-[46px] my-2" />)}
-                    error={<div>error</div>}
+                    error={<Error>{t('error')}</Error>}
                     content={userCourses?.map((c, idx) => <CourseItem idx={idx + 1} key={c.id} id={c.course} certs={certs} />)}
                 />
 

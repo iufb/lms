@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { CourseLessonsList200Item, useCourseRead } from "@/shared/api/generated";
 import { cn, getLocalized } from "@/shared/lib/utils";
 import { useLearn } from "@/shared/providers/learn.provider";
+import { Error } from "@/shared/ui/error";
 import { Separator } from "@/shared/ui/separator";
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -37,7 +38,7 @@ const Top = ({ courseId }: LearnSidebarProps) => {
             data={course}
             isLoading={isLoading}
             isError={error}
-            error={<div>error</div>}
+            error={<Error>Ошибка загрузки</Error>}
             loader={<Skeleton className="w-full h-8 " />}
             content={
                 <h2 className="text-xl font-semibold truncate  ">{course && getLocalized(course, 'title', locale)}</h2>}
@@ -56,7 +57,7 @@ const Main = ({ courseId }: LearnSidebarProps) => {
         loader={<section className={cn(container)}>
             {Array.from({ length: 7 }).map((s, id) => <Skeleton key={id} className="w-full h-8" />)}
         </section>}
-        error={<div>error</div>}
+        error={<Error>Ошибка загрузки</Error>}
         content={<section className={cn(container, 'overflow-auto')}>
             {/* @ts-ignore */}
             {lessons?.sort((a, b) => a.order_num - b.order_num).map((l) => <LessonLink key={l.id} lesson={l} />)}

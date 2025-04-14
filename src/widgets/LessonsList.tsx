@@ -1,11 +1,12 @@
 'use client'
 import { CourseLessonsList200Item, useCourseLessonsList } from "@/shared/api/generated"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card"
+import { Error } from "@/shared/ui/error"
 import { OrderNumber } from "@/shared/ui/order"
 import { Separator } from "@/shared/ui/separator"
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import React from 'react'
 
@@ -15,6 +16,7 @@ interface LessonsListProps {
 }
 
 export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
+    const t = useTranslations('lessonlist')
     const { data, isLoading, error, queryKey } = useCourseLessonsList({ course_id: courseId })
     const locale = mode == 'user' && useLocale()
     return <ShowFetchContent<CourseLessonsList200Item>
@@ -22,11 +24,11 @@ export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
         isError={error}
         isLoading={isLoading}
         loader={Array.from({ length: 5 }).map((_, id) => <Skeleton key={id} className="w-full rounded-lg h-10 my-2" />)}
-        error={<div>error</div>}
+        error={<Error>{t('error')}</Error>}
         content={<Card>
             <CardHeader>
-                <CardTitle>Уроки</CardTitle>
-                <CardDescription>Список уроков для этого курса</CardDescription>
+                <CardTitle>{t('title')}</CardTitle>
+                <CardDescription>{t('desc')}</CardDescription>
             </CardHeader>
             <Separator />
             <CardContent>

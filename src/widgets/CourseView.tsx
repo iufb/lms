@@ -4,6 +4,7 @@ import { AccessCourse } from "@/features/AccessCourse";
 import { useCourseRead } from "@/shared/api/generated";
 import { getLocalized } from "@/shared/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Error } from "@/shared/ui/error";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { LessonsList } from "@/widgets/LessonsList";
 import { Loader2 } from "lucide-react";
@@ -15,7 +16,7 @@ export const CourseView = ({ id }: { id: number }) => {
     const { data: course, isError, isLoading } = useCourseRead(id)
 
     if (isLoading) return <div className="w-full h-40  flex-center"><Loader2 size={48} className="animate-spin text-primary" /></div>
-    if (isError) return <div>error</div>
+    if (isError) return <Error>{t('error')}</Error>
     if (!course) return <div>not found</div>
 
     const title = getLocalized(course, 'title', locale);
