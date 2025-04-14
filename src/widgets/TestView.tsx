@@ -50,6 +50,7 @@ type Answers = Map<string, string>
 export const TestView = ({ id, mode }: TestViewProps) => {
     const t = useTranslations('test.view')
 
+
     const { data: lessonTest, isLoading: isLessonTestLoading } = useGetLessonTestByLessonIdList({ lesson_id: id }, { query: { enabled: mode === 'lesson' } });
     const { data: finalTest, isLoading: isFinalTestLoading } = useGetFinalTestByCourseIdList({ course_id: id }, { query: { enabled: mode === 'final' } });
 

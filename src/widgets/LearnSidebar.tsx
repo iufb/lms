@@ -87,6 +87,7 @@ const LessonLink = ({ lesson }: LessonLinkProps) => {
     //@ts-ignore
     const isDone = current ? current > lesson.order_num : false
 
+    console.log(isDisabled, isDone)
 
     console.log(current, ' current')
 

@@ -447,7 +447,39 @@ export type SendCodeCreateBody = {
   phone_number: string;
 };
 
+export type UserCertificateByIdListParams = {
+/**
+ * ID сертификата
+ */
+certificate_id: number;
+};
+
+export type UserCertificateByIdList200 = {
+  /** Дата выдачи сертификата */
+  date?: string;
+  /** ID сертификата */
+  id?: string;
+  /** Процент правильных ответов */
+  percentage?: string;
+  /** Количество попыток прохождения теста */
+  atempts?: string;
+  /** Название курса на русском */
+  courseRu?: string;
+  /** Название курса на казахском */
+  courseKz?: string;
+  /** ФИО пользователя */
+  name?: string;
+  /** Место работы пользователя */
+  place?: string;
+  /** Должность пользователя */
+  position?: string;
+  /** Количество правильных ответов в лучшей попытке */
+  rightCount?: string;
+};
+
 export type UserCertificatesList200Item = {
+  /** ID */
+  id?: number;
   /** ID пользователя */
   user?: number;
   /** ID курса */
@@ -3660,6 +3692,92 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     
+/**
+ * Получение сертификата по ID с детальной информацией.
+ */
+export const userCertificateByIdList = (
+    params: UserCertificateByIdListParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserCertificateByIdList200>(
+      {url: `/user-certificate-by-id/`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getUserCertificateByIdListQueryKey = (params: UserCertificateByIdListParams,) => {
+    return [`/user-certificate-by-id/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getUserCertificateByIdListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificateByIdList>>, TError = ErrorType<void>>(params: UserCertificateByIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserCertificateByIdListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCertificateByIdList>>> = ({ signal }) => userCertificateByIdList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserCertificateByIdListQueryResult = NonNullable<Awaited<ReturnType<typeof userCertificateByIdList>>>
+export type UserCertificateByIdListQueryError = ErrorType<void>
+
+
+export function useUserCertificateByIdList<TData = Awaited<ReturnType<typeof userCertificateByIdList>>, TError = ErrorType<void>>(
+ params: UserCertificateByIdListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userCertificateByIdList>>,
+          TError,
+          Awaited<ReturnType<typeof userCertificateByIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useUserCertificateByIdList<TData = Awaited<ReturnType<typeof userCertificateByIdList>>, TError = ErrorType<void>>(
+ params: UserCertificateByIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userCertificateByIdList>>,
+          TError,
+          Awaited<ReturnType<typeof userCertificateByIdList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useUserCertificateByIdList<TData = Awaited<ReturnType<typeof userCertificateByIdList>>, TError = ErrorType<void>>(
+ params: UserCertificateByIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useUserCertificateByIdList<TData = Awaited<ReturnType<typeof userCertificateByIdList>>, TError = ErrorType<void>>(
+ params: UserCertificateByIdListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByIdList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserCertificateByIdListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
 /**
  * Получение списка сертификатов пользователя.
  */
