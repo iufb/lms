@@ -28,7 +28,7 @@ export const LearnView = ({ lessonOrder }: LearnViewProps) => {
             error={<div>no fetch errpr</div>}
             content={<section className="stack  gap-5 px-10">
                 <div
-                    className="px-3 w-full  bg-white rounded-lg py-2"
+                    className="px-3 w-full  text-black bg-white rounded-lg py-2"
                     dangerouslySetInnerHTML={{
                         __html: lesson && getLocalized(lesson, 'content', locale),
                     }}

@@ -7,19 +7,19 @@ import {
     SidebarTrigger,
 } from "@/shared/ui/sidebar";
 import { getCookie } from "cookies-next/server";
-import { Manrope } from 'next/font/google';
+import { Fira_Sans } from 'next/font/google';
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import '../globals.css';
 
 
-const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
+const fira = Fira_Sans({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
     const role = await getCookie('role', { cookies })
     console.log(role, 'ROLE')
     return <html lang="ru">
-        <body className={manrope.className}>
+        <body className={fira.className}>
             <SidebarProvider>
                 <AppSidebar role={`${role}`} />
                 <SidebarInset>

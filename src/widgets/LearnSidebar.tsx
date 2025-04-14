@@ -1,5 +1,7 @@
 'use client'
 
+import { LocaleToggler } from "@/features/LocaleToggler";
+import { ThemeToggler } from "@/features/ThemeToggler";
 import { Link } from "@/i18n/navigation";
 import { CourseLessonsList200Item, useCourseRead } from "@/shared/api/generated";
 import { cn, getLocalized } from "@/shared/lib/utils";
@@ -25,16 +27,22 @@ const Top = ({ courseId }: LearnSidebarProps) => {
     const locale = useLocale()
     const { data: course, isLoading, error } = useCourseRead(courseId)
 
-    return <ShowFetchContent
-        customError
-        data={course}
-        isLoading={isLoading}
-        isError={error}
-        error={<div>error</div>}
-        loader={<Skeleton className="w-full h-8 " />}
-        content={
-            <h2 className="text-xl font-semibold truncate  ">{course && getLocalized(course, 'title', locale)}</h2>}
-    />
+    return <section>
+        <section className="flex gap-3 justify-center my-2">
+            <ThemeToggler />
+            <LocaleToggler />
+        </section>
+        <ShowFetchContent
+            customError
+            data={course}
+            isLoading={isLoading}
+            isError={error}
+            error={<div>error</div>}
+            loader={<Skeleton className="w-full h-8 " />}
+            content={
+                <h2 className="text-xl font-semibold truncate  ">{course && getLocalized(course, 'title', locale)}</h2>}
+        />
+    </section>
 
 }
 const container = "flex flex-col gap-4 pl-4 pt-3"

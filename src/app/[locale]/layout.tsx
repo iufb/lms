@@ -1,11 +1,11 @@
 import { routing } from '@/i18n/routing';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { Manrope } from 'next/font/google';
+import { Fira_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 
 import { ThemeProvider } from '@/shared/providers/theme.provider';
 import "../globals.css";
-const manrope = Manrope({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
+const fira = Fira_Sans({ subsets: ['latin', 'cyrillic'], weight: ["300", "400", "500", "600", "700", "800"] });
 
 export default async function LocaleLayout({
     children,
@@ -22,7 +22,7 @@ export default async function LocaleLayout({
 
     return (
         <html lang={locale} suppressHydrationWarning>
-            <body className={manrope.className}>
+            <body className={fira.className}>
                 <NextIntlClientProvider>
                     <ThemeProvider
                         attribute="class"
