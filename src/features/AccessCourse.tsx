@@ -7,6 +7,8 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { QueryKey } from "@tanstack/react-query";
 import { BookOpen, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 interface AccessCourseProps {
@@ -42,7 +44,14 @@ export const AccessCourse = ({ courseId }: AccessCourseProps) => {
 const NavigateToCourseButton = ({ userCourseId, courseId, lastLesson }: { userCourseId: number, courseId: number, lastLesson: number }) => {
 
     const t = useTranslations('coursepage')
+    const searchParams = useSearchParams()
+    const router = useRouter()
     const query = lastLesson == 0 ? "" : `&l=${lastLesson}`
+    useEffect(() => {
+        const uc = searchParams.get('uc')
+        if (!uc)
+            router.replace(`?uc=${userCourseId}`)
+    }, [userCourseId])
 
     return <Link className="trigger min-w-[170px]" href={`/lessons/${courseId}?uc=${userCourseId}${query}`}>
         <>

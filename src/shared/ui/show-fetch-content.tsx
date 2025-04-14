@@ -1,4 +1,5 @@
 import { ErrorType } from "@/shared/api/custom-instance"
+import { Error } from "@/shared/ui/error"
 import { ReactNode } from "react"
 
 interface ShowFetchContentProps<T> {
@@ -19,7 +20,7 @@ export function ShowFetchContent<T>({ customError, data, isError, isLoading, loa
         } else if (customError) {
             return error
         } else {
-            <div className="w-full border border-red-500 bg-red-200 text-red-950 rounded-md text-center py-3">Ошибка загрузки</div>
+            <Error>Ошибка загрузки</Error>
         }
     }
     if (!data) return loader
