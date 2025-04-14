@@ -8,7 +8,7 @@ export async function generateMetadata(
     const t = await getTranslations('main')
     return {
         title: t('meta.title'),
-        description: t('meta.desctioption')
+        description: t('meta.description')
     }
 }
 export default function HomePage() {

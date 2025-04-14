@@ -90,7 +90,9 @@ const FinishLesson = ({ lastLesson }: FinishLessonProps) => {
             mutate({ data: { id: +userCourseId, last_lesson: next ? next : lastLesson } })
         }
     }
+    const isDone = (current && lastLesson) ? current > lastLesson : false
 
+    if (isDone) return
     return <Button onClick={finish} disabled={!userCourseId || isPending || !lastLesson} loading={isPending} variant={'outline'} className="w-1/2">{t('learningPage.endLesson')}</Button>
 
 }

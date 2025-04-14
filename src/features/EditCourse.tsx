@@ -1,6 +1,7 @@
 "use client"
 
 import { Course, useCourseUpdate } from "@/shared/api/generated"
+import { useChanged } from "@/shared/hooks/use-changed"
 import { queryClient } from "@/shared/providers/query.provider"
 import { Button } from "@/shared/ui/button"
 import { Checkbox } from "@/shared/ui/checkbox"
@@ -22,7 +23,7 @@ export function EditCourse({ data }: EditCourseProps) {
             <DrawerTrigger asChild className="w-fit trigger">
                 <span>Редактировать курс</span>
             </DrawerTrigger>
-            <DrawerContent>
+            <DrawerContent >
                 <DrawerHeader>
                     <DrawerTitle className="text-center">Редактирование курса</DrawerTitle>
                     <DrawerDescription className="text-center">Здесь Вы можете изменить данные курса.</DrawerDescription>
@@ -65,6 +66,7 @@ const Form = ({ data }: EditCourseProps) => {
         }
         editCourse({ id: data.id, data })
     }
+    const { isChanged } = useChanged({ initial: data, watched: watch() })
 
     return <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl mx-auto gap-2 flex flex-col" >
         <Input {...register('title_ru', { required: 'Обязательное поле' })} label="Название на русском" />
@@ -78,10 +80,12 @@ const Form = ({ data }: EditCourseProps) => {
                 <Checkbox checked={value} onCheckedChange={c => onChange(c)} />Опубликован</Label>
         } />
         {errors.is_published?.message && <span className="text-red-500">{errors.is_published.message}</span>}
-        <Button disabled={isPending} loading={isPending}>Изменить</Button>
-        <DrawerClose asChild>
-            <Button variant="outline">Отмена</Button>
-        </DrawerClose>
+        <section className="flex gap-2 justify-end">
+            <Button disabled={isPending || !isChanged} loading={isPending}>Изменить</Button>
+            <DrawerClose asChild>
+                <Button variant="outline">Отмена</Button>
+            </DrawerClose>
+        </section>
 
     </form >
 }

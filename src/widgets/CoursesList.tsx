@@ -31,7 +31,7 @@ export const CoursesList = () => {
                             <p className="h-12 overflow-hidden text-ellipsis line-clamp-2">{c.description_ru}</p>
                         </CardContent>
                         <Separator />
-                        <CardFooter className="items-end">
+                        <CardFooter className="items-end flex-wrap gap-2 justify-center">
 
                             <EditCourse data={c} />
                             <Button variant={'link'}>
