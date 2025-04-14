@@ -31,7 +31,7 @@ function authMiddleware(req: NextRequest) {
     const locale = pathname.split("/")[1];
     const params = pathname.slice(4, pathname.length)
     if ((!publicRoutes.includes(params)) && !token) {
-        return NextResponse.redirect(new URL(`/${locale}/login`, req.url))
+        return NextResponse.redirect(new URL(`kz/login`, req.url))
     }
 
     if ((publicRoutes.includes(params)) && token) {
