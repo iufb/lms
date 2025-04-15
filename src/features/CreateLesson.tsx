@@ -84,11 +84,11 @@ export const CreateLesson = ({ id }: { id: number }) => {
                 <h3>Редактирование (Русский) </h3>
                 <Input type="number" {...register('order_num', { required })} error={errors.order_num?.message} label="Номер урока" />
                 <Input {...register('title_ru', { required })} error={errors.title_ru?.message} label="Название на русском" />
-                <Input {...register('media_ru', { required })} error={errors.media_ru?.message} label="Видео" type='file' />
+                <Input {...register('media_ru')} error={errors.media_ru?.message} label="Видео" type='file' />
                 <Controller control={control} rules={{ required }} name={'content_ru'} render={({ field: { value, onChange } }) => <JoditEditorComponent error={errors.content_ru?.message} label="Содержание на русском" value={value} onChange={(value) => onChange(value)} />} />
                 <h3>Редактирование (Казахский)</h3>
                 <Input {...register('title_kz', { required })} error={errors.title_kz?.message} label="Название на казахском" />
-                <Input {...register('media_kz', { required })} error={errors.media_kz?.message} label="Видео" type='file' />
+                <Input {...register('media_kz')} error={errors.media_kz?.message} label="Видео" type='file' />
                 <Controller control={control} name={'content_kz'} rules={{ required }} render={({ field: { value, onChange } }) => <JoditEditorComponent error={errors.content_kz?.message} label="Содержание на казахском" value={value} onChange={(value) => onChange(value)} />} />
             </form>
 

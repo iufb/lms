@@ -23,12 +23,12 @@ export const CoursesList = () => {
                 {data?.map(c =>
                     <Card key={c.id}>
                         <CardHeader >
-                            <CardTitle>{c.title_ru}</CardTitle>
-                            <CardDescription>{c.title_kz}</CardDescription>
+                            <CardTitle className="truncate">{c.title_ru}</CardTitle>
+                            <CardDescription className="opacity-0 h-0">{c.title_kz}</CardDescription>
                             <Badge>{c.is_published ? "Опубликован" : "Не опубликован"}</Badge>
                         </CardHeader>
                         <CardContent>
-                            <p className="h-12 overflow-hidden text-ellipsis line-clamp-2">{c.description_ru}</p>
+                            <p className="overflow-hidden min-h-[72px] text-ellipsis line-clamp-3">{c.description_ru}</p>
                         </CardContent>
                         <Separator />
                         <CardFooter className="items-end flex-wrap gap-2 justify-center">

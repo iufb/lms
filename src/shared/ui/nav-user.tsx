@@ -26,7 +26,8 @@ import {
 import { deleteCookie } from "cookies-next"
 import { useRouter } from "next/navigation"
 const userLabel = {
-    admin: "Админ"
+    admin: "Админ",
+    ses: "Сотрудник CЭС"
 }
 export function NavUser({
     user,

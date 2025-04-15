@@ -14,7 +14,7 @@ async function adminMiddleware(req: NextRequest) {
         return NextResponse.redirect(new URL(`/ru/login`, req.url))
     }
 
-    const isAdmin = role?.value == 'admin'
+    const isAdmin = role?.value == 'admin' || role?.value == 'ses'
 
     if (!isAdmin && pathname == '/admin') {
         return NextResponse.redirect(new URL(`/ru/login`, req.url))

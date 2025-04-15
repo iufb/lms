@@ -168,7 +168,7 @@ export type UserRole = typeof UserRole[keyof typeof UserRole];
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserRole = {
   student: 'student',
-  teacher: 'teacher',
+  ses: 'ses',
   admin: 'admin',
 } as const;
 
@@ -359,6 +359,23 @@ export type GetLessonTestByLessonIdListParams = {
 lesson_id: number;
 };
 
+export type GetUsersListList200Item = {
+  /** ID пользователя */
+  id?: number;
+  /** Номер телефона */
+  phone_number?: string;
+  /** Полное имя */
+  full_name?: string;
+  /** Роль пользователя */
+  role?: string;
+  /** ИИН */
+  iin?: string;
+  /** Должность */
+  position?: string;
+  /** Место работы */
+  workplace?: string;
+};
+
 /**
  * Ответы на вопросы, где ключ - ID вопроса, а значение - выбранный ответ
  */
@@ -475,6 +492,34 @@ export type UserCertificateByIdList200 = {
   position?: string;
   /** Количество правильных ответов в лучшей попытке */
   rightCount?: string;
+};
+
+export type UserCertificateByUserListParams = {
+/**
+ * ID пользователя
+ */
+user_id: number;
+};
+
+/**
+ * Объект пользователя
+ */
+export type UserCertificateByUserList200ItemUser = { [key: string]: unknown };
+
+/**
+ * Объект курса
+ */
+export type UserCertificateByUserList200ItemCourse = { [key: string]: unknown };
+
+export type UserCertificateByUserList200Item = {
+  /** ID сертификата */
+  id?: number;
+  /** Объект пользователя */
+  user?: UserCertificateByUserList200ItemUser;
+  /** Объект курса */
+  course?: UserCertificateByUserList200ItemCourse;
+  /** Дата выдачи */
+  issued_at?: string;
 };
 
 export type UserCertificatesList200Item = {
@@ -2046,6 +2091,91 @@ export function useGetLessonTestByLessonIdList<TData = Awaited<ReturnType<typeof
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetLessonTestByLessonIdListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Получить список всех пользователей с ролью 'student'. Доступно только для пользователей с ролью 'ses'.
+ */
+export const getUsersListList = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetUsersListList200Item[]>(
+      {url: `/get-users-list/`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetUsersListListQueryKey = () => {
+    return [`/get-users-list/`] as const;
+    }
+
+    
+export const getGetUsersListListQueryOptions = <TData = Awaited<ReturnType<typeof getUsersListList>>, TError = ErrorType<void>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetUsersListListQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsersListList>>> = ({ signal }) => getUsersListList(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUsersListListQueryResult = NonNullable<Awaited<ReturnType<typeof getUsersListList>>>
+export type GetUsersListListQueryError = ErrorType<void>
+
+
+export function useGetUsersListList<TData = Awaited<ReturnType<typeof getUsersListList>>, TError = ErrorType<void>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUsersListList>>,
+          TError,
+          Awaited<ReturnType<typeof getUsersListList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUsersListList<TData = Awaited<ReturnType<typeof getUsersListList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUsersListList>>,
+          TError,
+          Awaited<ReturnType<typeof getUsersListList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUsersListList<TData = Awaited<ReturnType<typeof getUsersListList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetUsersListList<TData = Awaited<ReturnType<typeof getUsersListList>>, TError = ErrorType<void>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUsersListList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetUsersListListQueryOptions(options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -3767,6 +3897,92 @@ export function useUserCertificateByIdList<TData = Awaited<ReturnType<typeof use
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getUserCertificateByIdListQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Получение списка сертификатов по ID пользователя (только для роли 'ses').
+ */
+export const userCertificateByUserList = (
+    params: UserCertificateByUserListParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserCertificateByUserList200Item[]>(
+      {url: `/user-certificate-by-user/`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getUserCertificateByUserListQueryKey = (params: UserCertificateByUserListParams,) => {
+    return [`/user-certificate-by-user/`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getUserCertificateByUserListQueryOptions = <TData = Awaited<ReturnType<typeof userCertificateByUserList>>, TError = ErrorType<void>>(params: UserCertificateByUserListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getUserCertificateByUserListQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof userCertificateByUserList>>> = ({ signal }) => userCertificateByUserList(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type UserCertificateByUserListQueryResult = NonNullable<Awaited<ReturnType<typeof userCertificateByUserList>>>
+export type UserCertificateByUserListQueryError = ErrorType<void>
+
+
+export function useUserCertificateByUserList<TData = Awaited<ReturnType<typeof userCertificateByUserList>>, TError = ErrorType<void>>(
+ params: UserCertificateByUserListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userCertificateByUserList>>,
+          TError,
+          Awaited<ReturnType<typeof userCertificateByUserList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useUserCertificateByUserList<TData = Awaited<ReturnType<typeof userCertificateByUserList>>, TError = ErrorType<void>>(
+ params: UserCertificateByUserListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof userCertificateByUserList>>,
+          TError,
+          Awaited<ReturnType<typeof userCertificateByUserList>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useUserCertificateByUserList<TData = Awaited<ReturnType<typeof userCertificateByUserList>>, TError = ErrorType<void>>(
+ params: UserCertificateByUserListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useUserCertificateByUserList<TData = Awaited<ReturnType<typeof userCertificateByUserList>>, TError = ErrorType<void>>(
+ params: UserCertificateByUserListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof userCertificateByUserList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getUserCertificateByUserListQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

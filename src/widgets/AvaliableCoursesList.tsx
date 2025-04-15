@@ -4,7 +4,7 @@ import { AvailableCoursesList200Item, useAvailableCoursesList } from "@/shared/a
 import { getLocalized } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Separator } from "@/shared/ui/separator";
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -29,10 +29,13 @@ export const AvaliableCoursesList = () => {
                     const description = getLocalized(c, 'description', locale);
                     return <Card key={c.id}>
                         <CardHeader >
-                            <CardTitle className='h-8 overflow-hidden text-ellipsis line-clamp-3'>{title}</CardTitle>
-                            <CardDescription className='h-12 overflow-hidden text-ellipsis line-clamp-3'>{description}</CardDescription>
+                            <CardTitle className='line-clamp-3'>{title}</CardTitle>
+                            <CardDescription className=' max-w-md h-0 overflow-hidden text-ellipsis line-clamp-3 opacity-0'>{description}</CardDescription>
                             <Badge>{t('price')} {c.price}</Badge>
                         </CardHeader>
+                        <CardContent>
+                            <p className=' overflow-hidden text-ellipsis line-clamp-3'>{description}</p>
+                        </CardContent>
                         <Separator />
                         <CardFooter className="items-end">
                             <Button variant={'link'}>

@@ -58,8 +58,14 @@ const Form = () => {
     }
 
     return <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl mx-auto gap-2 flex flex-col" >
-        <Input {...register('title_ru', { required: 'Обязательное поле' })} label="Название на русском" />
-        <Input {...register('title_kz', { required: 'Обязательное поле' })} label="Название на казахском" />
+        <Input error={errors.title_ru?.message} {...register('title_ru', {
+            required: 'Обязательное поле'
+            , maxLength: { value: 75, message: 'Максимальная длина 75 символов' }
+        })} label="Название на русском (Максимум 75 символов)" />
+        <Input error={errors.title_kz?.message} {...register('title_kz', {
+            required: 'Обязательное поле',
+            maxLength: { value: 75, message: 'Максимальная длина 75 символов' }
+        })} label="Название на казахском (Максимум 75 символов)" />
         <Textarea {...register('description_ru', { required: 'Обязательное поле' })} label="Описание на русском" />
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
         <Input {...register('hours', { required: 'Обязательное поле' })} type="number" label="Часы" />

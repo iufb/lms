@@ -42,7 +42,11 @@ export const LoginForm = () => {
 
                 if (data.role == 'admin') {
                     router.push('/admin')
-                } else {
+                }
+                else if (data.role == 'ses') {
+                    router.push('/admin/users')
+                }
+                else {
                     localeRouter.push('/')
                 }
 

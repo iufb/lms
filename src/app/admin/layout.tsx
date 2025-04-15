@@ -6,9 +6,7 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from "@/shared/ui/sidebar";
-import { getCookie } from "cookies-next/server";
-import { Fira_Sans } from 'next/font/google';
-import { cookies } from "next/headers";
+import { getCookie } from "cookies-next/server"; import { Fira_Sans } from 'next/font/google'; import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import '../globals.css';
 

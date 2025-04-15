@@ -24,7 +24,7 @@ export const Profile = () => {
             <CardContent>
                 <ShowFetchContent
                     data={userCourses}
-                    isLoading={isLoading}
+                    isLoading={isLoading || certLoading}
                     isError={error}
                     loader={Array.from({ length: 3 }).map((_, id) => <Skeleton key={id} className="w-full h-[46px] my-2" />)}
                     error={<Error>{t('error')}</Error>}
@@ -49,7 +49,7 @@ const CourseItem = ({ id, idx, certs }: CourseItemProps) => {
     const certId = certs ? certs.find(c => c.course == id)?.id : undefined
 
     return <section className="px-3 py-2 border border-border rounded-lg flex gap-2 items-center">
-        {(courseLoading) ? <Skeleton className="w-[calc(100%-24px)] h-[30px]" /> : <IntlLink href={`/courses/${course?.id}`} className=""> <section className="" ><OrderNumber order={idx} /><span className="mt-1 ml-3">{course?.title_ru}</span></section></IntlLink>}
+        {(courseLoading) ? <Skeleton className="w-[calc(100%-24px)] h-[30px]" /> : <IntlLink href={`/courses/${course?.id}`} className=""> <section className="flex max-w-[95%]" ><OrderNumber order={idx} /><span className="mt-1 ml-3 line-clamp-1 ">{course?.title_ru}</span></section></IntlLink>}
         {certId && <Link className="ml-auto" href={`/cert/${certId}`}><ClipboardList size={20} /></Link>}
     </section>
 }

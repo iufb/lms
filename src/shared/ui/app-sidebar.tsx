@@ -45,7 +45,7 @@ export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sideb
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <Links />
+                <Links role={role} />
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={{ name: role as string, avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }} />
@@ -54,21 +54,21 @@ export function AppSidebar({ role, ...props }: React.ComponentProps<typeof Sideb
     )
 }
 
-const Links = () => {
+const Links = ({ role }: { role: string }) => {
     const pathname = usePathname()
     return <ul className="flex flex-col gap-3 text-slate-800 text-lg">
-        <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin' && 'bg-slate-200 rounded-lg')}>
+        {role == 'admin' && <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin' && 'bg-slate-200 rounded-lg')}>
             <Book size={18} />
             <Link className="w-full" href={'/admin'}>Курсы</Link>
-        </li>
+        </li>}
         <li className={cn(' flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin/users' && 'bg-slate-200 rounded-lg')}>
             <User size={18} />
             <Link className="w-full" href={'/admin/users'}>Пользователи</Link>
         </li>
-        <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin/requests' && 'bg-slate-200 rounded-lg')}>
+        {role == 'admin' && <li className={cn('flex items-center pl-5 py-1.5  gap-2 ', pathname == '/admin/requests' && 'bg-slate-200 rounded-lg')}>
             <Inbox size={18} />
             <Link className="w-full" href={'/admin/requests'}>Запросы на доступ</Link>
-        </li>
+        </li>}
 
     </ul>
 

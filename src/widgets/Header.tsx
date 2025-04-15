@@ -1,7 +1,9 @@
+'use client'
 import { LocaleToggler } from "@/features/LocaleToggler"
 import { ThemeToggler } from "@/features/ThemeToggler"
-import { Link } from "@/i18n/navigation"
-import { Button } from "@/shared/ui/button"
+import { Link, useRouter } from "@/i18n/navigation"
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/shared/ui/menubar"
+import { deleteCookie } from "cookies-next/client"
 import { User } from "lucide-react"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
@@ -15,9 +17,30 @@ export const Header = () => {
         <section className="flex gap-2">
             <ThemeToggler />
             <LocaleToggler />
-            <Button asChild>
-                <Link href={'/dashboard'}><User /> {t('header.dashboard')}</Link>
-            </Button>
+            <Profile />
         </section>
     </header>
+}
+
+const Profile = () => {
+    const t = useTranslations('header')
+    const router = useRouter()
+    const logout = () => {
+        deleteCookie('access')
+        deleteCookie('refresh')
+        router.push('/login')
+    }
+
+    return <Menubar>
+        <MenubarMenu>
+            <MenubarTrigger className="flex gap-2 h-[36px] "><User size={14} />{t('dashboard.btn')}</MenubarTrigger>
+            <MenubarContent>
+                <MenubarItem>
+                    <Link href={'/dashboard'}>
+                        {t('dashboard.profile')}</Link></MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem onClick={logout}>{t('dashboard.logout')}</MenubarItem>
+            </MenubarContent>
+        </MenubarMenu>
+    </Menubar>
 }
