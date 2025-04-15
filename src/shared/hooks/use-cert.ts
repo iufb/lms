@@ -1,4 +1,5 @@
 
+import { splitTextByWords } from "@/shared/lib/utils";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, PDFFont, PDFImage, PDFPage, rgb } from "pdf-lib";
 import QrCode from "qrcode";
@@ -79,18 +80,21 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
         })
 
         //course
-        page.drawText(lang == 'ru' ? courseRu : courseKz, {
-            x: width / 4 - 55,
-            y: height / 2 + 148,
-            size: 10,
-            font: font,
-            color: rgb(0, 0, 0),
-        })
+        const titleArray = lang == 'ru' ? splitTextByWords(courseRu) : splitTextByWords(courseKz)
+        titleArray.forEach((line, i) => {
+            page.drawText(line, {
+                x: width / 4 - 55,
+                y: (height / 2 + 148) - i * 14,
+                size: 10,
+                font: font,
+                color: rgb(0, 0, 0),
+            })
 
+        })
         //name
         page.drawText(name, {
             x: width / 4 + 10,
-            y: height / 2 + 92,
+            y: height / 2 + 50,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),
@@ -100,7 +104,7 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
 
         page.drawText(place, {
             x: width / 4 + 16,
-            y: height / 2 + 64,
+            y: height / 2 + 24,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),
@@ -110,7 +114,7 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
 
         page.drawText(position, {
             x: width / 4,
-            y: height / 2 + 36,
+            y: height / 2 - 5,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),
@@ -119,7 +123,7 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
         //percentage
         page.drawText(percentage, {
             x: width / 4,
-            y: height / 2 + 8,
+            y: height / 2 - 32,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),
@@ -128,7 +132,7 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
         //right count
         page.drawText(rightCount, {
             x: lang == 'kz' ? width / 2 + 90 : width / 2 + 105,
-            y: height / 2 + 8,
+            y: height / 2 - 32,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),
@@ -137,7 +141,7 @@ export const useCert = ({ mode }: { mode: 'save' | 'render' }) => {
         //phone
         page.drawText(phone, {
             x: width / 4 + 48,
-            y: height / 2 - 132,
+            y: height / 2 - 172,
             size: 10,
             font: font,
             color: rgb(0, 0, 0),

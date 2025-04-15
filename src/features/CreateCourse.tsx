@@ -60,12 +60,12 @@ const Form = () => {
     return <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-3xl mx-auto gap-2 flex flex-col" >
         <Input error={errors.title_ru?.message} {...register('title_ru', {
             required: 'Обязательное поле'
-            , maxLength: { value: 75, message: 'Максимальная длина 75 символов' }
-        })} label="Название на русском (Максимум 75 символов)" />
+            , maxLength: { value: 450, message: 'Максимальная длина 450 символов' }
+        })} label="Название на русском (Максимум 450 символов)" />
         <Input error={errors.title_kz?.message} {...register('title_kz', {
             required: 'Обязательное поле',
-            maxLength: { value: 75, message: 'Максимальная длина 75 символов' }
-        })} label="Название на казахском (Максимум 75 символов)" />
+            maxLength: { value: 450, message: 'Максимальная длина 450 символов' }
+        })} label="Название на казахском (Максимум 450 символов)" />
         <Textarea {...register('description_ru', { required: 'Обязательное поле' })} label="Описание на русском" />
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
         <Input {...register('hours', { required: 'Обязательное поле' })} type="number" label="Часы" />

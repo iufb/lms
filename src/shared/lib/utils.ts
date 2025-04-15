@@ -101,3 +101,37 @@ export async function uploadToS3(url: string, file: File): Promise<boolean> {
 export function getLocalized<T extends Record<string, any>>(obj: T, key: string, locale: string) {
     return obj[`${key}_${locale}`] ?? obj[`${key}_ru`]; // fallback to Russian
 }
+
+export function splitTextByWords(
+    text: string,
+    maxLineLength: number = 75,
+    maxLines: number = 6
+): string[] {
+    const words: string[] = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = ''
+
+
+    console.log(words)
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i]
+        if ((currentLine + ` ${word}`).length <= maxLineLength) {
+            currentLine += ` ${word}`
+        } else {
+            lines.push(currentLine)
+            currentLine = ''
+            if (lines.length === maxLines) {
+                break;
+            }
+
+        }
+    }
+
+    if (currentLine && lines.length < maxLines) {
+        lines.push(currentLine)
+    }
+
+    console.log(lines)
+    return lines;
+}
+
