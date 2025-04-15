@@ -75,7 +75,7 @@ const Form = ({ data }: EditCourseProps) => {
         <Textarea {...register('description_kz', { required: 'Обязательное поле' })} label="Описание на казахском" />
         <Input {...register('hours', { required: 'Обязательное поле' })} type="number" label="Часы" />
         <Input {...register('price', { required: 'Обязательное поле' })} type="number" label="Цена" />
-        <Controller name="is_published" rules={{ required }} control={control} render={({ field: { value, onChange } }) =>
+        <Controller name="is_published" control={control} render={({ field: { value, onChange } }) =>
             <Label className="my-2">
                 <Checkbox checked={value} onCheckedChange={c => onChange(c)} />Опубликован</Label>
         } />
