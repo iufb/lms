@@ -12,6 +12,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 export const CourseView = ({ id }: { id: number }) => {
     const t = useTranslations('coursepage')
+    const tLessons = useTranslations('lessonslist')
     const locale = useLocale()
     const { data: course, isError, isLoading } = useCourseRead(id)
 
@@ -49,7 +50,7 @@ export const CourseView = ({ id }: { id: number }) => {
 
                 </TabsContent>
                 <TabsContent value="lessons">
-                    <LessonsList courseId={id} mode="user" />
+                    <LessonsList courseId={id} mode="user" t={tLessons} />
                 </TabsContent>
             </Tabs>
             <Card className="md:w-1/3 h-40">

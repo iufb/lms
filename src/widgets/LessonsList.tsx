@@ -6,7 +6,7 @@ import { OrderNumber } from "@/shared/ui/order"
 import { Separator } from "@/shared/ui/separator"
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content"
 import { Skeleton } from "@/shared/ui/skeleton"
-import { useLocale, useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React from 'react'
@@ -14,10 +14,10 @@ import React from 'react'
 interface LessonsListProps {
     courseId: number
     mode: 'admin' | 'user'
+    t?: any
 }
 
-export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
-    const t = useTranslations('lessonlist')
+export const LessonsList = ({ mode, courseId, t }: LessonsListProps) => {
     const searchParams = useSearchParams()
     const { data, isLoading, error, queryKey } = useCourseLessonsList({ course_id: courseId })
     const locale = mode == 'user' && useLocale()
@@ -26,11 +26,11 @@ export const LessonsList = ({ mode, courseId }: LessonsListProps) => {
         isError={error}
         isLoading={isLoading}
         loader={Array.from({ length: 5 }).map((_, id) => <Skeleton key={id} className="w-full rounded-lg h-10 my-2" />)}
-        error={<Error>{t('error')}</Error>}
+        error={<Error>{t ? t('error') : "Ошибка загрузки"}</Error>}
         content={<Card>
             <CardHeader>
-                <CardTitle>{t('title')}</CardTitle>
-                <CardDescription>{t('desc')}</CardDescription>
+                <CardTitle>{t ? t('title') : "Уроки"}</CardTitle>
+                <CardDescription>{t ? t('desc') : "Список уроков"}</CardDescription>
             </CardHeader>
             <Separator />
             <CardContent>
