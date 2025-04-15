@@ -23,7 +23,7 @@ export function CreateCourse() {
                     <DrawerTitle className="text-center">Создание нового курса</DrawerTitle>
                     <DrawerDescription className="text-center">Заполните форму, чтобы создать новый курс. </DrawerDescription>
                 </DrawerHeader>
-                <div className="w-full px-4 py-5">
+                <div className="w-full px-4 py-5 overflow-auto">
                     <Form />
                 </div>
             </DrawerContent>

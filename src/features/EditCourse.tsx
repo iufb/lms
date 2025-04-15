@@ -28,7 +28,7 @@ export function EditCourse({ data }: EditCourseProps) {
                     <DrawerTitle className="text-center">Редактирование курса</DrawerTitle>
                     <DrawerDescription className="text-center">Здесь Вы можете изменить данные курса.</DrawerDescription>
                 </DrawerHeader>
-                <div className="w-full px-4 py-5">
+                <div className="w-full px-4 py-5 overflow-auto">
                     <Form data={data} />
                 </div>
             </DrawerContent>
