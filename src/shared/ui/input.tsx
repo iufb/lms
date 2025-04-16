@@ -1,9 +1,10 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/shared/lib/utils"
-import { Label } from "@/shared/ui/label"
+import { cn } from "@/shared/lib/utils";
+import { Label } from "@/shared/ui/label";
 
-function Input({ className, label, type, error, ...props }: React.ComponentProps<"input"> & { error?: string, label?: string }) {
+
+function Input({ className, label, type, error, ...props }: React.ComponentProps<"input"> & { error?: string, label?: string, }) {
     return (
         <div>
             <Label className={cn('ml-2 my-1.5', error && 'text-red-500')} htmlFor={props.id}>{label}</Label>
@@ -24,4 +25,4 @@ function Input({ className, label, type, error, ...props }: React.ComponentProps
     )
 }
 
-export { Input }
+export { Input };

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from "next-intl";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useHookFormMask } from 'use-mask-input';
 
 export const LoginForm = () => {
     const t = useTranslations('login')
@@ -18,6 +19,7 @@ export const LoginForm = () => {
         register,
         formState: { errors },
     } = useForm<LoginCreateBody>({ mode: 'onChange' });
+    const registerWithMask = useHookFormMask(register);
     const router = useRouter()
     const localeRouter = useLocaleRouter()
     const { mutate, isPending } = useLoginCreate({
@@ -60,8 +62,8 @@ export const LoginForm = () => {
         }
     })
 
-    const onRegisterFormSubmit: SubmitHandler<LoginCreateBody> = (data) => {
-        mutate({ data })
+    const onLoginFormSubmit: SubmitHandler<LoginCreateBody> = (data) => {
+        mutate({ data: { ...data, phone_number: data.phone_number.replace(/\s+/g, '') } })
     };
 
 
@@ -74,15 +76,14 @@ export const LoginForm = () => {
         </CardHeader>
         <CardContent>
             <form
-                onSubmit={handleSubmit(onRegisterFormSubmit)}
+                onSubmit={handleSubmit(onLoginFormSubmit)}
                 className="flex w-full flex-col gap-2 max-w-lg 
  ">
-
                 <Input
                     label={t('fields.phone_number')}
                     id="phone_number" placeholder={t('placeholders.phone_number')}
                     error={errors["phone_number"]?.message?.toString()}
-                    {...register("phone_number", {
+                    {...registerWithMask("phone_number", ['+7 999 999 99 99'], {
                         required: t('errors.phone_numberRequired')
                     })}
 

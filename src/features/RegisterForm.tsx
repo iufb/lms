@@ -8,6 +8,7 @@ import { setCookie } from 'cookies-next'
 import { useTranslations } from "next-intl"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from "sonner"
+import { useHookFormMask } from "use-mask-input"
 
 type RegisterDTO = {
     phone_number: string;
@@ -28,6 +29,8 @@ export const RegisterForm = () => {
         getValues,
         formState: { errors },
     } = useForm<RegisterDTO>({ mode: 'onChange' });
+
+    const registerWithMask = useHookFormMask(register);
     const router = useRouter()
     const password = watch('password', '')
 
@@ -82,7 +85,7 @@ export const RegisterForm = () => {
                     label={t('fields.phone_number')}
                     id="phone_number" placeholder={t('placeholders.phone_number')}
                     error={errors["phone_number"]?.message?.toString()}
-                    {...register("phone_number", {
+                    {...registerWithMask("phone_number", ['+7 999 999 99 99'], {
                         required: t('errors.phoneRequired'),
                         validate: {
                             validatePhoneNumber: (value) =>
