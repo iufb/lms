@@ -11,7 +11,7 @@ interface GetCertButtonProps {
 }
 
 
-export const GetCertButton = ({ courseId, results }: GetCertButtonProps) => {
+export const GetCertButton = ({ courseId }: GetCertButtonProps) => {
     const t = useTranslations('cert')
     const { getCert } = useCert({ mode: 'save' })
 

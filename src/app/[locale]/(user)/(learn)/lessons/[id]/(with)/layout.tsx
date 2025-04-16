@@ -14,13 +14,13 @@ import {
 import { LearnSidebar } from "@/widgets/LearnSidebar";
 import { ArrowLeft, Library } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 import { ReactNode } from "react";
 
 
 export default async function Layout({ children, params }: { children: ReactNode, params: any }) {
     const { id } = await params
-    console.log(await params)
     return <LearnContextProvider courseId={id}>
         <SidebarProvider>
 
@@ -54,7 +54,7 @@ const Left = ({ id }: { id: number }) => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" asChild >
-                        <a href="/"> <ArrowLeft /> <Library /> <span>{t('all')}</span></a>
+                        <Link href="/"> <ArrowLeft /> <Library /> <span>{t('all')}</span></Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

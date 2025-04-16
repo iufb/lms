@@ -32,14 +32,11 @@ export function CreateCourse() {
 }
 
 type FormDTO = Omit<Course, 'id' | 'is_published'>
-const required = 'Обязательное поле'
 
 const Form = () => {
     const {
         handleSubmit,
         register,
-        watch,
-        getValues,
         formState: { errors },
     } = useForm<FormDTO>({ mode: 'onSubmit' });
     const { mutate: createCourse, isPending } = useCourseCreate({

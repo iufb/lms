@@ -36,7 +36,6 @@ export function EditCourse({ data }: EditCourseProps) {
     )
 }
 
-const required = 'Обязательное поле'
 
 const Form = ({ data }: EditCourseProps) => {
     const {
@@ -44,7 +43,6 @@ const Form = ({ data }: EditCourseProps) => {
         handleSubmit,
         register,
         watch,
-        getValues,
         formState: { errors },
     } = useForm<Course>({ mode: 'onSubmit', defaultValues: data });
     const { mutate: editCourse, isPending } = useCourseUpdate({

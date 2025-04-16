@@ -29,12 +29,13 @@ export const AvaliableCoursesList = () => {
                     const description = getLocalized(c, 'description', locale);
                     return <Card key={c.id}>
                         <CardHeader >
-                            <CardTitle className='h-52'>{title}</CardTitle>
+                            <CardTitle className=' w-full opacity-0 h-0'>{title}</CardTitle>
                             <CardDescription className=' max-w-md h-0 overflow-hidden text-ellipsis line-clamp-3 opacity-0'>{description}</CardDescription>
                             <Badge>{t('price')} {c.price}</Badge>
                         </CardHeader>
                         <CardContent>
-                            <p className=' overflow-hidden text-ellipsis line-clamp-3'>{description}</p>
+                            <h2 className="text-wrap font-bold">{title}</h2>
+                            <p className='overflow-hidden text-ellipsis line-clamp-3'>{description}</p>
                         </CardContent>
                         <Separator />
                         <CardFooter className="items-end">

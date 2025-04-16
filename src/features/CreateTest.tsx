@@ -126,10 +126,8 @@ interface HandleQuestionProps {
 
 export const HandleQuestion = ({ id, mode, defaultValues, answer, onAddQuestion, onEditQuestion }: HandleQuestionProps) => {
     const [open, setOpen] = useState(false)
-    const { control, handleSubmit,
+    const { handleSubmit,
         register,
-        watch,
-        getValues,
         reset,
         formState: { errors },
     } = useForm<Question>({

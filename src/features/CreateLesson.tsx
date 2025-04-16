@@ -16,12 +16,10 @@ type LessonDTO = Omit<Lesson, 'media_kz' | 'media_ru'> & { media_kz: FileList, m
 export const CreateLesson = ({ id }: { id: number }) => {
     const { control, handleSubmit,
         register,
-        watch,
-        getValues,
         formState: { errors },
     } = useForm<LessonDTO>()
 
-    const { mutate, isPending } = useLessonCreate({
+    const { mutate } = useLessonCreate({
         mutation: {
             onSuccess: () => {
                 toast.success('Урок создан')

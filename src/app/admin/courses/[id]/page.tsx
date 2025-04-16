@@ -1,18 +1,16 @@
 import { CreateFinalTest } from "@/features/CreateFinalTest"
 import { CreateLesson } from "@/features/CreateLesson"
 import { LessonsList } from "@/widgets/LessonsList"
-import { Metadata, ResolvingMetadata } from "next"
+import { Metadata } from "next"
 
 interface Props {
     params: Promise<{ id: number }>
 }
 export async function generateMetadata(
     { params, }: Props,
-    parent: ResolvingMetadata
 ): Promise<Metadata> {
     const { id } = await params
 
-    const previousImages = (await parent).openGraph?.images || []
 
     return {
         title: `Редактирование курса №${id}`,

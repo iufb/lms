@@ -39,9 +39,8 @@ export const EditLessonForm = ({ lessonId }: EditLessonFormProps) => {
     const { control, handleSubmit,
         register,
         watch,
-        getValues,
         reset,
-        formState: { errors, isDirty },
+        formState: { errors },
     } = useForm<EditLessonDTO>()
     useEffect(() => {
         if (defaultValues) {

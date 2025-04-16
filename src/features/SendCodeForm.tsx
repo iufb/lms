@@ -20,9 +20,9 @@ export const SendCodeForm = ({ phone_number, ...data }: SendCodeFormProps) => {
 
     const router = useRouter()
 
-    const { mutate, isPending, isError } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: verifyCodeCreate,
-        onSuccess: (data) => {
+        onSuccess: () => {
             // Handle success
             toast.success(tG('registration.success.accountCreated'))
             deleteCookie(phone_number)
@@ -120,7 +120,7 @@ const SendAgain = ({ phone_number }: { phone_number: string }) => {
         }
     }, [timer]);
 
-    return <Button onClick={() => sendCode({ data: { phone_number } })} disabled={timer > 0} variant={'link'} className="mx-auto">
+    return <Button onClick={() => sendCode({ data: { phone_number } })} disabled={timer > 0 || isLoading} variant={'link'} className="mx-auto">
         {t('resendText')}
         {t('resendButton')}
         {timer > 0 && t('timer', { timer })}

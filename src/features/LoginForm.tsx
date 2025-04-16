@@ -16,13 +16,11 @@ export const LoginForm = () => {
     const {
         handleSubmit,
         register,
-        watch,
-        getValues,
         formState: { errors },
     } = useForm<LoginCreateBody>({ mode: 'onChange' });
     const router = useRouter()
     const localeRouter = useLocaleRouter()
-    const { mutate, isPending, isError } = useLoginCreate({
+    const { mutate, isPending } = useLoginCreate({
         mutation: {
             onSuccess: async (data) => {
                 setCookie('access', data.access)

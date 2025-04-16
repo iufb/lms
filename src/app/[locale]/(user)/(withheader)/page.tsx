@@ -1,9 +1,8 @@
 import { AvaliableCoursesList } from '@/widgets/AvaliableCoursesList';
-import { Metadata, ResolvingMetadata } from 'next';
+import { Metadata } from 'next';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 export async function generateMetadata(
-    parent: ResolvingMetadata
 ): Promise<Metadata> {
     const t = await getTranslations('main')
     return {

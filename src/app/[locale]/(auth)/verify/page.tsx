@@ -3,12 +3,11 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/shared/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
 import { getCookie } from "cookies-next";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { cookies } from 'next/headers';
 
 export async function generateMetadata(
-    parent: ResolvingMetadata
 ): Promise<Metadata> {
 
     const t = await getTranslations('verify')

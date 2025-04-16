@@ -8,9 +8,6 @@ import { Controller, useForm } from "react-hook-form";
 export const LessonForm = () => {
     const { control, handleSubmit,
         register,
-        watch,
-        getValues,
-        formState: { errors },
     } = useForm()
     const onSubmit = (data: any) => {
         console.log(data)

@@ -21,14 +21,12 @@ async function adminMiddleware(req: NextRequest) {
     }
     return NextResponse.next()
 }
-
+//
 const publicRoutes = ['register', 'login', 'verify']
-const privateRoutes = ['profile']
 
 function authMiddleware(req: NextRequest) {
     const token = req.cookies.get("access");
     const { pathname } = req.nextUrl;
-    const locale = pathname.split("/")[1];
     const params = pathname.slice(4, pathname.length)
     if ((!publicRoutes.includes(params)) && !token) {
         return NextResponse.redirect(new URL(`kz/login`, req.url))
@@ -44,8 +42,7 @@ function authMiddleware(req: NextRequest) {
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
-    const locale = pathname.split("/")[1];
-    if (pathname.startsWith("/admin")) {
+if (pathname.startsWith("/admin")) {
         return adminMiddleware(req);
     }
     return authMiddleware(req);

@@ -2,7 +2,7 @@ import { url } from "@/shared/api/custom-instance"
 import { getLocalized } from "@/shared/lib/utils"
 import { CourseView } from "@/widgets/CourseView"
 import { getCookie } from "cookies-next/server"
-import { Metadata, ResolvingMetadata } from "next"
+import { Metadata } from "next"
 import { getLocale } from "next-intl/server"
 import { cookies } from "next/headers"
 type Props = {
@@ -24,7 +24,6 @@ const getCourse = async (id: number) => {
 
 export async function generateMetadata(
     { params }: Props,
-    parent: ResolvingMetadata
 
 ): Promise<Metadata> {
     const locale = await getLocale()

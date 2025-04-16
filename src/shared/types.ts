@@ -1,5 +1,4 @@
-import { LessonTestAnswerKz, LessonTestQuestionsKz } from "@/shared/api/generated";
-import { LessonTestAnswerRu, LessonTestQuestionsRu } from "@/shared/api/generated1";
+import { LessonTestAnswerKz, LessonTestAnswerRu, LessonTestQuestionsKz, LessonTestQuestionsRu } from "@/shared/api/generated";
 
 export type deserializeQuestionsAndAnswersInput = {
     questions_ru: LessonTestQuestionsRu,

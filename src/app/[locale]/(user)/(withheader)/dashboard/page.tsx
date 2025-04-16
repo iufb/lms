@@ -1,9 +1,8 @@
 import { Profile } from "@/widgets/Profile";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(
-    parent: ResolvingMetadata
 ): Promise<Metadata> {
 
     const t = await getTranslations('profile')
