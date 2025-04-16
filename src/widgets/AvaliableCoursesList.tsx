@@ -5,6 +5,7 @@ import { getLocalized } from "@/shared/lib/utils";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Error } from "@/shared/ui/error";
 import { Separator } from "@/shared/ui/separator";
 import { ShowFetchContent } from "@/shared/ui/show-fetch-content";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -14,14 +15,15 @@ import { useLocale, useTranslations } from "next-intl";
 export const AvaliableCoursesList = () => {
     const locale = useLocale()
     const t = useTranslations('main')
-
+    const tG = useTranslations()
     const { data: courses, error, isLoading } = useAvailableCoursesList({ query: { queryKey: ['avaliable-course-list'] } })
     return <ShowFetchContent<AvailableCoursesList200Item>
         data={courses}
         isLoading={isLoading}
         isError={error}
         loader={<div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2 ">{Array.from({ length: 3 }).map((_, id) => <Skeleton key={id} className="h-[252px]" />)}</div>}
-        error={<div>erorr</div>}
+        customError
+        error={<Error>{tG('coursepage.error')}</Error>}
         content={
             <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2 '>
                 {courses?.map(c => {

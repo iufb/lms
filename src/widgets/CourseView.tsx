@@ -23,7 +23,7 @@ export const CourseView = ({ id }: { id: number }) => {
     const title = getLocalized(course, 'title', locale);
     const description = getLocalized(course, 'description', locale);
 
-    return <section className="stack gap-4">
+    return <section className="stack gap-4 pb-5">
         <Card>
             <CardHeader>
                 <CardTitle className="mb-4 text-3xl font-bold  sm:text-4xl md:text-5xl">{title}</CardTitle>
