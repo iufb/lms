@@ -89,7 +89,7 @@ export const RegisterForm = () => {
                         required: t('errors.phoneRequired'),
                         validate: {
                             validatePhoneNumber: (value) =>
-                                /^\+7\d{10}$/.test(value) || t('errors.phoneInvalid'),
+                                /^\+7 \d{3} \d{3} \d{2} \d{2}$/.test(value) || t('errors.phoneInvalid')
                         }
                     })}
 
